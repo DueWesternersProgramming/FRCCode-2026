@@ -1,0 +1,93 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.965495633971004,
+        "y": 2.7942236769095814
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.22725,
+        "y": 2.2992499999999993
+      },
+      "isLocked": false,
+      "linkedName": "Reef2R"
+    },
+    {
+      "anchor": {
+        "x": 2.25225,
+        "y": 1.8214999999999997
+      },
+      "prevControl": {
+        "x": 2.6032179212940747,
+        "y": 1.8946164702547663
+      },
+      "nextControl": {
+        "x": 2.007504637942814,
+        "y": 1.7705126706769525
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.10175,
+        "y": 0.7977499999999997
+      },
+      "prevControl": {
+        "x": 1.551355554900585,
+        "y": 1.416578957108575
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "HP2"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6780383795309158,
+      "rotationDegrees": 65.50741806819586
+    },
+    {
+      "waypointRelativePos": 1.483975659229192,
+      "rotationDegrees": -126.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.5070898041863414,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 300.0,
+        "maxAngularAcceleration": 300.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 500.0,
+    "maxAngularAcceleration": 400.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -126.0
+  },
+  "reversed": false,
+  "folder": "Barge 5 Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 59.99999999999999
+  },
+  "useDefaultConstraints": false
+}

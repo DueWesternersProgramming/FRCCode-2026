@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.684493127063911,
+        "y": 5.090576726087885
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.6097299182107556,
+        "y": 5.329135864671968
+      },
+      "isLocked": false,
+      "linkedName": "Reef6R"
+    },
+    {
+      "anchor": {
+        "x": 3.684493127063911,
+        "y": 5.523463114754098
+      },
+      "prevControl": {
+        "x": 3.3742240623275475,
+        "y": 5.329210581026036
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Reef6AlgaeBackup"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -59.99999999999999
+  },
+  "reversed": false,
+  "folder": "Barge 1 Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -59.99999999999999
+  },
+  "useDefaultConstraints": false
+}
