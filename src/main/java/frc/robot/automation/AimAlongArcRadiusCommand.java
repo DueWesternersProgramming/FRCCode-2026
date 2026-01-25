@@ -1,104 +1,124 @@
 package frc.robot.automation;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.RobotConstants;
-import frc.robot.RobotConstants.DrivetrainConstants;
 import frc.robot.RobotConstants.PortConstants;
-import frc.robot.RobotConstants.TeleopConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.utils.CowboyUtils;
 
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class AimAlongArcRadiusCommand extends Command {
-    private final ProfiledPIDController angleController = new ProfiledPIDController(1.0, 0.0, 0,
-            new TrapezoidProfile.Constraints(0.5, 0.5));
 
-    private final PIDController xController = new PIDController(3.0, 0.0, 0.1);
+    // Angular controller (RADIANS)
+    private final ProfiledPIDController angleController = new ProfiledPIDController(
+            1.0, 0.0, 0.0,
+            new TrapezoidProfile.Constraints(
+                    Units.degreesToRadians(360), // max angular velocity
+                    Units.degreesToRadians(720) // max angular acceleration
+            ));
 
-    DriveSubsystem driveSubsystem;
-    Joystick joystick;
-    double radiusMeters;
+    // X controller (meters)
+    private final PIDController xController = new PIDController(1.0, 0.0, 0.0);
+
+    // Live tuning
+    private final LoggedNetworkNumber angleP = new LoggedNetworkNumber("/Tuning/AngleP", 1.0);
+    private final LoggedNetworkNumber angleI = new LoggedNetworkNumber("/Tuning/AngleI", 0.0);
+    private final LoggedNetworkNumber angleD = new LoggedNetworkNumber("/Tuning/AngleD", 0.0);
+
+    private final DriveSubsystem driveSubsystem;
+    private final Joystick joystick;
+    private final double radiusMeters;
 
     public AimAlongArcRadiusCommand(
             DriveSubsystem driveSubsystem,
             double radiusMeters,
             Joystick joystick) {
 
-        addRequirements(driveSubsystem);
-
         this.driveSubsystem = driveSubsystem;
         this.joystick = joystick;
         this.radiusMeters = radiusMeters;
 
-        angleController.enableContinuousInput(-360, 360);
-        angleController.setTolerance(Units.degreesToRadians(1));
+        addRequirements(driveSubsystem);
+
+        angleController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     @Override
     public void execute() {
+        angleController.setPID(
+                angleP.getAsDouble(),
+                angleI.getAsDouble(),
+                angleD.getAsDouble());
+
         Pose2d robotPose = driveSubsystem.getPose();
+        Pose2d hubPose = CowboyUtils.getAllianceHubPose();
 
-        Pose2d targetPose = CowboyUtils.getPoseAlongArcFromY(robotPose, CowboyUtils.getAllianceHubPose(), radiusMeters);
+        //AI assisted:
 
-        double x = xController.calculate(robotPose.getX(), targetPose.getX());
-        double rot = angleController.calculate(robotPose.getRotation().getDegrees(), targetPose.getRotation().getDegrees());
-        
-        driveSubsystem.drive(x, joystick.getRawAxis(PortConstants.Controller.DRIVE_COMMAND_X_AXIS), rot, true,true, false);
+        // Vector from hub -> robot
+        double dx = robotPose.getX() - hubPose.getX();
+        double dy = robotPose.getY() - hubPose.getY();
 
-        Logger.recordOutput("DriveSubsystem/AlignOnRadiusTargetPose", targetPose);
+        double angleToRobot = Math.atan2(dy, dx);
 
+        // Current distance from hub
+        double currentRadius = Math.hypot(dx, dy);
 
-        // Rotation2d desiredTheta = targetPose.getRotation().plus(Rotation2d.kPi);
+        // Radial error (positive = too far out)
+        double radialError = currentRadius - radiusMeters;
 
-        // perpendicularError = CowboyUtils.getPerpendicularError(robotPose, targetPose);
+        // PID pushes robot back to desired radius
+        double radialOutput = xController.calculate(radialError, 0.0);
 
-        // double parallelError = CowboyUtils.getParallelError(robotPose, targetPose);
+        // Tangent direction (CCW around hub)
+        double tangentX = -Math.sin(angleToRobot);
+        double tangentY = Math.cos(angleToRobot);
 
-        // double thetaError = robotPose.getRotation().minus(desiredTheta).getRadians();
+        // Driver controls motion along arc
+        double tangentialSpeed = joystick.getRawAxis(
+                PortConstants.Controller.DRIVE_COMMAND_X_AXIS);
 
-        // double parallelSpeed = parallelController.calculate(-parallelError, 0);
-        // parallelSpeed = !parallelController.atSetpoint() ? parallelSpeed : 0;
+        // Combine radial + tangential
+        double xOutput = radialOutput * Math.cos(angleToRobot)
+                + tangentialSpeed * tangentX;
 
-        // double angularSpeed = angleController.calculate(thetaError, 0);
-        // angularSpeed = !angleController.atSetpoint() ? angularSpeed : 0;
+        double yOutput = radialOutput * Math.sin(angleToRobot)
+                + tangentialSpeed * tangentY;
 
-        // double perpendicularConstrained = MathUtil.applyDeadband(
-        //         MathUtil.clamp(perpendicularInput.get(), -TeleopConstants.MAX_SPEED_PERCENT,
-        //                 TeleopConstants.MAX_SPEED_PERCENT),
-        //         RobotConstants.PortConstants.Controller.JOYSTICK_AXIS_THRESHOLD);
-        // double perpendicularSquared = Math.copySign(perpendicularConstrained * perpendicularConstrained,
-        //         perpendicularConstrained);
+        // Face the hub
+        angleController.setGoal(angleToRobot + Math.PI);
 
-        // ChassisSpeeds speeds = new ChassisSpeeds(
-        //         perpendicularSquared * DrivetrainConstants.MAX_SPEED_METERS_PER_SECOND,
-        //         parallelSpeed,
-        //         angularSpeed);
+        double rotOutput = angleController.calculate(
+                robotPose.getRotation().getRadians());
 
-        // driveSubsystem.runChassisSpeeds(speeds, false);
-    }
+        driveSubsystem.drive(
+                xOutput,
+                yOutput,
+                rotOutput,
+                true,
+                true, 
+                false);
 
-    @Override
-    public void end(boolean interrupt) {
-        // parallelController.reset();
-        // angleController.reset(0);
+        Logger.recordOutput(
+                "DriveSubsystem/HubArc/RadiusError",
+                radialError);
     }
 
     @Override
     public boolean isFinished() {
         return false;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        angleController.reset(
+                driveSubsystem.getPose().getRotation().getRadians());
     }
 }

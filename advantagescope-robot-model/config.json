@@ -1,0 +1,23 @@
+{
+  "name": "2026 FRC",
+  "sourceUrl": "https://cad.onshape.com/documents/f898753a0abedf8797698c4a/w/1f326017fe972daa1ebfb445/e/13c24dad4a6162b4d91b9094",
+  "rotations": [
+    {
+      "axis": "z",
+      "degrees": 90
+    },
+    {
+      "axis": "x",
+      "degrees":180
+    },
+    {
+      "axis": "y",
+      "degrees":90
+    }
+  ],
+  "position": [
+    0,
+    0,
+    0.045
+  ]
+}

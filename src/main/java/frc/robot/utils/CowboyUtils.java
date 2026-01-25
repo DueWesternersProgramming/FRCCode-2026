@@ -2,12 +2,15 @@ package frc.robot.utils;
 
 import java.io.IOException;
 
+import org.opencv.core.Mat;
+
 import com.pathplanner.lib.util.FlippingUtil;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -59,22 +62,34 @@ public class CowboyUtils {
         // return -origin.minus(target).getX();
     }
 
-    private static Rotation2d getAngleToPose(Pose2d pose1, Pose2d pose2){
+    private static Rotation2d getAngleToPose(Pose2d pose1, Pose2d pose2) {
         double xOffset = pose2.getX() - pose1.getX();
 
         double yOffset = pose2.getY() - pose1.getY();
 
-        return new Rotation2d(Math.atan(yOffset/xOffset));
+        return new Rotation2d(Math.atan(yOffset / xOffset));
 
     }
 
-    public static Pose2d getPoseAlongArcFromY(Pose2d robotPose, Pose2d rotationCenterPose, double radius){
-        double xComponet = Math.sqrt(Math.pow(radius, 2) - Math.pow(robotPose.getY(), 2));
-        return new Pose2d(xComponet > 0 ? xComponet : robotPose.getX(), robotPose.getY(), getAngleToPose(robotPose, rotationCenterPose));
-    }
+    // public static Pose2d getPoseAlongArcFromY(Pose2d robotPose, Pose2d rotationCenterPose, double radius) {
 
-    public static Pose2d getAllianceHubPose(){
-        return isBlueAlliance() ? ScoringConstants.BLUE_ALLIANCE_HUB : FlippingUtil.flipFieldPose(ScoringConstants.BLUE_ALLIANCE_HUB);
+    //     double currentOffX = robotPose.getX() - rotationCenterPose.getX();
+    //     doubluble currentOffY = robotPose.getY() - rotationCenterPose.getY();
+
+    //     double hubSideTriangleAngle = Math.atan2(currentOffY, currentOffX);
+
+    //     double newOffX = Math.cos(hubSideTriangleAngle) * radius;
+    //     double newOffY = Math.sin(hubSideTriangleAngle) * radius;
+
+    //     double newX = rotationCenterPose.getX() + newOffX;
+    //     double newY = rotationCenterPose.getY() + newOffY;
+
+    //     return new Pose2d(newX, newY, getAngleToPose(robotPose, rotationCenterPose));
+    // }
+
+    public static Pose2d getAllianceHubPose() {
+        return isBlueAlliance() ? ScoringConstants.BLUE_ALLIANCE_HUB
+                : FlippingUtil.flipFieldPose(ScoringConstants.BLUE_ALLIANCE_HUB);
     }
 
     public static final class RobotModes {

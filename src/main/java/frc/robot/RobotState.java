@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.utils.CowboyUtils;
 import frc.robot.utils.TimestampedPose;
 
 import java.util.Queue;
@@ -13,7 +14,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 public class RobotState {
     public static Boolean isAntiTippingEnabled = true;
     public static Boolean isAutoAlignActive = false;
-    public static boolean canRotate = false;
+    public static boolean canRotate = CowboyUtils.isSim() ? true : false; //easier to read than just T/F
     public static boolean xLocked = false;
     public static Pose2d robotPose = new Pose2d();
     @AutoLogOutput

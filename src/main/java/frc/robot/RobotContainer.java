@@ -199,7 +199,7 @@ public class RobotContainer {
                 //                                 driveSubsystem,
                 //                                 questNavSubsystem));
 
-                new JoystickButton(driveJoystick, 6).whileTrue(new AimAlongArcRadiusCommand(driveSubsystem, 1.75, driveJoystick));
+                new JoystickButton(driveJoystick, 6).whileTrue(new AimAlongArcRadiusCommand(driveSubsystem, 2.25, driveJoystick));
 
                 new JoystickButton(driveJoystick, 1).onTrue(RobotState.setCanRotate(true))
                                 .onFalse(RobotState.setCanRotate(false));

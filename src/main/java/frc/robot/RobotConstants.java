@@ -22,6 +22,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.vision.SimCameraConfig;
+import frc.robot.utils.CowboyUtils;
 import frc.robot.utils.CowboyUtils.RobotModes;
 
 public final class RobotConstants {
@@ -37,7 +38,7 @@ public final class RobotConstants {
 
         public static final class ScoringConstants {
 
-                public static final Pose2d BLUE_ALLIANCE_HUB = new Pose2d(4.630,4.630,new Rotation2d());
+                public static final Pose2d BLUE_ALLIANCE_HUB = new Pose2d(4.630,4.040,new Rotation2d());
 
                 public static final Pose2d[][] REEF_SIDE_POSES;
 
@@ -223,7 +224,7 @@ public final class RobotConstants {
 
                         public static final int DRIVE_COMMAND_X_AXIS = 0;
                         public static final int DRIVE_COMMAND_Y_AXIS = 1;
-                        public static final int DRIVE_COMMAND_ROT_AXIS = 2; // 2 for the flight controller, 4 for
+                        public static final int DRIVE_COMMAND_ROT_AXIS = CowboyUtils.isSim() ? 4 : 2; // 2 for the flight controller, 4 for
                                                                             // xbox/gamepad
 
                         // Manual control axis for operator
