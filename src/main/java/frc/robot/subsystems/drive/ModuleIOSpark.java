@@ -85,8 +85,13 @@ public class ModuleIOSpark implements ModuleIO {
                 m_drivingConfig.closedLoop.pid(SwerveModuleConstants.DRIVING_P, SwerveModuleConstants.DRIVING_I,
                                 SwerveModuleConstants.DRIVING_D);
 
+                //FeedForwardConfig drivingFF = new FeedForwardConfig();
+                //drivingFF.kS(SwerveModuleConstants.DRIVING_FF); // TODO REVIEW THIS (replaced)
+
                 FeedForwardConfig drivingFF = new FeedForwardConfig();
-                drivingFF.kS(SwerveModuleConstants.DRIVING_FF); // TODO REVIEW THIS
+                drivingFF.kV(SwerveModuleConstants.DRIVING_FF); //TODO change this name to be more specific
+                m_drivingConfig.closedLoop.feedForward(drivingFF);
+
 
                 m_drivingConfig.closedLoop.outputRange(SwerveModuleConstants.DRIVING_MIN_OUTPUT_NORMALIZED,
                                 SwerveModuleConstants.DRIVING_MAX_OUTPUT_NORMALIZED);
