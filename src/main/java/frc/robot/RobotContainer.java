@@ -111,7 +111,7 @@ public class RobotContainer {
                                                 new ModuleIOSpark(RobotConstants.PortConstants.CAN.FRONT_RIGHT_DRIVING,
                                                                 RobotConstants.PortConstants.CAN.FRONT_RIGHT_TURNING,
                                                                 RobotConstants.PortConstants.CAN.FRONT_RIGHT_CANCODER,
-                                                                false),
+                                                                true),
                                                 new ModuleIOSpark(RobotConstants.PortConstants.CAN.REAR_LEFT_DRIVING,
                                                                 RobotConstants.PortConstants.CAN.REAR_LEFT_TURNING,
                                                                 RobotConstants.PortConstants.CAN.REAR_LEFT_CANCODER,
@@ -119,7 +119,7 @@ public class RobotContainer {
                                                 new ModuleIOSpark(RobotConstants.PortConstants.CAN.REAR_RIGHT_DRIVING,
                                                                 RobotConstants.PortConstants.CAN.REAR_RIGHT_TURNING,
                                                                 RobotConstants.PortConstants.CAN.REAR_RIGHT_CANCODER,
-                                                                false),
+                                                                true),
                                 };
                                 driveSubsystem = new DriveSubsystem(moduleIOs, new GyroIONAVX());
 
