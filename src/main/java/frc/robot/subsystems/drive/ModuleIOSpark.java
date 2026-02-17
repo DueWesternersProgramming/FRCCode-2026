@@ -90,7 +90,7 @@ public class ModuleIOSpark implements ModuleIO {
 
                 FeedForwardConfig drivingFF = new FeedForwardConfig();
                 drivingFF.kV(SwerveModuleConstants.DRIVING_FF); //TODO change this name to be more specific
-                m_drivingConfig.closedLoop.feedForward(drivingFF);
+                m_drivingConfig.closedLoop.apply(drivingFF);
 
 
                 m_drivingConfig.closedLoop.outputRange(SwerveModuleConstants.DRIVING_MIN_OUTPUT_NORMALIZED,

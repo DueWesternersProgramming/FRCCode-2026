@@ -70,6 +70,7 @@ import frc.robot.RobotState.AutoMode;
 import frc.robot.automation.AimAlongArcRadiusCommand;
 import frc.robot.automation.AutomatedScoring;
 import frc.robot.commands.intake.SetIntakePositionCommand;
+import frc.robot.commands.shooter.SetShooterSpeedCommand;
 import frc.robot.RobotState.IntakePositions;
 
 //@Logged(name = "RobotContainer")
@@ -243,6 +244,8 @@ public class RobotContainer {
                 // questNavSubsystem::getUncorrectedPose,
                 // driveSubsystem,
                 // questNavSubsystem));
+
+                new JoystickButton(driveJoystick, 11).whileTrue(new SetShooterSpeedCommand(1, shooterSubsystem));
 
                 new JoystickButton(driveJoystick, 6)
                                 .whileTrue(new AimAlongArcRadiusCommand(driveSubsystem, 2.25, driveJoystick));

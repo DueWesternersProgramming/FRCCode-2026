@@ -16,7 +16,7 @@ public class ShooterSubsystemIOSparkMax implements ShooterSubsystemIO {
     public ShooterSubsystemIOSparkMax(){
         shooterMotor = new SparkMax(PortConstants.CAN.SHOOTER_MOTOR, MotorType.kBrushless);
         shooterMotorConfig = new SparkMaxConfig();
-        shooterMotorConfig.closedLoop.pid(1, 0, 0);
+        shooterMotorConfig.closedLoop.pid(.3, 0, 0);
 
         closedLoopController = shooterMotor.getClosedLoopController();
     }

@@ -2,6 +2,8 @@ package frc.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.shooter.ShooterSubsystemIO.ShooterSubsystemIOInputs;
 
@@ -17,8 +19,9 @@ public class ShooterSubsystem extends SubsystemBase {
         io.setPercentSpeed(percent);
     }
 
-    public void setRMP(double rpm){
+    public void setRPM(double rpm){
         io.setRMP(rpm);
+        //io.setPercentSpeed(.1);
     }
 //Updates the inputs after setting the speed
     @Override
