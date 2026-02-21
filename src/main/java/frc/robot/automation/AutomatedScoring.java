@@ -22,11 +22,10 @@ public class AutomatedScoring {
         return Commands.print("EA Sports: It's in the game! Example Param: " + exampleParam);
     }
 
-
     public static Command shootFromHopperContinousCommand(IntakeSubsystem intakeSubsystem, IndexerSubsystem indexerSubsystem, FeederSubsystem feederSubsystem, ShooterSubsystem shooterSubsystem){
         return (Commands.sequence(
             shooterSubsystem.setPercentSpeedCommand(-1),
-            new WaitCommand(1),
+            new WaitCommand(.5),
             Commands.parallel(
                 intakeSubsystem.runIntakeAgitationContinousCommand(),
                 indexerSubsystem.runIndexerAgitationContinousCommand(),

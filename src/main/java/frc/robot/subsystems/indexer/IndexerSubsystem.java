@@ -19,7 +19,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
 
     public Command setIndexerSpeedCommand(double conveyerSpeed, double rollerSpeed){
-        return Commands.run(()->{
+        return new InstantCommand(()->{
             io.setConveyorPercentSpeed(conveyerSpeed);
             io.setRollerPercentSpeed(rollerSpeed);
         }, this);
@@ -34,7 +34,7 @@ public class IndexerSubsystem extends SubsystemBase {
     }
 
     public Command stopIndexing() {
-        return Commands.runOnce(() -> {
+        return new InstantCommand(() -> {
             io.setConveyorPercentSpeed(0);
             io.setRollerPercentSpeed(0);
         }, this);

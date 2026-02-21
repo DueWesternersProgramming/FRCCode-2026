@@ -18,17 +18,17 @@ public class FeederSubsystem extends SubsystemBase {
     }
 
     public Command setFeederSpeed(double speed){
-        return Commands.run(()->io.setFeederPercentSpeed(speed), this);
+        return new InstantCommand(()->io.setFeederPercentSpeed(speed), this);
     }
 
     public Command startFeedingBallsCommand() {
-        return Commands.runOnce(() -> {
+        return new InstantCommand(() -> {
             io.setFeederPercentSpeed(1);
         }, this);
     }
 
     public Command stopFeedingBallsCommand() {
-        return Commands.run(()->io.setFeederPercentSpeed(0), this);
+        return new InstantCommand(()->io.setFeederPercentSpeed(0), this);
     }
 
     public Command pullBallsBackCommand(){

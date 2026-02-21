@@ -39,7 +39,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public Command runIntakeNormalCommand(){
-        return Commands.run(()->setDeploymentMotorSpeed(-.85), this);
+        return new InstantCommand(()->setDeploymentMotorSpeed(-.85), this);
     }
 
     public Command stopIntakingCommand() {
