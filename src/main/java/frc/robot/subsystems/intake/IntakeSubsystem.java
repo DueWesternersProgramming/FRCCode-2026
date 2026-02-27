@@ -33,8 +33,8 @@ public class IntakeSubsystem extends SubsystemBase {
     public Command runIntakeAgitationContinousCommand() {
         return Commands.repeatingSequence(
                 setIntakeSpeedCommand(-.7),
-                new WaitCommand(.075),
-                setIntakeSpeedCommand(.75),
+                new WaitCommand(.12),
+                setIntakeSpeedCommand(.8),
                 new WaitCommand(2));
     }
 

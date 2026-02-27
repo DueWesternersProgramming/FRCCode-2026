@@ -129,7 +129,7 @@ public class RobotContainer {
                                                 new ModuleIOSpark(RobotConstants.PortConstants.CAN.REAR_RIGHT_DRIVING,
                                                                 RobotConstants.PortConstants.CAN.REAR_RIGHT_TURNING,
                                                                 RobotConstants.PortConstants.CAN.REAR_RIGHT_CANCODER,
-                                                                true),
+                                                                false),
                                 };
                                 driveSubsystem = new DriveSubsystem(moduleIOs, new GyroIONAVX());
 
@@ -267,13 +267,12 @@ public class RobotContainer {
                 // driveSubsystem,
                 // questNavSubsystem));
 
-                new JoystickButton(driveJoystick, 6).whileTrue(driveSubsystem.gyroReset());
 
                 new JoystickButton(driveJoystick, 11).onTrue(shooterSubsystem.setPercentSpeedCommand(-1)).onFalse(shooterSubsystem.setPercentSpeedCommand(0));
 
                 new JoystickButton(driveJoystick, 4).whileTrue(AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem,indexerSubsystem,feederSubsystem, shooterSubsystem)).onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem));
 
-                new JoystickButton(driveJoystick, 3).whileTrue(new SequentialCommandGroup(intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1), intakeSubsystem.setIntakeSpeedCommand(1))).onFalse(intakeSubsystem.stopIntakingCommand());
+                new JoystickButton(driveJoystick, 3).whileTrue(new SequentialCommandGroup(intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1), intakeSubsystem.setIntakeSpeedCommand(.8))).onFalse(intakeSubsystem.stopIntakingCommand());
                 
                 // new JoystickButton(driveJoystick, 6)
                 //                 .whileTrue(new AimAlongArcRadiusCommand(driveSubsystem, 2.25, driveJoystick));
@@ -283,7 +282,7 @@ public class RobotContainer {
 
                 //new JoystickButton(driveJoystick, 3).onChange(driveSubsystem.xCommand());
 
-                new JoystickButton(driveJoystick, 4)
+                new JoystickButton(driveJoystick, 6)
                                 .whileTrue(new SequentialCommandGroup(
                                                 Commands.deferredProxy(
                                                                 () -> questNavSubsystem.resetPoseYaw(new Rotation2d())),
