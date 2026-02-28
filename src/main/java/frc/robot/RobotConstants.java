@@ -298,20 +298,20 @@ public final class RobotConstants {
                                                                 new Transform3d(
                                                                                 new Translation3d(
                                                                                                 Units.inchesToMeters(
-                                                                                                                5.125), // forward+
+                                                                                                                0.018), // forward+
                                                                                                 Units.inchesToMeters(
-                                                                                                                7.99), // left+
+                                                                                                                7.129), // left+
                                                                                                 Units.inchesToMeters(
-                                                                                                                13.725000)), // up+
+                                                                                                                25.318)), // up+
                                                                                 new Rotation3d(
                                                                                                 // Counter clockwise
                                                                                                 // positive
                                                                                                 Units.degreesToRadians(
                                                                                                                 0),
                                                                                                 Units.degreesToRadians(
-                                                                                                                0),
+                                                                                                                -70),
                                                                                                 Units.degreesToRadians(
-                                                                                                                0)))),
+                                                                                                                -15)))),
                                                 SimCameraConfig.ARDUCAM_OV9281_45),
                                 // Front Right
                                 new AprilTagCameraConfig(
@@ -320,11 +320,11 @@ public final class RobotConstants {
                                                                 new Transform3d(
                                                                                 new Translation3d(
                                                                                                 Units.inchesToMeters(
-                                                                                                                5.077711), // forward+
+                                                                                                                0.018), // forward+
                                                                                                 Units.inchesToMeters(
-                                                                                                                -8.006511), // left+
+                                                                                                                -7.129), // left+
                                                                                                 Units.inchesToMeters(
-                                                                                                                24.964102)), // up+
+                                                                                                                25.318)), // up+
                                                                                 new Rotation3d(
                                                                                                 Units.degreesToRadians(
                                                                                                                 0),

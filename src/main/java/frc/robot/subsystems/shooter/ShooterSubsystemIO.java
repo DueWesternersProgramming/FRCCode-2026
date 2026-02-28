@@ -9,6 +9,7 @@ public interface ShooterSubsystemIO {
     @AutoLog
     public static class ShooterSubsystemIOInputs {
         public double motorRMP = 0.0;
+        public double motorPercent = 0.0;
         public double motorTempC = 0.0;
         public ShooterStates shooterState = ShooterStates.OFF;
     }

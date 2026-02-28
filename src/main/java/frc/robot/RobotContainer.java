@@ -121,11 +121,11 @@ public class RobotContainer {
                                                 new ModuleIOSpark(RobotConstants.PortConstants.CAN.FRONT_RIGHT_DRIVING,
                                                                 RobotConstants.PortConstants.CAN.FRONT_RIGHT_TURNING,
                                                                 RobotConstants.PortConstants.CAN.FRONT_RIGHT_CANCODER,
-                                                                true),
+                                                                false),
                                                 new ModuleIOSpark(RobotConstants.PortConstants.CAN.REAR_LEFT_DRIVING,
                                                                 RobotConstants.PortConstants.CAN.REAR_LEFT_TURNING,
                                                                 RobotConstants.PortConstants.CAN.REAR_LEFT_CANCODER,
-                                                                false),
+                                                                true),
                                                 new ModuleIOSpark(RobotConstants.PortConstants.CAN.REAR_RIGHT_DRIVING,
                                                                 RobotConstants.PortConstants.CAN.REAR_RIGHT_TURNING,
                                                                 RobotConstants.PortConstants.CAN.REAR_RIGHT_CANCODER,
@@ -268,14 +268,18 @@ public class RobotContainer {
                 // questNavSubsystem));
 
 
-                new JoystickButton(driveJoystick, 11).onTrue(shooterSubsystem.setPercentSpeedCommand(-1)).onFalse(shooterSubsystem.setPercentSpeedCommand(0));
+                //new JoystickButton(driveJoystick, 11).onTrue(shooterSubsystem.setPercentSpeedCommand(-1)).onFalse(shooterSubsystem.setPercentSpeedCommand(0));
 
-                new JoystickButton(driveJoystick, 4).whileTrue(AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem,indexerSubsystem,feederSubsystem, shooterSubsystem)).onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem));
+                new Trigger(()->operatorJoystick.getRawAxis(3) > .4).whileTrue(AutomatedScoring.shootFromHopperContinousCommand(driveSubsystem, driveJoystick, intakeSubsystem,indexerSubsystem,feederSubsystem, shooterSubsystem)).onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem));
+
+                new JoystickButton(driveJoystick, 5).whileTrue(AutomatedScoring.lobFromHopperContinousCommand(intakeSubsystem,indexerSubsystem,feederSubsystem, shooterSubsystem)).onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem));
 
                 new JoystickButton(driveJoystick, 3).whileTrue(new SequentialCommandGroup(intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1), intakeSubsystem.setIntakeSpeedCommand(.8))).onFalse(intakeSubsystem.stopIntakingCommand());
+                new Trigger(()->operatorJoystick.getRawAxis(2)>.4).whileTrue(new SequentialCommandGroup(intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1), intakeSubsystem.setIntakeSpeedCommand(.8))).onFalse(intakeSubsystem.stopIntakingCommand());
                 
-                // new JoystickButton(driveJoystick, 6)
-                //                 .whileTrue(new AimAlongArcRadiusCommand(driveSubsystem, 2.25, driveJoystick));
+                new JoystickButton(operatorJoystick, 6).whileTrue(indexerSubsystem.setIndexerSpeedCommand(-.3, -1)).onFalse(indexerSubsystem.stopIndexing());
+                // new JoystickButton(driveJoystick, 11)
+                //                 .whileTrue(new ParallelCommandGroup(new AimAlongArcRadiusCommand(driveSubsystem, 3.5, driveJoystick), AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem,indexerSubsystem,feederSubsystem, shooterSubsystem,.8))).onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem));
 
                 new JoystickButton(driveJoystick, 1).onTrue(RobotState.setCanRotate(true))
                                 .onFalse(RobotState.setCanRotate(false));
@@ -287,9 +291,9 @@ public class RobotContainer {
                                                 Commands.deferredProxy(
                                                                 () -> questNavSubsystem.resetPoseYaw(new Rotation2d())),
                                                 driveSubsystem.gyroReset()));
+                new JoystickButton(driveJoystick, 7).onTrue(driveSubsystem.resetEncodersCommand());
                                                 
-                // Above = DriveJoystick, Below = OperatorJoystick
-
+                
         }
 
         public Command getPPAutonomousCommand() {

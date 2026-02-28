@@ -31,6 +31,10 @@ public class ShooterSubsystem extends SubsystemBase {
         return new InstantCommand(()->setRPM(percent), this);
     }
 
+    public double getPercentFromDistance(double distanceMeters){
+        return -((distanceMeters * 0.1585) + 0.21);
+    }
+
     @Override
     public void periodic() {
         io.updateInputs(inputs);

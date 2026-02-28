@@ -25,6 +25,7 @@ import frc.robot.utils.AntiTipping;
 import frc.robot.utils.CowboyUtils;
 import frc.robot.RobotConstants.DrivetrainConstants;
 import frc.robot.RobotConstants.QuestNavConstants;
+import frc.robot.RobotConstants.ScoringConstants;
 import frc.robot.RobotConstants.SimMode;
 import frc.robot.RobotConstants.SubsystemEnabledConstants;
 import frc.robot.subsystems.drive.ModuleIO.ModuleIOInputs;
@@ -170,6 +171,7 @@ public class DriveSubsystem extends SubsystemBase {
                 });
 
         Logger.recordOutput("DriveSubsystem/OdometryPoseHybrid", hybridOdometry.getEstimatedPosition());
+        Logger.recordOutput("HubDistance", hybridOdometry.getEstimatedPosition().getTranslation().getDistance(ScoringConstants.BLUE_ALLIANCE_HUB.getTranslation()));
 
     }
 
@@ -493,6 +495,10 @@ public class DriveSubsystem extends SubsystemBase {
         moduleIO[1].resetEncoders();
         moduleIO[3].resetEncoders();
 
+    }
+
+    public Command resetEncodersCommand(){
+        return new InstantCommand(()->resetEncoders(), this);
     }
 
     /** Zeroes the heading of the robot. */
