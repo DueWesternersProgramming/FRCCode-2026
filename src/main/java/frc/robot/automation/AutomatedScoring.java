@@ -23,6 +23,10 @@ public class AutomatedScoring {
                 return Commands.print("EA Sports: It's in the game! Example Param: " + exampleParam);
         }
 
+        /**
+         * Automaticly agitates and outtakes balls through the shooter while active.
+         * @param speed Percent for the shooter wheel to spin at.
+         */
         public static Command shootFromHopperContinousCommand(IntakeSubsystem intakeSubsystem,
                         IndexerSubsystem indexerSubsystem, FeederSubsystem feederSubsystem,
                         ShooterSubsystem shooterSubsystem,
@@ -36,6 +40,10 @@ public class AutomatedScoring {
                                                 feederSubsystem.startFeedingBallsCommand())));
         }
 
+        /**
+         * Takes over robot rotation and automaticly agitates/shoots balls. Allows for translation control for shoot on the move.
+         * Uses interpolation for distance, and calculates the angle of the robot needed based on chassis speeds.
+         */
         public static Command generalContinuousShootOnMoveAutomationCommand(DriveSubsystem driveSubsystem,
                         Joystick driveJoystick,
                         IntakeSubsystem intakeSubsystem, IndexerSubsystem indexerSubsystem,
@@ -69,6 +77,9 @@ public class AutomatedScoring {
                 }
         }
 
+        /**
+         * Stops all super structure and ball control systems.
+         */
         public static Command stopAllSuperStructure(IntakeSubsystem intakeSubsystem, IndexerSubsystem indexerSubsystem,
                         FeederSubsystem feederSubsystem, ShooterSubsystem shooterSubsystem) {
                 return (Commands.sequence(

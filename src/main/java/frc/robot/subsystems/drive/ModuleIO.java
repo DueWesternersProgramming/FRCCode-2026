@@ -10,8 +10,10 @@ public interface ModuleIO {
     public static class ModuleIOInputs {
         public double turningTemp = 0.0;
         public double driveTemp = 0.0;
-        // public SwerveModuleState moduleState = new SwerveModuleState();
-        // public SwerveModulePosition modulePosition = new SwerveModulePosition();
+        public double steeringRelativeEncoderPosition = 0.0;
+        public double steeringAbsoluteEncoderPosition = 0.0;
+        public SwerveModuleState moduleState = new SwerveModuleState();
+        public SwerveModulePosition modulePosition = new SwerveModulePosition();
     }
 
     default void updateInputs(ModuleIOInputs inputs) {

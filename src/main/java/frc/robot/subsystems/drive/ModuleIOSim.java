@@ -85,7 +85,10 @@ public class ModuleIOSim implements ModuleIO {
 
     @Override
     public void updateInputs(ModuleIOInputs inputs) {
-
+        inputs.modulePosition = getPosition();
+        inputs.moduleState = getState();
+        inputs.steeringRelativeEncoderPosition = fakePos;
+        inputs.steeringAbsoluteEncoderPosition = fakePos;
     }
 
 }

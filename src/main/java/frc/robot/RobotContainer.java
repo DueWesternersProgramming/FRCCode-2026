@@ -269,9 +269,8 @@ public class RobotContainer {
 
                 //Right operator trigger, enables shoot on the move and turrets the robot.
                 new Trigger(()->operatorJoystick.getRawAxis(3) > .4).whileTrue(AutomatedScoring.generalContinuousShootOnMoveAutomationCommand(driveSubsystem, driveJoystick, intakeSubsystem,indexerSubsystem,feederSubsystem, shooterSubsystem)).onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem));
-
-
-                new JoystickButton(driveJoystick, 3).whileTrue(new SequentialCommandGroup(intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1), intakeSubsystem.setIntakeSpeedCommand(.8))).onFalse(intakeSubsystem.stopIntakingCommand());
+                
+                //Left operator trigger, runs intake while held.
                 new Trigger(()->operatorJoystick.getRawAxis(2)>.4).whileTrue(new SequentialCommandGroup(intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1), intakeSubsystem.setIntakeSpeedCommand(.8))).onFalse(intakeSubsystem.stopIntakingCommand());
                 
                 new JoystickButton(operatorJoystick, 6).whileTrue(indexerSubsystem.setIndexerSpeedCommand(-.3, -1)).onFalse(indexerSubsystem.stopIndexing());
@@ -281,13 +280,12 @@ public class RobotContainer {
                 new JoystickButton(driveJoystick, 1).onTrue(RobotState.setCanRotate(true))
                                 .onFalse(RobotState.setCanRotate(false));
 
-                //new JoystickButton(driveJoystick, 3).onChange(driveSubsystem.xCommand());
-
                 new JoystickButton(driveJoystick, 6)
                                 .whileTrue(new SequentialCommandGroup(
                                                 Commands.deferredProxy(
                                                                 () -> questNavSubsystem.resetPoseYaw(new Rotation2d())),
                                                 driveSubsystem.gyroReset()));
+
                 new JoystickButton(driveJoystick, 7).onTrue(driveSubsystem.resetEncodersCommand());
                                                 
                 

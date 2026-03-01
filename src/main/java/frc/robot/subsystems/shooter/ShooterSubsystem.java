@@ -30,10 +30,14 @@ public class ShooterSubsystem extends SubsystemBase {
     public Command setRPMCommand(double percent){
         return new InstantCommand(()->setRPM(percent), this);
     }
-
+    
     public double getPercentFromDistance(double distanceMeters){
         return -((distanceMeters * 0.1585) + 0.21);
     }
+
+    public double getTimeOfFlightFromDistance(double distanceMeters){
+        return 0; //TODO: Make this equation
+    }    
 
     @Override
     public void periodic() {

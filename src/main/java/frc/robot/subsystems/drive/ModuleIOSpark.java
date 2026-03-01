@@ -193,6 +193,10 @@ public class ModuleIOSpark implements ModuleIO {
         public void updateInputs(ModuleIOInputs inputs) {
                 inputs.turningTemp = m_turningSparkMax.getMotorTemperature();
                 inputs.driveTemp = m_drivingSparkMax.getMotorTemperature();
+                inputs.modulePosition = getPosition();
+                inputs.moduleState = getState();
+                inputs.steeringAbsoluteEncoderPosition =  m_turningAbsoluteEncoder.getPosition();
+                inputs.steeringRelativeEncoderPosition = m_turningEncoder.getPosition();
         }
 
 }

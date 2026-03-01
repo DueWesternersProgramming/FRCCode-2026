@@ -60,8 +60,6 @@ public class DriveSubsystem extends SubsystemBase {
     private Rotation2d m_trackedRotation = new Rotation2d();
 
     private static SwerveDrivePoseEstimator hybridOdometry;
-    // private static SwerveDrivePoseEstimator visionOdometry;
-    // private static SwerveDrivePoseEstimator questNavOdometry;
 
     GyroIO gyroIO;
     GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -240,26 +238,6 @@ public class DriveSubsystem extends SubsystemBase {
                         moduleIO[3].getPosition()
                 },
                 pose);
-
-        // visionOdometry.resetPosition(
-        // gyroIO.getGyroYawRotation2d(),
-        // new SwerveModulePosition[] {
-        // moduleIO[0].getPosition(),
-        // moduleIO[1].getPosition(),
-        // moduleIO[2].getPosition(),
-        // moduleIO[3].getPosition()
-        // },
-        // pose);
-
-        // questNavOdometry.resetPosition(
-        // gyroIO.getGyroYawRotation2d(),
-        // new SwerveModulePosition[] {
-        // moduleIO[0].getPosition(),
-        // moduleIO[1].getPosition(),
-        // moduleIO[2].getPosition(),
-        // moduleIO[3].getPosition()
-        // },
-        // pose);
     }
 
     /**
@@ -515,6 +493,10 @@ public class DriveSubsystem extends SubsystemBase {
         return gyroIO.getGyroYawAngle();
     }
 
+    /**
+     * 
+     * @return FIELD RELATIVE chassis speeds
+     */
     public ChassisSpeeds getChassisSpeeds() {
 
         return ChassisSpeeds.fromRobotRelativeSpeeds(gyroIO.getVelocityX(), gyroIO.getVelocityY(),
