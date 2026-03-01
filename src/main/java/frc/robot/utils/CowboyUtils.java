@@ -12,17 +12,17 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotConstants.ScoringConstants;
+import frc.robot.RobotConstants.ScoringConstants.FieldZones;
 import edu.wpi.first.wpilibj.RobotBase;
 
 public class CowboyUtils {
 
     public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout
             .loadField(AprilTagFields.k2026RebuiltWelded);
-
-    public static Pose2d testPose = new Pose2d(1.4, 5.55, new Rotation2d(Math.toRadians(0)));
 
     public static boolean isRedAlliance() {
         return DriverStation.getAlliance().isPresent() ? (DriverStation.getAlliance().get() == Alliance.Red) : (false);
@@ -34,6 +34,32 @@ public class CowboyUtils {
 
     public static boolean isSim() {
         return RobotBase.isSimulation();
+    }
+
+    public static Pose2d getAllianceHubPose() {
+        return isBlueAlliance() ? ScoringConstants.BLUE_ALLIANCE_HUB
+                : FlippingUtil.flipFieldPose(ScoringConstants.BLUE_ALLIANCE_HUB);
+    }
+
+    public static Pose2d getAllianceFeedingPosition() {
+        return isBlueAlliance() ? ScoringConstants.BLUE_ALLIANCE_FEEDING_TARGET
+                : FlippingUtil.flipFieldPose(ScoringConstants.BLUE_ALLIANCE_FEEDING_TARGET);
+    }
+
+    public static FieldZones getFieldZoneFromPose(Pose2d pose) {
+        double x = pose.getX();
+        double blueThreshold = getAllianceHubPose().getX();
+        double redThreshold = getAllianceHubPose().getX();
+
+        if (x < blueThreshold) {
+            return FieldZones.BLUE_ZONE;
+        } else if (x > blueThreshold && x < redThreshold) {
+            return FieldZones.NEUTRAL_ZONE;
+        } else if (x > redThreshold) {
+            return FieldZones.RED_ZONE;
+        }
+        return FieldZones.NEUTRAL_ZONE;
+
     }
 
     /**
@@ -63,33 +89,11 @@ public class CowboyUtils {
     }
 
     private static Rotation2d getAngleToPose(Pose2d pose1, Pose2d pose2) {
-        double xOffset = pose2.getX() - pose1.getX();
+        double dx = pose1.getX() - pose2.getX();
+        double dy = pose1.getY() - pose2.getY();
 
-        double yOffset = pose2.getY() - pose1.getY();
+        return new Rotation2d(Units.degreesToRadians(Math.atan2(dy, dx)));
 
-        return new Rotation2d(Math.atan(yOffset / xOffset));
-
-    }
-
-    // public static Pose2d getPoseAlongArcFromY(Pose2d robotPose, Pose2d rotationCenterPose, double radius) {
-
-    //     double currentOffX = robotPose.getX() - rotationCenterPose.getX();
-    //     doubluble currentOffY = robotPose.getY() - rotationCenterPose.getY();
-
-    //     double hubSideTriangleAngle = Math.atan2(currentOffY, currentOffX);
-
-    //     double newOffX = Math.cos(hubSideTriangleAngle) * radius;
-    //     double newOffY = Math.sin(hubSideTriangleAngle) * radius;
-
-    //     double newX = rotationCenterPose.getX() + newOffX;
-    //     double newY = rotationCenterPose.getY() + newOffY;
-
-    //     return new Pose2d(newX, newY, getAngleToPose(robotPose, rotationCenterPose));
-    // }
-
-    public static Pose2d getAllianceHubPose() {
-        return isBlueAlliance() ? ScoringConstants.BLUE_ALLIANCE_HUB
-                : FlippingUtil.flipFieldPose(ScoringConstants.BLUE_ALLIANCE_HUB);
     }
 
     public static final class RobotModes {

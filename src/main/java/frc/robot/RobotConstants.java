@@ -29,7 +29,7 @@ import frc.robot.utils.CowboyUtils.RobotModes;
 public final class RobotConstants {
 
         public static final class SimMode {
-                public enum SimModes {
+                public static enum SimModes {
                         REGULAR,
                         REPLAY,
                 }
@@ -39,21 +39,32 @@ public final class RobotConstants {
 
         public static final class ScoringConstants {
 
-                public static final Pose2d BLUE_ALLIANCE_HUB = new Pose2d(4.630, 4.040, new Rotation2d());
-
-                public static final Pose2d[][] REEF_SIDE_POSES;
-
-                static {
-                        REEF_SIDE_POSES = new Pose2d[6][3];
-
-                        // Test Pose 1
-                        REEF_SIDE_POSES[0][0] = new Pose2d(3.146, 4.191, new Rotation2d(Math.toRadians(0)));
+                public static enum FieldZones {
+                        BLUE_ZONE,
+                        NEUTRAL_ZONE,
+                        RED_ZONE
                 }
 
-                // public static final List<Pose2d> HP_POSES = List.of(
-                // new Pose2d(1.11, 7.125, new Rotation2d(Units.degreesToRadians(125))),
-                // new Pose2d(1.007, 0.884, new Rotation2d(Units.degreesToRadians(-125))));
+                public static final Pose2d BLUE_ALLIANCE_HUB = new Pose2d(4.630, 4.040, new Rotation2d()); // use the
+                                                                                                           // flipping
+                                                                                                           // util to
+                                                                                                           // get red.
+                                                                                                           // See
+                                                                                                           // methods in
+                                                                                                           // CowboyUtils.
 
+                public static final Pose2d BLUE_ALLIANCE_FEEDING_TARGET = new Pose2d(1.65, 5.3, new Rotation2d());
+
+                public static final Pose2d[][] BUMP_POSITION_POSES;
+                static {
+                        BUMP_POSITION_POSES = new Pose2d[2][2]; // Red and blue respectively, and then left/right for
+                                                                // that corresponding side.
+
+                        BUMP_POSITION_POSES[0][0] = new Pose2d(4.616, 5.5, new Rotation2d(Math.toRadians(0)));
+                        BUMP_POSITION_POSES[0][1] = new Pose2d(4.616, 2.5, new Rotation2d(Math.toRadians(0)));
+                        BUMP_POSITION_POSES[1][0] = new Pose2d(11.912, 2.5, new Rotation2d(Math.toRadians(0)));
+                        BUMP_POSITION_POSES[1][1] = new Pose2d(11.912, 5.5, new Rotation2d(Math.toRadians(0)));
+                }
         }
 
         public static final class DrivetrainConstants {
@@ -111,7 +122,7 @@ public final class RobotConstants {
         }
 
         public static final class SwerveModuleConstants {
-                public enum DrivingRatios {
+                public static enum DrivingRatios {
                         // Enum constants for number of teeth
                         R1(12),
                         R2(14),
@@ -381,10 +392,10 @@ public final class RobotConstants {
         }
 
         public static final class ConfigurableAutonsConstants {
-                
+
         }
 
-        public static final class IntakeContants{
+        public static final class IntakeContants {
                 public static final double ENCODER_REVOLUTIONS_TO_DEPLOY = 5.0;
         }
 
@@ -405,7 +416,7 @@ public final class RobotConstants {
                         NONE
                 }
 
-                public static final RGBWColor ANIMATION_COLOR = new RGBWColor(255,0,0);
+                public static final RGBWColor ANIMATION_COLOR = new RGBWColor(255, 0, 0);
         }
 
         public static final class SubsystemEnabledConstants {

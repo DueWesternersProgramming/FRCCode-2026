@@ -1,19 +1,18 @@
 package frc.robot.automation;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotConstants.PortConstants;
+import frc.robot.RobotConstants;
+import frc.robot.RobotConstants.PortConstants.Controller;
+import frc.robot.RobotConstants.TeleopConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.utils.CowboyUtils;
-
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class InterpolateShootCommand extends Command {
 
@@ -29,15 +28,17 @@ public class InterpolateShootCommand extends Command {
     private final DriveSubsystem driveSubsystem;
     private final ShooterSubsystem shooterSubsystem;
     private final Joystick joystick;
+    Pose2d target;
 
     public InterpolateShootCommand(
             DriveSubsystem driveSubsystem,
             ShooterSubsystem shooterSubsystem,
-            Joystick joystick) {
+            Joystick joystick, Pose2d target) {
 
         this.driveSubsystem = driveSubsystem;
         this.shooterSubsystem = shooterSubsystem;
         this.joystick = joystick;
+        this.target = target;
 
         addRequirements(driveSubsystem);
 
@@ -60,8 +61,21 @@ public class InterpolateShootCommand extends Command {
         double rotOutput = angleController.calculate(
                 robotPose.getRotation().getRadians());
 
+        double xRaw = -(joystick.getRawAxis(Controller.DRIVE_COMMAND_X_AXIS));
+        double yRaw = -(joystick.getRawAxis(Controller.DRIVE_COMMAND_Y_AXIS));
+
+        double xConstrained = MathUtil.applyDeadband(
+                MathUtil.clamp(xRaw, -TeleopConstants.MAX_SPEED_PERCENT, TeleopConstants.MAX_SPEED_PERCENT),
+                RobotConstants.PortConstants.Controller.JOYSTICK_AXIS_THRESHOLD);
+        double yConstrained = MathUtil.applyDeadband(
+                MathUtil.clamp(yRaw, -TeleopConstants.MAX_SPEED_PERCENT, TeleopConstants.MAX_SPEED_PERCENT),
+                RobotConstants.PortConstants.Controller.JOYSTICK_AXIS_THRESHOLD);
+
+        double xSquared = Math.copySign(xConstrained * xConstrained, xConstrained);
+        double ySquared = Math.copySign(yConstrained * yConstrained, yConstrained);
+
         driveSubsystem.drive(
-                0,0,
+                ySquared, xSquared,
                 rotOutput,
                 true,
                 true, 

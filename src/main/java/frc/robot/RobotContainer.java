@@ -267,12 +267,9 @@ public class RobotContainer {
                 // driveSubsystem,
                 // questNavSubsystem));
 
+                //Right operator trigger, enables shoot on the move and turrets the robot.
+                new Trigger(()->operatorJoystick.getRawAxis(3) > .4).whileTrue(AutomatedScoring.generalContinuousShootOnMoveAutomationCommand(driveSubsystem, driveJoystick, intakeSubsystem,indexerSubsystem,feederSubsystem, shooterSubsystem)).onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem));
 
-                //new JoystickButton(driveJoystick, 11).onTrue(shooterSubsystem.setPercentSpeedCommand(-1)).onFalse(shooterSubsystem.setPercentSpeedCommand(0));
-
-                new Trigger(()->operatorJoystick.getRawAxis(3) > .4).whileTrue(AutomatedScoring.shootFromHopperContinousCommand(driveSubsystem, driveJoystick, intakeSubsystem,indexerSubsystem,feederSubsystem, shooterSubsystem)).onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem));
-
-                new JoystickButton(driveJoystick, 5).whileTrue(AutomatedScoring.lobFromHopperContinousCommand(intakeSubsystem,indexerSubsystem,feederSubsystem, shooterSubsystem)).onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem));
 
                 new JoystickButton(driveJoystick, 3).whileTrue(new SequentialCommandGroup(intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1), intakeSubsystem.setIntakeSpeedCommand(.8))).onFalse(intakeSubsystem.stopIntakingCommand());
                 new Trigger(()->operatorJoystick.getRawAxis(2)>.4).whileTrue(new SequentialCommandGroup(intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1), intakeSubsystem.setIntakeSpeedCommand(.8))).onFalse(intakeSubsystem.stopIntakingCommand());

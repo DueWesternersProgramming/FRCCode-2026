@@ -7,7 +7,6 @@ import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.TeleopConstants;
 import frc.robot.RobotConstants.PortConstants.Controller;
 import frc.robot.RobotConstants.DrivetrainConstants;
-import frc.robot.RobotConstants.SubsystemEnabledConstants;
 import frc.robot.RobotState;
 import frc.robot.subsystems.drive.DriveSubsystem;
 
