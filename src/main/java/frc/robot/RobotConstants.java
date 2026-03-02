@@ -45,6 +45,13 @@ public final class RobotConstants {
                         RED_ZONE
                 }
 
+                public static enum BumpLabels {
+                        BLUE_LEFT,
+                        BLUE_RIGHT,
+                        RED_LEFT,
+                        RED_RIGHT
+                }
+
                 public static final Pose2d BLUE_ALLIANCE_HUB = new Pose2d(4.630, 4.040, new Rotation2d()); // use the
                                                                                                            // flipping
                                                                                                            // util to
@@ -59,7 +66,6 @@ public final class RobotConstants {
                 static {
                         BUMP_POSITION_POSES = new Pose2d[2][2]; // Red and blue respectively, and then left/right for
                                                                 // that corresponding side.
-
                         BUMP_POSITION_POSES[0][0] = new Pose2d(4.616, 5.5, new Rotation2d(Math.toRadians(0)));
                         BUMP_POSITION_POSES[0][1] = new Pose2d(4.616, 2.5, new Rotation2d(Math.toRadians(0)));
                         BUMP_POSITION_POSES[1][0] = new Pose2d(11.912, 2.5, new Rotation2d(Math.toRadians(0)));

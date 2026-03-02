@@ -1,21 +1,17 @@
 package frc.robot.utils;
 
-import java.io.IOException;
-
-import org.opencv.core.Mat;
-
 import com.pathplanner.lib.util.FlippingUtil;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotConstants.ScoringConstants;
+import frc.robot.RobotConstants.ScoringConstants.BumpLabels;
 import frc.robot.RobotConstants.ScoringConstants.FieldZones;
 import edu.wpi.first.wpilibj.RobotBase;
 
@@ -44,6 +40,39 @@ public class CowboyUtils {
     public static Pose2d getAllianceFeedingPosition() {
         return isBlueAlliance() ? ScoringConstants.BLUE_ALLIANCE_FEEDING_TARGET
                 : FlippingUtil.flipFieldPose(ScoringConstants.BLUE_ALLIANCE_FEEDING_TARGET);
+    }
+
+    public static BumpLabels getClosestBump(Pose2d robotPose) {
+        BumpLabels closestLabel = null;
+        double minDistance = Double.MAX_VALUE;
+
+        for (BumpLabels label : BumpLabels.values()) {
+            Pose2d bumpPose = getBumpPosition(label);
+
+            double distance = robotPose.getTranslation().getDistance(bumpPose.getTranslation());
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestLabel = label;
+            }
+        }
+
+        return closestLabel;
+    }
+
+    public static Pose2d getBumpPosition(BumpLabels label) {
+        switch (label) {
+            case BLUE_LEFT:
+                return ScoringConstants.BUMP_POSITION_POSES[0][0];
+            case BLUE_RIGHT:
+                return ScoringConstants.BUMP_POSITION_POSES[0][1];
+            case RED_LEFT:
+                return ScoringConstants.BUMP_POSITION_POSES[1][0];
+            case RED_RIGHT:
+                return ScoringConstants.BUMP_POSITION_POSES[1][1];
+            default:
+                return null; // Never will happen
+        }
     }
 
     public static FieldZones getFieldZoneFromPose(Pose2d pose) {
