@@ -252,12 +252,7 @@ public final class RobotConstants {
                         public static final int DRIVE_COMMAND_ROT_AXIS = CowboyUtils.isSim() ? 4 : 2; // 2 for the
                                                                                                       // flight
                                                                                                       // controller, 4
-                                                                                                      // for
-                        // xbox/gamepad
-
-                        // Manual control axis for operator
-                        public static final int ELEVATOR_MANUAL_CONTROL = 1;
-                        public static final int WRIST_MANUAL_CONTROL = 5;
+                                                                                                      // for gamepad
                 }
         }
 

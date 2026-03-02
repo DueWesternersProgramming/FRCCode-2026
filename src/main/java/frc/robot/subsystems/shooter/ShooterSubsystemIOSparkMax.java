@@ -13,7 +13,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.RobotConstants.PortConstants;
 import frc.robot.RobotConstants.SwerveModuleConstants;
-import frc.robot.RobotState.ShooterStates;
 
 public class ShooterSubsystemIOSparkMax implements ShooterSubsystemIO {
     SparkMax shooterMotor;
@@ -53,6 +52,5 @@ public class ShooterSubsystemIOSparkMax implements ShooterSubsystemIO {
         inputs.motorPercent = shooterMotor.getAppliedOutput();
         inputs.motorRMP = shooterMotor.getEncoder().getVelocity();
         inputs.motorTempC = shooterMotor.getMotorTemperature();
-        inputs.shooterState = ShooterStates.OFF;
     }
 }

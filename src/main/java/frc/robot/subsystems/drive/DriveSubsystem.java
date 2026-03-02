@@ -498,10 +498,8 @@ public class DriveSubsystem extends SubsystemBase {
      * @return FIELD RELATIVE chassis speeds
      */
     public ChassisSpeeds getChassisSpeeds() {
-
-        return ChassisSpeeds.fromRobotRelativeSpeeds(gyroIO.getVelocityX(), gyroIO.getVelocityY(),
-                Units.degreesToRadians(gyroIO.getRate()),
-                gyroIO.getGyroYawRotation2d());
+        SwerveModuleState[] states = getModuleStates();
+        return ChassisSpeeds.fromRobotRelativeSpeeds(DrivetrainConstants.DRIVE_KINEMATICS.toChassisSpeeds(states), gyroIO.getGyroYawRotation2d());
     }
 
     public Command gyroReset() {

@@ -23,14 +23,8 @@ public class RobotState {
     private static final Queue<TimestampedPose> questMeasurements = new LinkedBlockingQueue<>(20);
     private static final Queue<TimestampedPose> aprilTagCameraMeasurements = new LinkedBlockingQueue<>(20);
 
-    public static ShooterStates shooterState = ShooterStates.OFF;
     public static IntakePositions intakePosition = IntakePositions.RETRACTED;
 
-    public static enum ShooterStates{
-        READY,
-        OFF,
-        MANUAL
-    }
 
     public static enum IndexerStates{
         OFF,

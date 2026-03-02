@@ -14,24 +14,9 @@ public class LEDSubsystem extends SubsystemBase {
         this.io = io;
     }
 
-    public void turnIntakeOn(){
-        
-    }
-
     @Override
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("LEDSubsystem", inputs);
-
-        switch (RobotState.shooterState) {
-            case READY:
-                io.setAnimation(AnimationTypes.Rainbow);
-                break;
-            case OFF:
-                io.setAnimation(AnimationTypes.Strobe);
-                break;
-            default:
-                break;
-        }
     }
 }

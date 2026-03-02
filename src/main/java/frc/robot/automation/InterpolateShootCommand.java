@@ -1,5 +1,7 @@
 package frc.robot.automation;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -77,6 +79,11 @@ public class InterpolateShootCommand extends Command {
                                 (currentRobotPose.getX() + (currentChassisSpeeds.vxMetersPerSecond * tof)),
                                 (currentRobotPose.getY() + (currentChassisSpeeds.vyMetersPerSecond * tof)),
                                 new Rotation2d()); // rotation is not set since we don't really care about that here
+
+                Logger.recordOutput("Interpolation/PredictedRobotPose", predictedRobotPose);
+
+                Logger.recordOutput("Interpolation/VX", currentChassisSpeeds.vxMetersPerSecond);
+                Logger.recordOutput("Interpolation/VY", currentChassisSpeeds.vyMetersPerSecond);
 
                 double predictedDistanceToHub = predictedRobotPose.getTranslation()
                                 .getDistance(hubPose.getTranslation());

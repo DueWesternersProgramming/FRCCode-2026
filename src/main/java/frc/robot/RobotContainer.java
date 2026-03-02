@@ -196,7 +196,7 @@ public class RobotContainer {
                                 indexerSubsystem = new IndexerSubsystem(new IndexerSubsystemIO() {
                                 });
 
-                                feederSubsystem = new FeederSubsystem(new FeederSubsystemIO() {     
+                                feederSubsystem = new FeederSubsystem(new FeederSubsystemIO() {
                                 });
 
                                 shooterSubsystem = new ShooterSubsystem(new ShooterSubsystemIO() {
@@ -259,6 +259,8 @@ public class RobotContainer {
 
                 driveSubsystem.setDefaultCommand(new TeleopDriveCommand(driveSubsystem, driveJoystick));
 
+                //QuestNav Offset Calibration:
+
                 // new JoystickButton(driveJoystick, 6).onTrue(QuestCalibration
                 // .CollectCalibrationDataCommand(
                 // driveSubsystem::runChassisSpeeds,
@@ -267,28 +269,73 @@ public class RobotContainer {
                 // driveSubsystem,
                 // questNavSubsystem));
 
-                //Right operator trigger, enables shoot on the move and turrets the robot.
-                new Trigger(()->operatorJoystick.getRawAxis(3) > .4).whileTrue(AutomatedScoring.generalContinuousShootOnMoveAutomationCommand(driveSubsystem, driveJoystick, intakeSubsystem,indexerSubsystem,feederSubsystem, shooterSubsystem)).onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem));
-                
-                //Left operator trigger, runs intake while held.
-                new Trigger(()->operatorJoystick.getRawAxis(2)>.4).whileTrue(new SequentialCommandGroup(intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1), intakeSubsystem.setIntakeSpeedCommand(.8))).onFalse(intakeSubsystem.stopIntakingCommand());
-                
-                new JoystickButton(operatorJoystick, 6).whileTrue(indexerSubsystem.setIndexerSpeedCommand(-.3, -1)).onFalse(indexerSubsystem.stopIndexing());
-                // new JoystickButton(driveJoystick, 11)
-                //                 .whileTrue(new ParallelCommandGroup(new AimAlongArcRadiusCommand(driveSubsystem, 3.5, driveJoystick), AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem,indexerSubsystem,feederSubsystem, shooterSubsystem,.8))).onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem));
+                if (!CowboyUtils.isSim()) { // Real robot
 
-                new JoystickButton(driveJoystick, 1).onTrue(RobotState.setCanRotate(true))
-                                .onFalse(RobotState.setCanRotate(false));
+                        // Right operator trigger, enables shoot on the move and turrets the robot.
+                        new Trigger(() -> operatorJoystick.getRawAxis(3) > .4)
+                                        .whileTrue(AutomatedScoring.generalContinuousShootOnMoveAutomationCommand(
+                                                        driveSubsystem, driveJoystick, intakeSubsystem,
+                                                        indexerSubsystem, feederSubsystem, shooterSubsystem))
+                                        .onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,
+                                                        indexerSubsystem, feederSubsystem, shooterSubsystem));
 
-                new JoystickButton(driveJoystick, 6)
-                                .whileTrue(new SequentialCommandGroup(
-                                                Commands.deferredProxy(
-                                                                () -> questNavSubsystem.resetPoseYaw(new Rotation2d())),
-                                                driveSubsystem.gyroReset()));
+                        // Left operator trigger, runs intake while held.
+                        new Trigger(() -> operatorJoystick.getRawAxis(2) > .4)
+                                        .whileTrue(new SequentialCommandGroup(
+                                                        intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1),
+                                                        intakeSubsystem.setIntakeSpeedCommand(.8)))
+                                        .onFalse(intakeSubsystem.stopIntakingCommand());
+                                        
+                        // Right operator top button, reverses indexer if needed to clear jams
+                        new JoystickButton(operatorJoystick, 6)
+                                        .whileTrue(indexerSubsystem.setIndexerSpeedCommand(-.3, -1))
+                                        .onFalse(indexerSubsystem.stopIndexing());
 
-                new JoystickButton(driveJoystick, 7).onTrue(driveSubsystem.resetEncodersCommand());
-                                                
-                
+                        // new JoystickButton(driveJoystick, 11)
+                        // .whileTrue(new ParallelCommandGroup(new
+                        // AimAlongArcRadiusCommand(driveSubsystem, 3.5, driveJoystick),
+                        // AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem,indexerSubsystem,feederSubsystem,
+                        // shooterSubsystem,.8))).onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem));
+
+                        new JoystickButton(driveJoystick, 1).onTrue(RobotState.setCanRotate(true))
+                                        .onFalse(RobotState.setCanRotate(false));
+
+                        new JoystickButton(driveJoystick, 6)
+                                        .whileTrue(new SequentialCommandGroup(
+                                                        Commands.deferredProxy(
+                                                                        () -> questNavSubsystem.resetPoseYaw(
+                                                                                        new Rotation2d())),
+                                                        driveSubsystem.gyroReset()));
+
+                        new JoystickButton(driveJoystick, 7).onTrue(driveSubsystem.resetEncodersCommand());
+                }
+
+                else { // Sim, just the one Logitech F310 controller for testing
+
+                        new Trigger(() -> driveJoystick.getRawAxis(3) > .4)
+                                        .whileTrue(AutomatedScoring.generalContinuousShootOnMoveAutomationCommand(
+                                                        driveSubsystem, driveJoystick, intakeSubsystem,
+                                                        indexerSubsystem, feederSubsystem, shooterSubsystem))
+                                        .onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,
+                                                        indexerSubsystem, feederSubsystem, shooterSubsystem));
+
+                        new Trigger(() -> driveJoystick.getRawAxis(2) > .4)
+                                        .whileTrue(new SequentialCommandGroup(
+                                                        intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1),
+                                                        intakeSubsystem.setIntakeSpeedCommand(.8)))
+                                        .onFalse(intakeSubsystem.stopIntakingCommand());
+
+                        new JoystickButton(operatorJoystick, 6)
+                                        .whileTrue(indexerSubsystem.setIndexerSpeedCommand(-.3, -1))
+                                        .onFalse(indexerSubsystem.stopIndexing());
+
+                        new JoystickButton(driveJoystick, 8)
+                                        .whileTrue(new SequentialCommandGroup(
+                                                        Commands.deferredProxy(
+                                                                        () -> questNavSubsystem.resetPoseYaw(
+                                                                                        new Rotation2d())),
+                                                        driveSubsystem.gyroReset()));
+                }
         }
 
         public Command getPPAutonomousCommand() {
