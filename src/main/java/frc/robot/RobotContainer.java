@@ -12,9 +12,11 @@ import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -33,6 +35,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.RobotSystemsCheckCommand;
+import frc.robot.commands.automation.AimAlongArcRadiusCommand;
+import frc.robot.commands.automation.AutomatedScoring;
 import frc.robot.commands.drive.TeleopDriveCommand;
 import frc.robot.configurableAutos.AutoCommandDef;
 import frc.robot.configurableAutos.AutoParamDef;
@@ -68,7 +72,6 @@ import frc.robot.subsystems.shooter.ShooterSubsystemIO;
 import frc.robot.subsystems.shooter.ShooterSubsystemIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystemIOSparkMax;
 import frc.robot.subsystems.vision.VisionSubsystem;
-import frc.robot.automation.AutomationTabletInput;
 import frc.robot.RobotConstants.PortConstants;
 import frc.robot.utils.CowboyUtils;
 import frc.robot.utils.QuestCalibration;
@@ -76,8 +79,6 @@ import frc.robot.utils.CowboyUtils.RobotModes;
 import frc.robot.utils.FuelSim;
 import frc.robot.RobotConstants.PortConstants.CAN;
 import frc.robot.RobotState.AutoMode;
-import frc.robot.automation.AimAlongArcRadiusCommand;
-import frc.robot.automation.AutomatedScoring;
 import frc.robot.RobotState.IntakePositions;
 
 //@Logged(name = "RobotContainer")
@@ -230,6 +231,8 @@ public class RobotContainer {
                         Shuffleboard.getTab("Power").add(pdp);
 
                         configureFuelSim();
+
+                        DriverStation.silenceJoystickConnectionWarning(true);
                 } catch (
 
                 Exception e) {
@@ -239,6 +242,16 @@ public class RobotContainer {
 
         private void createNamedCommands() {
                 // Add commands here to be able to execute in auto
+
+                NamedCommands.registerCommand("Start Intake", intakeSubsystem.runIntakeNormalCommand());
+                
+                //These two commands never end, so we have to use a time based race condition.
+                NamedCommands.registerCommand("Interpolate Score", AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem, CowboyUtils.getAllianceHubPose()));
+                NamedCommands.registerCommand("Interpolate Pass", AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem, CowboyUtils.getAllianceFeedingPosition()));
+
+                NamedCommands.registerCommand("Stop All Superstructure", AutomatedScoring.stopAllSuperStructure(intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem));
+
+
 
                 NamedCommands.registerCommand("Example", new RunCommand(() -> {
                         System.out.println("Running...");
@@ -273,7 +286,7 @@ public class RobotContainer {
 
                         // Right operator trigger, enables shoot on the move and turrets the robot.
                         new Trigger(() -> operatorJoystick.getRawAxis(3) > .4)
-                                        .whileTrue(AutomatedScoring.generalContinuousShootOnMoveAutomationCommand(
+                                        .whileTrue(AutomatedScoring.teleopShootOnMoveAutomationCommand(
                                                         driveSubsystem, driveJoystick, intakeSubsystem,
                                                         indexerSubsystem, feederSubsystem, shooterSubsystem))
                                         .onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,
@@ -313,7 +326,7 @@ public class RobotContainer {
                 else { // Sim, just the one Logitech F310 controller for testing
 
                         new Trigger(() -> driveJoystick.getRawAxis(3) > .4)
-                                        .whileTrue(AutomatedScoring.generalContinuousShootOnMoveAutomationCommand(
+                                        .whileTrue(AutomatedScoring.teleopShootOnMoveAutomationCommand(
                                                         driveSubsystem, driveJoystick, intakeSubsystem,
                                                         indexerSubsystem, feederSubsystem, shooterSubsystem))
                                         .onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,

@@ -3,7 +3,9 @@
   "robotLength": 0.885,
   "holonomicMode": true,
   "pathFolders": [
-    "Concepts"
+    "Concepts",
+    "HP Right Side",
+    "New Folder"
   ],
   "autoFolders": [],
   "defaultMaxVel": 0.5,

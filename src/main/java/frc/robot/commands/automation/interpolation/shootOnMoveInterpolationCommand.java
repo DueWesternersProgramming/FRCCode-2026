@@ -1,4 +1,4 @@
-package frc.robot.automation;
+package frc.robot.commands.automation.interpolation;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -12,13 +12,13 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotConstants;
+import frc.robot.RobotState;
 import frc.robot.RobotConstants.PortConstants.Controller;
 import frc.robot.RobotConstants.TeleopConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.utils.CowboyUtils;
 
-public class InterpolateShootCommand extends Command {
+public class shootOnMoveInterpolationCommand extends Command {
 
         // Angular controller (RADIANS)
         private final ProfiledPIDController angleController = new ProfiledPIDController(
@@ -28,12 +28,12 @@ public class InterpolateShootCommand extends Command {
                                         Units.degreesToRadians(720) // max angular acceleration
                         ));
 
-        private final DriveSubsystem driveSubsystem;
-        private final ShooterSubsystem shooterSubsystem;
-        private final Joystick joystick;
+        DriveSubsystem driveSubsystem;
+        ShooterSubsystem shooterSubsystem;
+        Joystick joystick;
         Pose2d target;
 
-        public InterpolateShootCommand(
+        public shootOnMoveInterpolationCommand(
                         DriveSubsystem driveSubsystem,
                         ShooterSubsystem shooterSubsystem,
                         Joystick joystick, Pose2d target) {
@@ -65,11 +65,11 @@ public class InterpolateShootCommand extends Command {
                 double xSquared = Math.copySign(xConstrained * xConstrained, xConstrained);
                 double ySquared = Math.copySign(yConstrained * yConstrained, yConstrained);
 
-                Pose2d hubPose = CowboyUtils.getAllianceHubPose();
+                
 
-                Pose2d currentRobotPose = driveSubsystem.getPose();
+                Pose2d currentRobotPose = RobotState.robotPose;
 
-                double currentDistanceToHub = currentRobotPose.getTranslation().getDistance(hubPose.getTranslation());
+                double currentDistanceToHub = currentRobotPose.getTranslation().getDistance(target.getTranslation());
 
                 double tof = shooterSubsystem.getTimeOfFlightFromDistance(currentDistanceToHub);
 
@@ -86,10 +86,10 @@ public class InterpolateShootCommand extends Command {
                 Logger.recordOutput("Interpolation/VY", currentChassisSpeeds.vyMetersPerSecond);
 
                 double predictedDistanceToHub = predictedRobotPose.getTranslation()
-                                .getDistance(hubPose.getTranslation());
+                                .getDistance(target.getTranslation());
 
-                double dx = hubPose.getX() - predictedRobotPose.getX();
-                double dy = hubPose.getY() - predictedRobotPose.getY();
+                double dx = target.getX() - predictedRobotPose.getX();
+                double dy = target.getY() - predictedRobotPose.getY();
 
                 double predictedAngleToRobot = Math.atan2(dy, dx);
 

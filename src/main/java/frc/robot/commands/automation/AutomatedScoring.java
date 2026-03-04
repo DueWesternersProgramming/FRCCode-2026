@@ -1,4 +1,4 @@
-package frc.robot.automation;
+package frc.robot.commands.automation;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotConstants.ScoringConstants.FieldZones;
+import frc.robot.commands.automation.interpolation.shootOnMoveInterpolationCommand;
+import frc.robot.commands.automation.interpolation.shootSimpleInterpolationCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.feeder.FeederSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
@@ -26,6 +28,24 @@ public class AutomatedScoring {
 
         /**
          * Automaticly agitates and outtakes balls through the shooter while active.
+         * 
+         * @param speed Percent for the shooter wheel to spin at.
+         */
+        public static Command shootFromHopperContinousCommand(IntakeSubsystem intakeSubsystem,
+                        IndexerSubsystem indexerSubsystem, FeederSubsystem feederSubsystem,
+                        ShooterSubsystem shooterSubsystem,Pose2d target) {
+                return Commands.parallel(new shootSimpleInterpolationCommand(shooterSubsystem, target),
+                                Commands.sequence(
+                                                new WaitCommand(.5),
+                                                Commands.parallel(
+                                                                intakeSubsystem.runIntakeAgitationContinousCommand(),
+                                                                indexerSubsystem.runIndexerAgitationContinousCommand(),
+                                                                feederSubsystem.startFeedingBallsCommand())));
+        }
+
+        /**
+         * Automaticly agitates and outtakes balls through the shooter while active.
+         * 
          * @param speed Percent for the shooter wheel to spin at.
          */
         public static Command shootFromHopperContinousCommand(IntakeSubsystem intakeSubsystem,
@@ -42,10 +62,12 @@ public class AutomatedScoring {
         }
 
         /**
-         * Takes over robot rotation and automaticly agitates/shoots balls. Allows for translation control for shoot on the move.
-         * Uses interpolation for distance, and calculates the angle of the robot needed based on chassis speeds.
+         * Takes over robot rotation and automaticly agitates/shoots balls. Allows for
+         * translation control for shoot on the move.
+         * Uses interpolation for distance, and calculates the angle of the robot needed
+         * based on chassis speeds.
          */
-        public static Command generalContinuousShootOnMoveAutomationCommand(DriveSubsystem driveSubsystem,
+        public static Command teleopShootOnMoveAutomationCommand(DriveSubsystem driveSubsystem,
                         Joystick driveJoystick,
                         IntakeSubsystem intakeSubsystem, IndexerSubsystem indexerSubsystem,
                         FeederSubsystem feederSubsystem,
@@ -59,7 +81,8 @@ public class AutomatedScoring {
                                                                                                              // your
                                                                                                              // zone
                         return (Commands.parallel(
-                                        new InterpolateShootCommand(driveSubsystem, shooterSubsystem, driveJoystick, CowboyUtils.getAllianceFeedingPosition()),
+                                        new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem, driveJoystick,
+                                                        CowboyUtils.getAllianceFeedingPosition()),
                                         Commands.sequence(
                                                         new WaitCommand(.5),
                                                         Commands.parallel(
@@ -68,7 +91,8 @@ public class AutomatedScoring {
                                                                         feederSubsystem.startFeedingBallsCommand()))));
                 } else { // In an alliance zone for scoring in the hub
                         return (Commands.parallel(
-                                        new InterpolateShootCommand(driveSubsystem, shooterSubsystem, driveJoystick, CowboyUtils.getAllianceHubPose()),
+                                        new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem, driveJoystick,
+                                                        CowboyUtils.getAllianceHubPose()),
                                         Commands.sequence(
                                                         new WaitCommand(.5),
                                                         Commands.parallel(
