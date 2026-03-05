@@ -45,6 +45,19 @@ public final class RobotConstants {
                         RED_ZONE
                 }
 
+                public static enum DynamicAutoScoringPositions{
+                        LEFT,
+                        CENTER,
+                        RIGHT
+                }
+
+                public static final Pose2d[] BLUE_ALLIANCE_DYNAMIC_AUTO_SCORING_POSES;
+                static {
+                        BLUE_ALLIANCE_DYNAMIC_AUTO_SCORING_POSES = new Pose2d[3];
+                        BLUE_ALLIANCE_DYNAMIC_AUTO_SCORING_POSES[0] = new Pose2d(3, 5.6, new Rotation2d(Math.toRadians(-42)));
+                        BLUE_ALLIANCE_DYNAMIC_AUTO_SCORING_POSES[1] = new Pose2d(2.3, 4, new Rotation2d(Math.toRadians(0)));
+                        BLUE_ALLIANCE_DYNAMIC_AUTO_SCORING_POSES[2] = new Pose2d(3, 2.5, new Rotation2d(Math.toRadians(42)));                }
+
                 public static enum BumpLabels {
                         BLUE_LEFT,
                         BLUE_RIGHT,

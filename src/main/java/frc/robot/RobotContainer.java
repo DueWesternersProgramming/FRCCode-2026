@@ -5,7 +5,9 @@
 package frc.robot;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -30,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -40,6 +43,7 @@ import frc.robot.commands.automation.AutomatedScoring;
 import frc.robot.commands.drive.TeleopDriveCommand;
 import frc.robot.configurableAutos.AutoCommandDef;
 import frc.robot.configurableAutos.AutoParamDef;
+import frc.robot.configurableAutos.DynamicAutoCommands;
 import frc.robot.configurableAutos.DynamicAutoRegistry;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.ModuleIO;
@@ -91,6 +95,8 @@ public class RobotContainer {
         public final FeederSubsystem feederSubsystem;
         public final ShooterSubsystem shooterSubsystem;
         public final LEDSubsystem ledSubsystem;
+
+        public static Set<Subsystem> subsystemsSet = new HashSet<>();
 
         private final Joystick driveJoystick = new Joystick(RobotConstants.PortConstants.Controller.DRIVE_JOYSTICK);
         private final Joystick operatorJoystick = new Joystick(
@@ -210,6 +216,11 @@ public class RobotContainer {
 
                                 break;
                 }
+                subsystemsSet.add(driveSubsystem);
+                subsystemsSet.add(intakeSubsystem);
+                subsystemsSet.add(indexerSubsystem);
+                subsystemsSet.add(feederSubsystem);
+                subsystemsSet.add(shooterSubsystem);
 
                 createNamedCommands();
 
@@ -244,14 +255,18 @@ public class RobotContainer {
                 // Add commands here to be able to execute in auto
 
                 NamedCommands.registerCommand("Start Intake", intakeSubsystem.runIntakeNormalCommand());
-                
-                //These two commands never end, so we have to use a time based race condition.
-                NamedCommands.registerCommand("Interpolate Score", AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem, CowboyUtils.getAllianceHubPose()));
-                NamedCommands.registerCommand("Interpolate Pass", AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem, CowboyUtils.getAllianceFeedingPosition()));
 
-                NamedCommands.registerCommand("Stop All Superstructure", AutomatedScoring.stopAllSuperStructure(intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem));
+                // These two commands never end, so we have to use a time based race condition.
+                NamedCommands.registerCommand("Interpolate Score",
+                                AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem, indexerSubsystem,
+                                                feederSubsystem, shooterSubsystem, CowboyUtils.getAllianceHubPose()));
+                NamedCommands.registerCommand("Interpolate Pass",
+                                AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem, indexerSubsystem,
+                                                feederSubsystem, shooterSubsystem,
+                                                CowboyUtils.getAllianceFeedingPosition()));
 
-
+                NamedCommands.registerCommand("Stop All Superstructure", AutomatedScoring.stopAllSuperStructure(
+                                intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem));
 
                 NamedCommands.registerCommand("Example", new RunCommand(() -> {
                         System.out.println("Running...");
@@ -262,8 +277,20 @@ public class RobotContainer {
                 dynamicAutoRegistry.registerCommand(new AutoCommandDef("Example Command",
                                 List.of(new AutoParamDef("Example Param", 0)), params -> Commands.deferredProxy(
                                                 // this is the command factory
-                                                () -> AutomatedScoring.exampleCommandDynamicAuton(
+                                                () -> DynamicAutoCommands.exampleCommandDynamicAuton(
                                                                 params.get("Example Param")))));
+
+                dynamicAutoRegistry.registerCommand(new AutoCommandDef("Score From Position",
+                                List.of(new AutoParamDef("Position", 1),new AutoParamDef("Time", 5)), params -> Commands.deferredProxy(
+                                                // this is the command factory
+                                                () -> DynamicAutoCommands.DynamicAutoScorePosition(
+                                                                params.get("Position"),
+                                                                params.get("Time"),
+                                                                driveSubsystem,
+                                                                intakeSubsystem,
+                                                                indexerSubsystem,
+                                                                feederSubsystem,
+                                                                shooterSubsystem))));
 
                 dynamicAutoRegistry.publishCommands();
         }
@@ -272,7 +299,7 @@ public class RobotContainer {
 
                 driveSubsystem.setDefaultCommand(new TeleopDriveCommand(driveSubsystem, driveJoystick));
 
-                //QuestNav Offset Calibration:
+                // QuestNav Offset Calibration:
 
                 // new JoystickButton(driveJoystick, 6).onTrue(QuestCalibration
                 // .CollectCalibrationDataCommand(
@@ -298,7 +325,7 @@ public class RobotContainer {
                                                         intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1),
                                                         intakeSubsystem.setIntakeSpeedCommand(.8)))
                                         .onFalse(intakeSubsystem.stopIntakingCommand());
-                                        
+
                         // Right operator top button, reverses indexer if needed to clear jams
                         new JoystickButton(operatorJoystick, 6)
                                         .whileTrue(indexerSubsystem.setIndexerSpeedCommand(-.3, -1))
