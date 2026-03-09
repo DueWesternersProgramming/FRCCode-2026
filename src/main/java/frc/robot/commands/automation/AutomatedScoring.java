@@ -34,9 +34,9 @@ public class AutomatedScoring {
         public static Command shootFromHopperContinousCommand(IntakeSubsystem intakeSubsystem,
                         IndexerSubsystem indexerSubsystem, FeederSubsystem feederSubsystem,
                         ShooterSubsystem shooterSubsystem,Pose2d target) {
-                return Commands.parallel(new shootSimpleInterpolationCommand(shooterSubsystem, target),
+                return Commands.parallel(new WaitCommand(1.5),new shootSimpleInterpolationCommand(shooterSubsystem, target),
                                 Commands.sequence(
-                                                new WaitCommand(.5),
+                                                new WaitCommand(1.5),
                                                 Commands.parallel(
                                                                 intakeSubsystem.runIntakeAgitationContinousCommand(),
                                                                 indexerSubsystem.runIndexerAgitationContinousCommand(),

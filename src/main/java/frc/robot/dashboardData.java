@@ -11,7 +11,7 @@ public class dashboardData {
         String port0Name = DriverStation.getJoystickName(0);
         String port1Name = DriverStation.getJoystickName(1);
 
-        boolean isOrderCorrect = port0Name.contains("Xbox") && !port1Name.contains("Xbox");
+        boolean isOrderCorrect = port0Name.contains("Extreme 3D") && port1Name.contains("Gamepad");
         SmartDashboard.putBoolean("Controller Status", (isOrderCorrect));
 
         if (!isOrderCorrect) {

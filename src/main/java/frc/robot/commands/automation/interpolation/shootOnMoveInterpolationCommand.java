@@ -22,10 +22,10 @@ public class shootOnMoveInterpolationCommand extends Command {
 
         // Angular controller (RADIANS)
         private final ProfiledPIDController angleController = new ProfiledPIDController(
-                        1.25, 0.0, 0.0,
+                        .25, 0.0, 0.0,
                         new TrapezoidProfile.Constraints(
-                                        Units.degreesToRadians(360), // max angular velocity
-                                        Units.degreesToRadians(720) // max angular acceleration
+                                        Units.degreesToRadians(100), // max angular velocity
+                                        Units.degreesToRadians(300) // max angular acceleration
                         ));
 
         DriveSubsystem driveSubsystem;
@@ -68,6 +68,8 @@ public class shootOnMoveInterpolationCommand extends Command {
                 
 
                 Pose2d currentRobotPose = RobotState.robotPose;
+                
+                
 
                 double currentDistanceToHub = currentRobotPose.getTranslation().getDistance(target.getTranslation());
 
@@ -81,6 +83,7 @@ public class shootOnMoveInterpolationCommand extends Command {
                                 new Rotation2d()); // rotation is not set since we don't really care about that here
 
                 Logger.recordOutput("Interpolation/PredictedRobotPose", predictedRobotPose);
+                Logger.recordOutput("Interpolation/target", target);
 
                 Logger.recordOutput("Interpolation/VX", currentChassisSpeeds.vxMetersPerSecond);
                 Logger.recordOutput("Interpolation/VY", currentChassisSpeeds.vyMetersPerSecond);
@@ -94,6 +97,8 @@ public class shootOnMoveInterpolationCommand extends Command {
                 double predictedAngleToRobot = Math.atan2(dy, dx);
 
                 angleController.setGoal(predictedAngleToRobot);
+                
+                Logger.recordOutput("Interpolation/targetAngle", predictedAngleToRobot);
 
                 double rotOutput = angleController.calculate(
                                 currentRobotPose.getRotation().getRadians());

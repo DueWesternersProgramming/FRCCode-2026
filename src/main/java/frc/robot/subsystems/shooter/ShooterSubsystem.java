@@ -36,7 +36,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public double getTimeOfFlightFromDistance(double distanceMeters){
-        return .5; //TODO: Make this equation
+        return 0; //TODO: Make this equation
     }    
 
     @Override
