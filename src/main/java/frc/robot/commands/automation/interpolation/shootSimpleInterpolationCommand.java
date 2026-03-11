@@ -4,31 +4,37 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotState;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import java.util.function.Supplier;
 
 public class shootSimpleInterpolationCommand extends Command {
 
-    ShooterSubsystem shooterSubsystem;
-    Pose2d target;
+    private final ShooterSubsystem shooterSubsystem;
+    private final Supplier<Pose2d> targetSupplier;
 
+    /**
+     * @param shooterSubsystem The subsystem to control
+     * @param targetSupplier A lambda or method reference that returns the current target Pose2d
+     */
     public shootSimpleInterpolationCommand(
-            ShooterSubsystem shooterSubsystem,Pose2d target) {
+            ShooterSubsystem shooterSubsystem, 
+            Supplier<Pose2d> targetSupplier) {
 
         this.shooterSubsystem = shooterSubsystem;
-        this.target = target;
+        this.targetSupplier = targetSupplier;
 
         addRequirements(shooterSubsystem);
-
     }
 
     @Override
     public void execute() {
-
+        Pose2d target = targetSupplier.get();
+        
         Pose2d currentRobotPose = RobotState.robotPose;
 
         double distanceToHub = currentRobotPose.getTranslation().getDistance(target.getTranslation());
 
         shooterSubsystem.setPercentSpeed(shooterSubsystem.getPercentFromDistance(distanceToHub));
-    };
+    }
 
     @Override
     public boolean isFinished() {
@@ -37,6 +43,6 @@ public class shootSimpleInterpolationCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-
+        shooterSubsystem.setPercentSpeed(0);
     }
 }

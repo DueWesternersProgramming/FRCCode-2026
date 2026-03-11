@@ -170,7 +170,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         Logger.recordOutput("DriveSubsystem/OdometryPoseHybrid", hybridOdometry.getEstimatedPosition());
         Logger.recordOutput("HubDistance", hybridOdometry.getEstimatedPosition().getTranslation().getDistance(ScoringConstants.BLUE_ALLIANCE_HUB.getTranslation()));
-
+        RobotState.robotPose = hybridOdometry.getEstimatedPosition();
     }
 
     private void updateOdometrySensorMeasurements() {

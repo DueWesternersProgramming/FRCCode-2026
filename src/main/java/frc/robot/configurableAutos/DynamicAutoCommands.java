@@ -37,7 +37,7 @@ public class DynamicAutoCommands {
         
         goalPose = ScoringConstants.BLUE_ALLIANCE_DYNAMIC_AUTO_SCORING_POSES[position];
 
-        Command cmd = new SequentialCommandGroup(AutomatedScoring.PPmoveToPose(goalPose),AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem,CowboyUtils.getAllianceHubPose()));
+        Command cmd = new SequentialCommandGroup(AutomatedScoring.PPmoveToPose(goalPose),AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem,()->CowboyUtils.getAllianceHubPose()));
         
         
         return Commands.defer(() -> cmd, RobotContainer.allSubsystemsSet);

@@ -264,10 +264,10 @@ public class RobotContainer {
                 // These two commands never end, so we have to use a time based race condition.
                 NamedCommands.registerCommand("Interpolate Score",
                                 Commands.defer(()->AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem, indexerSubsystem,
-                                                feederSubsystem, shooterSubsystem, CowboyUtils.getAllianceHubPose()), allSubsystemsSet));
+                                                feederSubsystem, shooterSubsystem, ()->CowboyUtils.getAllianceHubPose()), allSubsystemsSet));
                 NamedCommands.registerCommand("Interpolate Pass",
                                 Commands.defer(()->AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem, indexerSubsystem,
-                                                feederSubsystem, shooterSubsystem, CowboyUtils.getAllianceFeedingPosition()), allSubsystemsSet));
+                                                feederSubsystem, shooterSubsystem, ()->CowboyUtils.getAllianceFeedingPosition()), allSubsystemsSet));
 
                 NamedCommands.registerCommand("Stop All Superstructure", AutomatedScoring.stopAllSuperStructure(
                                 intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem));
@@ -332,8 +332,8 @@ public class RobotContainer {
                                                         intakeSubsystem.setIntakeSpeedCommand(.8)))
                                         .onFalse(intakeSubsystem.stopIntakingCommand());
 
-                        // Right operator top button, reverses indexer if needed to clear jams
-                        new JoystickButton(operatorJoystick, 6)
+                        // Operator X button, reverses indexer if needed to clear jams
+                        new JoystickButton(operatorJoystick, 3)
                                         .whileTrue(indexerSubsystem.setIndexerSpeedCommand(-.3, -1))
                                         .onFalse(indexerSubsystem.stopIndexing());
 

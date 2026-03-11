@@ -14,6 +14,7 @@ import frc.robot.utils.CowboyUtils;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
+@Deprecated
 public class AimAlongArcRadiusCommand extends Command {
 
     // Angular controller (RADIANS)

@@ -1,5 +1,7 @@
 package frc.robot.commands.automation.interpolation;
 
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
@@ -32,17 +34,17 @@ public class shootOnMoveInterpolationCommand extends Command {
         DriveSubsystem driveSubsystem;
         ShooterSubsystem shooterSubsystem;
         Joystick joystick;
-        Pose2d target;
+        Supplier<Pose2d> targetSupplier;
 
         public shootOnMoveInterpolationCommand(
                         DriveSubsystem driveSubsystem,
                         ShooterSubsystem shooterSubsystem,
-                        Joystick joystick, Pose2d target) {
+                        Joystick joystick, Supplier<Pose2d> targetSupplier) {
 
                 this.driveSubsystem = driveSubsystem;
                 this.shooterSubsystem = shooterSubsystem;
                 this.joystick = joystick;
-                this.target = target;
+                this.targetSupplier = targetSupplier;
 
                 addRequirements(driveSubsystem);
 
@@ -52,7 +54,7 @@ public class shootOnMoveInterpolationCommand extends Command {
         @Override
         public void execute() {
 
-                //target = CowboyUtils.getAllianceHubPose();
+                Pose2d target = targetSupplier.get();
 
                 double xRaw = -(joystick.getRawAxis(Controller.DRIVE_COMMAND_X_AXIS));
                 double yRaw = -(joystick.getRawAxis(Controller.DRIVE_COMMAND_Y_AXIS));
