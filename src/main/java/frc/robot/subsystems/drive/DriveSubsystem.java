@@ -228,7 +228,6 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void resetOdometry(Pose2d pose) {
-
         hybridOdometry.resetPosition(
                 gyroIO.getGyroYawRotation2d(),
                 new SwerveModulePosition[] {

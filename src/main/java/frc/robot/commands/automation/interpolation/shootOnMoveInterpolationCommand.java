@@ -17,15 +17,16 @@ import frc.robot.RobotConstants.PortConstants.Controller;
 import frc.robot.RobotConstants.TeleopConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.utils.CowboyUtils;
 
 public class shootOnMoveInterpolationCommand extends Command {
 
         // Angular controller (RADIANS)
         private final ProfiledPIDController angleController = new ProfiledPIDController(
-                        .25, 0.0, 0.0,
+                        1.25, 0.0, 0.0,
                         new TrapezoidProfile.Constraints(
-                                        Units.degreesToRadians(100), // max angular velocity
-                                        Units.degreesToRadians(300) // max angular acceleration
+                                        Units.degreesToRadians(500), // max angular velocity
+                                        Units.degreesToRadians(700) // max angular acceleration
                         ));
 
         DriveSubsystem driveSubsystem;
@@ -50,6 +51,9 @@ public class shootOnMoveInterpolationCommand extends Command {
 
         @Override
         public void execute() {
+
+                //target = CowboyUtils.getAllianceHubPose();
+
                 double xRaw = -(joystick.getRawAxis(Controller.DRIVE_COMMAND_X_AXIS));
                 double yRaw = -(joystick.getRawAxis(Controller.DRIVE_COMMAND_Y_AXIS));
 
@@ -65,11 +69,7 @@ public class shootOnMoveInterpolationCommand extends Command {
                 double xSquared = Math.copySign(xConstrained * xConstrained, xConstrained);
                 double ySquared = Math.copySign(yConstrained * yConstrained, yConstrained);
 
-                
-
-                Pose2d currentRobotPose = RobotState.robotPose;
-                
-                
+                Pose2d currentRobotPose = driveSubsystem.getPose();
 
                 double currentDistanceToHub = currentRobotPose.getTranslation().getDistance(target.getTranslation());
 
@@ -99,17 +99,19 @@ public class shootOnMoveInterpolationCommand extends Command {
                 angleController.setGoal(predictedAngleToRobot);
                 
                 Logger.recordOutput("Interpolation/targetAngle", predictedAngleToRobot);
+                Logger.recordOutput("Interpolation/currentAngle", currentRobotPose.getRotation().getRadians());
 
                 double rotOutput = angleController.calculate(
                                 currentRobotPose.getRotation().getRadians());
 
                 driveSubsystem.drive(
                                 ySquared, xSquared,
-                                0,
+                                rotOutput,
                                 true,
                                 true,
                                 false);
-
+                double shooterSpeed = MathUtil.clamp(0, -1, rotOutput);
+                
                 shooterSubsystem.setPercentSpeed(shooterSubsystem.getPercentFromDistance(predictedDistanceToHub));
         };
 

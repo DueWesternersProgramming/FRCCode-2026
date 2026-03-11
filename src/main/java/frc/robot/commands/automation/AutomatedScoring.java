@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.RobotContainer;
 import frc.robot.RobotConstants.ScoringConstants.FieldZones;
 import frc.robot.commands.automation.interpolation.shootOnMoveInterpolationCommand;
 import frc.robot.commands.automation.interpolation.shootSimpleInterpolationCommand;
@@ -81,24 +82,22 @@ public class AutomatedScoring {
                                                                                                              // your
                                                                                                              // zone
                         return (Commands.parallel(
-                                        new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem, driveJoystick,
-                                                        CowboyUtils.getAllianceFeedingPosition()),
+                                        new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem, driveJoystick, CowboyUtils.getAllianceFeedingPosition()),
                                         Commands.sequence(
-                                                        new WaitCommand(.5),
+                                                        new WaitCommand(1.5),
                                                         Commands.parallel(
                                                                         intakeSubsystem.runIntakeAgitationContinousCommand(),
                                                                         indexerSubsystem.runIndexerAgitationContinousCommand(),
                                                                         feederSubsystem.startFeedingBallsCommand()))));
                 } else { // In an alliance zone for scoring in the hub
-                        return (Commands.parallel(
-                                        new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem, driveJoystick,
-                                                        CowboyUtils.getAllianceHubPose()),
+                        return (Commands.defer(()->Commands.parallel(
+                                        new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem, driveJoystick,CowboyUtils.getAllianceHubPose()),
                                         Commands.sequence(
-                                                        new WaitCommand(.5),
+                                                        new WaitCommand(1.5),
                                                         Commands.parallel(
                                                                         intakeSubsystem.runIntakeAgitationContinousCommand(),
                                                                         indexerSubsystem.runIndexerAgitationContinousCommand(),
-                                                                        feederSubsystem.startFeedingBallsCommand()))));
+                                                                        feederSubsystem.startFeedingBallsCommand()))),RobotContainer.subsystemsSet));
                 }
         }
 

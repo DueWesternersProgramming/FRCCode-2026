@@ -83,7 +83,6 @@ import frc.robot.utils.CowboyUtils.RobotModes;
 import frc.robot.utils.FuelSim;
 import frc.robot.RobotConstants.PortConstants.CAN;
 import frc.robot.RobotState.AutoMode;
-import frc.robot.RobotState.IntakePositions;
 
 //@Logged(name = "RobotContainer")
 public class RobotContainer {

@@ -3,8 +3,6 @@ package frc.robot.subsystems.intake;
 import org.littletonrobotics.junction.AutoLog;
 
 import frc.robot.RobotState;
-import frc.robot.RobotState.IntakePositions;
-import frc.robot.RobotState.IntakePositions;
 
 
 
@@ -17,7 +15,6 @@ public interface IntakeSubsystemIO {
         public double deployMotorRMP = 0.0;
         public double deployMotorTempC = 0.0;
         public double deployMotorEncoderPosition = 0.0;
-        public IntakePositions intakePosition = IntakePositions.RETRACTED;
     }
 
     default void updateInputs(IntakeSubsystemIOInputs inputs) {

@@ -23,19 +23,11 @@ public class RobotState {
     private static final Queue<TimestampedPose> questMeasurements = new LinkedBlockingQueue<>(20);
     private static final Queue<TimestampedPose> aprilTagCameraMeasurements = new LinkedBlockingQueue<>(20);
 
-    public static IntakePositions intakePosition = IntakePositions.RETRACTED;
-
-
     public static enum IndexerStates{
         OFF,
         FEEDING,
         REVERSE,
         JAMMED //Maybe will be able to implement this?
-    }
-
-    public static enum IntakePositions{
-        DEPLOYED,
-        RETRACTED
     }
 
     public static enum AutoMode {

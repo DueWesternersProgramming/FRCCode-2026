@@ -30,6 +30,5 @@ public class IntakeSubsystemIOSim implements IntakeSubsystemIO {
         inputs.motorRMP = 0;
         inputs.motorTempC = 0;
         inputs.deployMotorEncoderPosition = 0;
-        inputs.intakePosition = RobotState.intakePosition;
     }
 }

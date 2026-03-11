@@ -6,7 +6,6 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 
 import frc.robot.RobotConstants.PortConstants;
-import frc.robot.RobotState.IntakePositions;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
