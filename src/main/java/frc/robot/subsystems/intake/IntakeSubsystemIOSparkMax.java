@@ -44,9 +44,9 @@ public class IntakeSubsystemIOSparkMax implements IntakeSubsystemIO {
 
     @Override
     public void updateInputs(IntakeSubsystemIOInputs inputs) {
-        inputs.motorRMP = 0;
-        inputs.motorTempC = 0;
-        inputs.deployMotorEncoderPosition = 0;
+        inputs.intakePercent = intakeMotor.getAppliedOutput();
+        inputs.intakeTempC = intakeMotor.getMotorTemperature();
+        //inputs.deployMotorEncoderPosition = 0;
 
     }
 }

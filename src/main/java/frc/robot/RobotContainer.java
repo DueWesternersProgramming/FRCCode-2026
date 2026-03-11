@@ -95,7 +95,8 @@ public class RobotContainer {
         public final ShooterSubsystem shooterSubsystem;
         public final LEDSubsystem ledSubsystem;
 
-        public static Set<Subsystem> subsystemsSet = new HashSet<>();
+        public static Set<Subsystem> allSubsystemsSet = new HashSet<>();
+        public static Set<Subsystem> superStructureSet = new HashSet<>();
 
         private final Joystick driveJoystick = new Joystick(RobotConstants.PortConstants.Controller.DRIVE_JOYSTICK);
         private final Joystick operatorJoystick = new Joystick(
@@ -215,11 +216,16 @@ public class RobotContainer {
 
                                 break;
                 }
-                subsystemsSet.add(driveSubsystem);
-                subsystemsSet.add(intakeSubsystem);
-                subsystemsSet.add(indexerSubsystem);
-                subsystemsSet.add(feederSubsystem);
-                subsystemsSet.add(shooterSubsystem);
+                allSubsystemsSet.add(driveSubsystem);
+                allSubsystemsSet.add(intakeSubsystem);
+                allSubsystemsSet.add(indexerSubsystem);
+                allSubsystemsSet.add(feederSubsystem);
+                allSubsystemsSet.add(shooterSubsystem);
+
+                superStructureSet.add(intakeSubsystem);
+                superStructureSet.add(indexerSubsystem);
+                superStructureSet.add(feederSubsystem);
+                superStructureSet.add(shooterSubsystem);
 
                 createNamedCommands();
 
@@ -257,12 +263,11 @@ public class RobotContainer {
 
                 // These two commands never end, so we have to use a time based race condition.
                 NamedCommands.registerCommand("Interpolate Score",
-                                AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem, indexerSubsystem,
-                                                feederSubsystem, shooterSubsystem, CowboyUtils.getAllianceHubPose()));
+                                Commands.defer(()->AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem, indexerSubsystem,
+                                                feederSubsystem, shooterSubsystem, CowboyUtils.getAllianceHubPose()), allSubsystemsSet));
                 NamedCommands.registerCommand("Interpolate Pass",
-                                AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem, indexerSubsystem,
-                                                feederSubsystem, shooterSubsystem,
-                                                CowboyUtils.getAllianceFeedingPosition()));
+                                Commands.defer(()->AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem, indexerSubsystem,
+                                                feederSubsystem, shooterSubsystem, CowboyUtils.getAllianceFeedingPosition()), allSubsystemsSet));
 
                 NamedCommands.registerCommand("Stop All Superstructure", AutomatedScoring.stopAllSuperStructure(
                                 intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem));
@@ -271,6 +276,8 @@ public class RobotContainer {
                         System.out.println("Running...");
                 }));
 
+
+                
                 dynamicAutoRegistry = new DynamicAutoRegistry();
 
                 dynamicAutoRegistry.registerCommand(new AutoCommandDef("Example Command",

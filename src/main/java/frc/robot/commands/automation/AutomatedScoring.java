@@ -97,7 +97,7 @@ public class AutomatedScoring {
                                                         Commands.parallel(
                                                                         intakeSubsystem.runIntakeAgitationContinousCommand(),
                                                                         indexerSubsystem.runIndexerAgitationContinousCommand(),
-                                                                        feederSubsystem.startFeedingBallsCommand()))),RobotContainer.subsystemsSet));
+                                                                        feederSubsystem.startFeedingBallsCommand()))),RobotContainer.allSubsystemsSet));
                 }
         }
 

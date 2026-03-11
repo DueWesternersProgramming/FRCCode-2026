@@ -2,19 +2,15 @@ package frc.robot.subsystems.intake;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import frc.robot.RobotState;
-
-
-
 public interface IntakeSubsystemIO {
 
     @AutoLog
     public static class IntakeSubsystemIOInputs {
-        public double motorRMP = 0.0;
-        public double motorTempC = 0.0;
-        public double deployMotorRMP = 0.0;
-        public double deployMotorTempC = 0.0;
-        public double deployMotorEncoderPosition = 0.0;
+        public double intakePercent = 0.0;
+        public double intakeTempC = 0.0;
+        // public double deployMotorRMP = 0.0;
+        // public double deployMotorTempC = 0.0;
+        // public double deployMotorEncoderPosition = 0.0;
     }
 
     default void updateInputs(IntakeSubsystemIOInputs inputs) {

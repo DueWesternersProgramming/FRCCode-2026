@@ -44,11 +44,14 @@ public class IndexerSubsystemIOSparkMax implements IndexerSubsystemIO {
 
     @Override
     public void updateInputs(IndexerSubsystemIOInputs inputs) {
+        inputs.conveyorMotorPercent = conveyorMotor.getAppliedOutput();
         inputs.conveyorMotorRMP = conveyorMotor.getEncoder().getVelocity();
         inputs.conveyorMotorTempC = conveyorMotor.getMotorTemperature();
 
-        inputs.indexerMotor = rollerMotor.getEncoder().getVelocity();
+        inputs.indexerMotorPercent = rollerMotor.getAppliedOutput();
+        inputs.indexerMotorRPM = rollerMotor.getEncoder().getVelocity();
         inputs.indexerMotorTempC = rollerMotor.getMotorTemperature();
+
 
     }
 }

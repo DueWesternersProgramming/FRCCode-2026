@@ -40,6 +40,6 @@ public class DynamicAutoCommands {
         Command cmd = new SequentialCommandGroup(AutomatedScoring.PPmoveToPose(goalPose),AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem,CowboyUtils.getAllianceHubPose()));
         
         
-        return Commands.defer(() -> cmd, RobotContainer.subsystemsSet);
+        return Commands.defer(() -> cmd, RobotContainer.allSubsystemsSet);
     }
 }

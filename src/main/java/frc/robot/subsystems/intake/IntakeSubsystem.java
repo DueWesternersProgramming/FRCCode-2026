@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 public class IntakeSubsystem extends SubsystemBase {
     public IntakeSubsystemIO io;
     IntakeSubsystemIOInputsAutoLogged inputs = new IntakeSubsystemIOInputsAutoLogged();
+    
 
     public IntakeSubsystem(IntakeSubsystemIO io) {
         this.io = io;

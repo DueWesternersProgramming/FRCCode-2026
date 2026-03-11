@@ -6,13 +6,11 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import frc.robot.RobotState;
 
 public class IntakeSubsystemIOSim implements IntakeSubsystemIO {
-    public IntakeSubsystemIOSim(){
-
-    }
+    private double percent = 0.0;
 
     @Override
     public void setPercentSpeed(double percent){
-        
+        this.percent = percent;
     }
 
     @Override
@@ -27,8 +25,8 @@ public class IntakeSubsystemIOSim implements IntakeSubsystemIO {
 
     @Override
     public void updateInputs(IntakeSubsystemIOInputs inputs) {
-        inputs.motorRMP = 0;
-        inputs.motorTempC = 0;
-        inputs.deployMotorEncoderPosition = 0;
+        inputs.intakePercent = percent;
+        inputs.intakeTempC = 0;
+        //inputs.deployMotorEncoderPosition = 0;
     }
 }
