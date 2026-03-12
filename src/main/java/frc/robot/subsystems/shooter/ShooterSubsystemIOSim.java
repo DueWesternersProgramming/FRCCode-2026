@@ -16,7 +16,7 @@ public class ShooterSubsystemIOSim implements ShooterSubsystemIO {
     @Override
     public void updateInputs(ShooterSubsystemIOInputs inputs) {
         inputs.motorRMP = rpm;
-        inputs.motorPercent = percent;
+        inputs.motorPercent = -percent;
         inputs.motorTempC = 0;
     }
 }

@@ -49,7 +49,7 @@ public class ShooterSubsystemIOSparkMax implements ShooterSubsystemIO {
 
     @Override
     public void updateInputs(ShooterSubsystemIOInputs inputs) {
-        inputs.motorPercent = shooterMotor.getAppliedOutput();
+        inputs.motorPercent = -shooterMotor.getAppliedOutput();
         inputs.motorRMP = shooterMotor.getEncoder().getVelocity();
         inputs.motorTempC = shooterMotor.getMotorTemperature();
     }

@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.utils.CowboyUtils;
 
 /**
  * This class is used ONLY for miscellaneous values that should be added to the Elastic driver dashboard.
@@ -24,10 +25,16 @@ public class dashboardData {
         SmartDashboard.putNumber("Match Time", matchTime);
     }
 
+    public static void hubStatus(){
+        SmartDashboard.putBoolean("Hub Active", CowboyUtils.isHubActive());
+    }
+
     /**
      * This should get called from Robot.java in the main robot periodic
      */
     public static void periodic(){
         controllerStatus();
+        matchTime();
+        hubStatus();
     }
 }

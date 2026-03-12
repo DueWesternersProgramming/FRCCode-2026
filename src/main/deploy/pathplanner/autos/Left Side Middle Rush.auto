@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Left Side Middle Rush Path 1"
+                  "pathName": "Left Side Middle Rush 1"
                 }
               },
               {
@@ -21,7 +21,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 3.0
+                        "waitTime": 4.0
                       }
                     },
                     {
@@ -37,15 +37,9 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Left Side Middle Rush Path 2"
-          }
-        },
-        {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.75
           }
         },
         {

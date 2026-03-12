@@ -74,22 +74,13 @@ public class Robot extends LoggedRobot {
         CommandScheduler.getInstance().run();
         dashboardData.periodic();
 
-        // RobotState.visionPoseStatePeriodic(robotContainer.visionSubsystem,
-        // robotContainer.questNavSubsystem);
-
-        // if (DriverStation.isEnabled() &&
-        // robotContainer.questNavSubsystem.isConnected()) {
-        // RobotState.visionMode = VisionMode.QUEST_NAV_ONLY;
-        // } else {
-        // RobotState.visionMode = VisionMode.APRIL_TAG_ONLY;
-        // }
 
     }
 
     /** This function is called once each time the robot enters Disabled mode. */
     @Override
     public void disabledInit() {
-        CommandScheduler.getInstance().cancelAll(); // Hmm...
+        CommandScheduler.getInstance().cancelAll();
     }
 
     @Override
