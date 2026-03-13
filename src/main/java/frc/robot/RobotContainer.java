@@ -334,7 +334,7 @@ public class RobotContainer {
 
                         // Operator X button, reverses indexer if needed to clear jams
                         new JoystickButton(operatorJoystick, 3)
-                                        .whileTrue(indexerSubsystem.setIndexerSpeedCommand(-.3, -1))
+                                        .whileTrue(indexerSubsystem.setIndexerSpeedCommand(-.3, -1)).whileTrue(intakeSubsystem.setIntakeSpeedCommand(-.6))
                                         .onFalse(indexerSubsystem.stopIndexing());
 
                         // new JoystickButton(driveJoystick, 11)
