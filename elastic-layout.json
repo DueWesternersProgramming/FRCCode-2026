@@ -47,7 +47,7 @@
           },
           {
             "title": "Camera Connection Status",
-            "x": 1024.0,
+            "x": 1280.0,
             "y": 256.0,
             "width": 256.0,
             "height": 256.0,
@@ -94,7 +94,7 @@
           },
           {
             "title": "QuestNavSubsystem",
-            "x": 1024.0,
+            "x": 1280.0,
             "y": 0.0,
             "width": 256.0,
             "height": 256.0,
@@ -135,14 +135,69 @@
                 }
               }
             ]
+          },
+          {
+            "title": "Temps",
+            "x": 256.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Intake Temp",
+                "x": 384.0,
+                "y": 128.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/IntakeSubsystem/IntakeTempC",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "ConveyorTemp",
+                "x": 384.0,
+                "y": 128.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/IndexerSubsystem/ConveyorMotorTempC",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "ShooterTemp",
+                "x": 384.0,
+                "y": 128.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/ShooterSubsystem/MotorTempC",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
           }
         ],
         "containers": [
           {
             "title": "Match Time",
-            "x": 384.0,
+            "x": 512.0,
             "y": 0.0,
-            "width": 384.0,
+            "width": 512.0,
             "height": 256.0,
             "type": "Match Time",
             "properties": {
@@ -158,8 +213,8 @@
             "title": "Gyro Angle",
             "x": 256.0,
             "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
+            "width": 256.0,
+            "height": 256.0,
             "type": "Text Display",
             "properties": {
               "topic": "/AdvantageKit/DriveSubsystem/Gyro/GyroAngle",
@@ -191,9 +246,9 @@
           },
           {
             "title": "Controllers",
-            "x": 896.0,
+            "x": 1024.0,
             "y": 256.0,
-            "width": 128.0,
+            "width": 256.0,
             "height": 256.0,
             "type": "Boolean Box",
             "properties": {
@@ -208,7 +263,7 @@
           },
           {
             "title": "Hub Active",
-            "x": 384.0,
+            "x": 512.0,
             "y": 256.0,
             "width": 512.0,
             "height": 256.0,
@@ -224,50 +279,8 @@
             }
           },
           {
-            "title": "Intake Temp",
-            "x": 256.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/AdvantageKit/IntakeSubsystem/IntakeTempC",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "ShooterTemp",
-            "x": 256.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/AdvantageKit/ShooterSubsystem/MotorTempC",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "ConveyorTemp",
-            "x": 256.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/AdvantageKit/IndexerSubsystem/ConveyorMotorTempC",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
             "title": "Hub Time Until Swap",
-            "x": 768.0,
+            "x": 1024.0,
             "y": 0.0,
             "width": 256.0,
             "height": 256.0,
@@ -286,6 +299,20 @@
     },
     {
       "name": "Autonomous",
+      "grid_layout": {
+        "layouts": [],
+        "containers": []
+      }
+    },
+    {
+      "name": "Autonomous Selection",
+      "grid_layout": {
+        "layouts": [],
+        "containers": []
+      }
+    },
+    {
+      "name": "Power",
       "grid_layout": {
         "layouts": [],
         "containers": []
