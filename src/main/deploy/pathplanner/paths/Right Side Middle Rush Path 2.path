@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.100008380804343,
-        "y": 5.9227454495328855
+        "x": 8.07619658119658,
+        "y": 3.582792022792023
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.972098124394085,
-        "y": 4.771719808507246
+        "x": 7.948286324786322,
+        "y": 2.4317663817663835
       },
       "isLocked": false,
       "linkedName": "Neutral Balls Left"
@@ -73,7 +73,7 @@
   "folder": "Right Side Middle Rush",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -55.091701689462916
+    "rotation": -55.09170168946292
   },
   "useDefaultConstraints": false
 }

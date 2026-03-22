@@ -259,7 +259,7 @@ public class RobotContainer {
         private void createNamedCommands() {
                 // Add commands here to be able to execute in auto
 
-                NamedCommands.registerCommand("Start Intake", intakeSubsystem.runIntakeNormalCommand());
+                NamedCommands.registerCommand("Start Intake", intakeSubsystem.setIntakeSpeedCommand(.8));
 
                 // These two commands never end, so we have to use a time based race condition.
                 NamedCommands.registerCommand("Interpolate Score",
@@ -335,13 +335,13 @@ public class RobotContainer {
                         // Operator X button, reverses indexer if needed to clear jams
                         new JoystickButton(operatorJoystick, 3)
                                         .whileTrue(indexerSubsystem.setIndexerSpeedCommand(-.3, -1)).whileTrue(intakeSubsystem.setIntakeSpeedCommand(-.6))
-                                        .onFalse(indexerSubsystem.stopIndexing());
+                                        .onFalse(indexerSubsystem.stopIndexing()).onFalse(intakeSubsystem.stopIntakingCommand());
 
-                        // new JoystickButton(driveJoystick, 11)
-                        // .whileTrue(new ParallelCommandGroup(new
-                        // AimAlongArcRadiusCommand(driveSubsystem, 3.5, driveJoystick),
-                        // AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem,indexerSubsystem,feederSubsystem,
-                        // shooterSubsystem,.8))).onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem));
+                        new JoystickButton(driveJoystick, 11)
+                        .whileTrue(new ParallelCommandGroup(new
+                        AimAlongArcRadiusCommand(driveSubsystem, 3.5, driveJoystick),
+                        AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem,indexerSubsystem,feederSubsystem,
+                        shooterSubsystem,.8))).onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem));
 
                         new JoystickButton(driveJoystick, 1).onTrue(RobotState.setCanRotate(true))
                                         .onFalse(RobotState.setCanRotate(false));

@@ -43,10 +43,10 @@ public class AutomatedScoring {
                         Supplier<Pose2d> targetSupplier) {
 
                 return Commands.parallel(
-                                new WaitCommand(1.5),
+                                new WaitCommand(.5),
                                 new shootSimpleInterpolationCommand(shooterSubsystem, targetSupplier),
                                 Commands.sequence(
-                                                new WaitCommand(1.5),
+                                                new WaitCommand(.5),
                                                 Commands.parallel(
                                                                 intakeSubsystem.runIntakeAgitationContinousCommand(),
                                                                 indexerSubsystem.runIndexerAgitationContinousCommand(),
@@ -94,7 +94,7 @@ public class AutomatedScoring {
                                         new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem,
                                                         driveJoystick, ()->CowboyUtils.getAllianceFeedingPosition()),
                                         Commands.sequence(
-                                                        new WaitCommand(1.5),
+                                                        new WaitCommand(.5),
                                                         Commands.parallel(
                                                                         intakeSubsystem.runIntakeAgitationContinousCommand(),
                                                                         indexerSubsystem.runIndexerAgitationContinousCommand(),
@@ -104,7 +104,7 @@ public class AutomatedScoring {
                                         new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem,
                                                         driveJoystick, ()->CowboyUtils.getAllianceHubPose()),
                                         Commands.sequence(
-                                                        new WaitCommand(1.5),
+                                                        new WaitCommand(.5),
                                                         Commands.parallel(
                                                                         intakeSubsystem.runIntakeAgitationContinousCommand(),
                                                                         indexerSubsystem.runIndexerAgitationContinousCommand(),

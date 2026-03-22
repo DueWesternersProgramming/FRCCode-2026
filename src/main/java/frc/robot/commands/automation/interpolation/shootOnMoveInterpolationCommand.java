@@ -58,6 +58,7 @@ public class shootOnMoveInterpolationCommand extends Command {
 
                 double xRaw = -(joystick.getRawAxis(Controller.DRIVE_COMMAND_X_AXIS));
                 double yRaw = -(joystick.getRawAxis(Controller.DRIVE_COMMAND_Y_AXIS));
+                double rotRaw = -(joystick.getRawAxis(Controller.DRIVE_COMMAND_ROT_AXIS));
 
                 double xConstrained = MathUtil.applyDeadband(
                                 MathUtil.clamp(xRaw, -TeleopConstants.MAX_SPEED_PERCENT,
@@ -68,8 +69,14 @@ public class shootOnMoveInterpolationCommand extends Command {
                                                 TeleopConstants.MAX_SPEED_PERCENT),
                                 RobotConstants.PortConstants.Controller.JOYSTICK_AXIS_THRESHOLD);
 
+                double rotConstrained = MathUtil.applyDeadband(
+                                MathUtil.clamp(rotRaw, -TeleopConstants.MAX_SPEED_PERCENT,
+                                                TeleopConstants.MAX_SPEED_PERCENT),
+                                RobotConstants.PortConstants.Controller.JOYSTICK_AXIS_THRESHOLD);
+
                 double xSquared = Math.copySign(xConstrained * xConstrained, xConstrained);
                 double ySquared = Math.copySign(yConstrained * yConstrained, yConstrained);
+                double rotSquared = Math.copySign(rotConstrained * rotConstrained, rotConstrained);
 
                 Pose2d currentRobotPose = driveSubsystem.getPose();
 
@@ -99,21 +106,29 @@ public class shootOnMoveInterpolationCommand extends Command {
                 double predictedAngleToRobot = Math.atan2(dy, dx);
 
                 angleController.setGoal(predictedAngleToRobot);
-                
+
                 Logger.recordOutput("Interpolation/targetAngle", predictedAngleToRobot);
                 Logger.recordOutput("Interpolation/currentAngle", currentRobotPose.getRotation().getRadians());
 
                 double rotOutput = angleController.calculate(
                                 currentRobotPose.getRotation().getRadians());
 
-                driveSubsystem.drive(
-                                ySquared, xSquared,
-                                rotOutput,
-                                true,
-                                true,
-                                false);
+                // driveSubsystem.drive(
+                //                 ySquared, xSquared,
+                //                 rotOutput,
+                //                 true,
+                //                 true,
+                //                 false);
+
+                if (RobotState.canRotate) {
+                        driveSubsystem.drive(ySquared, xSquared, rotSquared, true, true,
+                                        RobotState.isAntiTippingEnabled);
+                } else {
+                        driveSubsystem.drive(ySquared, xSquared, 0, true, true, true);
+                }
+
                 double shooterSpeed = MathUtil.clamp(0, -1, rotOutput);
-                
+
                 shooterSubsystem.setPercentSpeed(shooterSubsystem.getPercentFromDistance(predictedDistanceToHub));
         };
 

@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.RobotConstants.SimMode;
 import frc.robot.RobotState.AutoMode;
+import frc.robot.commands.automation.AutomatedScoring;
 import frc.robot.utils.FuelSim;
 
 public class Robot extends LoggedRobot {
