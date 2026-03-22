@@ -1,12 +1,12 @@
 package frc.robot.subsystems.vision;
 
 import java.util.List;
-
 import org.littletonrobotics.junction.AutoLog;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform3d;
 
 public interface AprilTagCameraIO {
     @AutoLog
@@ -16,6 +16,7 @@ public interface AprilTagCameraIO {
         public int[] targetIDs = new int[0];
         public Pose2d pose = Pose2d.kZero;
         public double bestTargetArea = 0.0;
+        public Transform3d mounting = Transform3d.kZero;
     }
 
     default void updateInputs(AprilTagIOInputs inputs) {

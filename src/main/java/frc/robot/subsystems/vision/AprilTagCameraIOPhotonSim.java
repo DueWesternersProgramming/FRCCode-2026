@@ -45,16 +45,4 @@ public class AprilTagCameraIOPhotonSim extends AprilTagCameraIOPhoton {
                     visionEstimation.setPoses(visionEstimation.getPoses());
                 });
     }
-
-    // TODO
-
-    // @Override
-    // public List<PhotonPipelineResult> getResult() {
-    // if (SubsystemEnabledConstants.VISION_SUBSYSTEM_ENABLED) {
-    // return photonCamera.getAllUnreadResults();
-
-    // } else {
-    // return null;
-    // }
-    // }
 }

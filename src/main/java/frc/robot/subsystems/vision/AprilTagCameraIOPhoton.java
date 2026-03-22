@@ -38,6 +38,7 @@ public class AprilTagCameraIOPhoton implements AprilTagCameraIO {
 
     @Override
     public void updateInputs(AprilTagIOInputs inputs) {
+        inputs.mounting = photonPoseEstimator.getRobotToCameraTransform();
         inputs.connected = photonCamera.isConnected();
         // photonCamera.getAllUnreadResults();
         inputs.targetIDs = photonCamera.getLatestResult().getTargets().stream()

@@ -334,7 +334,7 @@ public final class RobotConstants {
                                                                                                 Units.degreesToRadians(
                                                                                                                 0),
                                                                                                 Units.degreesToRadians(
-                                                                                                                -70),
+                                                                                                                -20),
                                                                                                 Units.degreesToRadians(
                                                                                                                 -15)))),
                                                 SimCameraConfig.ARDUCAM_OV9281_45),
@@ -354,9 +354,9 @@ public final class RobotConstants {
                                                                                                 Units.degreesToRadians(
                                                                                                                 0),
                                                                                                 Units.degreesToRadians(
-                                                                                                                -27.5),
+                                                                                                                -20),
                                                                                                 Units.degreesToRadians(
-                                                                                                                10)))),
+                                                                                                                15)))),
                                                 SimCameraConfig.ARDUCAM_OV9281_45));
 
                 public static final Transform3d[] CAMERA_POSITIONS = {
