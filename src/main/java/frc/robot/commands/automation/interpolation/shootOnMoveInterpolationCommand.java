@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,12 +25,8 @@ import frc.robot.utils.CowboyUtils;
 public class shootOnMoveInterpolationCommand extends Command {
 
         // Angular controller (RADIANS)
-        private final ProfiledPIDController angleController = new ProfiledPIDController(
-                        1.25, 0.0, 0.0,
-                        new TrapezoidProfile.Constraints(
-                                        Units.degreesToRadians(500), // max angular velocity
-                                        Units.degreesToRadians(700) // max angular acceleration
-                        ));
+        private final PIDController angleController = new PIDController(
+                        1.25, 0.0, 0.0);
 
         DriveSubsystem driveSubsystem;
         ShooterSubsystem shooterSubsystem;
@@ -105,31 +102,34 @@ public class shootOnMoveInterpolationCommand extends Command {
 
                 double predictedAngleToRobot = Math.atan2(dy, dx);
 
-                angleController.setGoal(predictedAngleToRobot);
+                // angleController.setGoal(predictedAngleToRobot);
 
-                Logger.recordOutput("Interpolation/targetAngle", predictedAngleToRobot);
+                Logger.recordOutput("Interpolation/targetAngle", Units.radiansToDegrees(predictedAngleToRobot));
                 Logger.recordOutput("Interpolation/currentAngle", currentRobotPose.getRotation().getRadians());
+                
+                double rotOutput = angleController.calculate(currentRobotPose.getRotation().getRadians(), predictedAngleToRobot);
+                // calculate(
+                //                 currentRobotPose.getRotation().getRadians());
 
-                double rotOutput = angleController.calculate(
-                                currentRobotPose.getRotation().getRadians());
+                driveSubsystem.drive(
+                                ySquared, xSquared,
+                                0,
+                                true,
+                                true,
+                                false);
 
-                // driveSubsystem.drive(
-                //                 ySquared, xSquared,
-                //                 rotOutput,
-                //                 true,
-                //                 true,
-                //                 false);
-
-                if (RobotState.canRotate) {
-                        driveSubsystem.drive(ySquared, xSquared, rotSquared, true, true,
-                                        RobotState.isAntiTippingEnabled);
-                } else {
-                        driveSubsystem.drive(ySquared, xSquared, 0, true, true, true);
-                }
+                // if (RobotState.canRotate) {
+                //         driveSubsystem.drive(ySquared, xSquared, rotSquared, true, true,
+                //                         RobotState.isAntiTippingEnabled);
+                // } else {                //         driveSubsystem.drive(ySquared, xSquared, 0, true, true, true);
+                // }
 
                 double shooterSpeed = MathUtil.clamp(0, -1, rotOutput);
 
+
+                //shooterSubsystem.setPercentSpeed(joystick.getRawAxis(3));
                 shooterSubsystem.setPercentSpeed(shooterSubsystem.getPercentFromDistance(predictedDistanceToHub));
+                Logger.recordOutput("Interpolation/predictedDistanceToHub", predictedDistanceToHub);
         };
 
         @Override
@@ -139,7 +139,7 @@ public class shootOnMoveInterpolationCommand extends Command {
 
         @Override
         public void end(boolean interrupted) {
-                angleController.reset(
-                                driveSubsystem.getPose().getRotation().getRadians());
+                // angleController.reset(
+                //                 driveSubsystem.getPose().getRotation().getRadians());
         }
 }

@@ -329,19 +329,19 @@ public class RobotContainer {
                         new Trigger(() -> operatorJoystick.getRawAxis(2) > .4)
                                         .whileTrue(new SequentialCommandGroup(
                                                         intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1),
-                                                        intakeSubsystem.setIntakeSpeedCommand(.8)))
+                                                        intakeSubsystem.setIntakeSpeedCommand(1)))
                                         .onFalse(intakeSubsystem.stopIntakingCommand());
 
                         // Operator X button, reverses indexer if needed to clear jams
                         new JoystickButton(operatorJoystick, 3)
                                         .whileTrue(indexerSubsystem.setIndexerSpeedCommand(-.3, -1)).whileTrue(intakeSubsystem.setIntakeSpeedCommand(-.6))
-                                        .onFalse(indexerSubsystem.stopIndexing()).onFalse(intakeSubsystem.stopIntakingCommand());
+                                        .onFalse(indexerSubsystem.stopIndexing()).onFalse(intakeSubsystem.stopIntakingCommand()).whileTrue(feederSubsystem.setFeederSpeed(-.5)).onFalse(feederSubsystem.setFeederSpeed(0));
 
-                        new JoystickButton(driveJoystick, 11)
-                        .whileTrue(new ParallelCommandGroup(new
-                        AimAlongArcRadiusCommand(driveSubsystem, 3.5, driveJoystick),
-                        AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem,indexerSubsystem,feederSubsystem,
-                        shooterSubsystem,.8))).onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem));
+                        // new JoystickButton(driveJoystick, 11)
+                        // .whileTrue(new ParallelCommandGroup(new
+                        // AimAlongArcRadiusCommand(driveSubsystem, 3.5, driveJoystick),
+                        // AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem,indexerSubsystem,feederSubsystem,
+                        // shooterSubsystem,.8))).onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem));
 
                         new JoystickButton(driveJoystick, 1).onTrue(RobotState.setCanRotate(true))
                                         .onFalse(RobotState.setCanRotate(false));
