@@ -29,7 +29,7 @@ public interface QuestNavIO {
         return Pose3d.kZero;
     }
 
-    default void setRobotPose(Pose2d pose) {
+    default void setRobotPose(Pose3d pose) {
         // Default implementation does nothing
     }
 

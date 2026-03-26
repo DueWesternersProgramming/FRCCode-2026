@@ -45,7 +45,7 @@ public final class RobotConstants {
                         RED_ZONE
                 }
 
-                public static enum DynamicAutoScoringPositions{
+                public static enum DynamicAutoScoringPositions {
                         LEFT,
                         CENTER,
                         RIGHT
@@ -54,9 +54,13 @@ public final class RobotConstants {
                 public static final Pose2d[] BLUE_ALLIANCE_DYNAMIC_AUTO_SCORING_POSES;
                 static {
                         BLUE_ALLIANCE_DYNAMIC_AUTO_SCORING_POSES = new Pose2d[3];
-                        BLUE_ALLIANCE_DYNAMIC_AUTO_SCORING_POSES[0] = new Pose2d(3, 5.6, new Rotation2d(Math.toRadians(-42)));
-                        BLUE_ALLIANCE_DYNAMIC_AUTO_SCORING_POSES[1] = new Pose2d(2.3, 4, new Rotation2d(Math.toRadians(0)));
-                        BLUE_ALLIANCE_DYNAMIC_AUTO_SCORING_POSES[2] = new Pose2d(3, 2.5, new Rotation2d(Math.toRadians(42)));                }
+                        BLUE_ALLIANCE_DYNAMIC_AUTO_SCORING_POSES[0] = new Pose2d(3, 5.6,
+                                        new Rotation2d(Math.toRadians(-42)));
+                        BLUE_ALLIANCE_DYNAMIC_AUTO_SCORING_POSES[1] = new Pose2d(2.3, 4,
+                                        new Rotation2d(Math.toRadians(0)));
+                        BLUE_ALLIANCE_DYNAMIC_AUTO_SCORING_POSES[2] = new Pose2d(3, 2.5,
+                                        new Rotation2d(Math.toRadians(42)));
+                }
 
                 public static enum BumpLabels {
                         BLUE_LEFT,
@@ -400,9 +404,9 @@ public final class RobotConstants {
                                 0.02, // Trust down to 2cm in Y direction
                                 0.035 // Trust down to 2 degrees rotational
                 );
-                public static final Transform2d ROBOT_TO_QUEST = new Transform2d(
-                                new Translation2d(0.03977125, 0.0412963),
-                                Rotation2d.kCCW_90deg);
+                public static final Transform3d ROBOT_TO_QUEST = new Transform3d(
+                                new Translation3d(0.03977125, 0.0412963, 0.0),
+                                new Rotation3d(0, 0, Math.PI / 2));
         }
 
         public static final class ConfigurableAutonsConstants {

@@ -26,12 +26,12 @@ public class QuestNavIOReal implements QuestNavIO {
 
     @Override
     public Pose3d getCorrectedPose() {
-        return getUncorrectedPose().transformBy(new Transform3d(QuestNavConstants.ROBOT_TO_QUEST.inverse()));
+        return getUncorrectedPose().transformBy(QuestNavConstants.ROBOT_TO_QUEST.inverse());
     }
 
     @Override
-    public void setRobotPose(Pose2d pose) {
-        questNav.setPose(new Pose3d(pose.transformBy(QuestNavConstants.ROBOT_TO_QUEST)));
+    public void setRobotPose(Pose3d pose) {
+        questNav.setPose(pose.transformBy(QuestNavConstants.ROBOT_TO_QUEST));
     }
 
     @Override

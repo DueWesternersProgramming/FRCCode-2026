@@ -3,6 +3,7 @@ package frc.robot.subsystems.questnav;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -21,6 +22,11 @@ public class QuestNavSubsystem extends SubsystemBase {
     }
 
     public void setRobotPose(Pose2d pose) {
+        System.out.println("Setting robot pose");
+        io.setRobotPose(new Pose3d(pose));
+    }
+
+    public void setRobotPose(Pose3d pose) {
         System.out.println("Setting robot pose");
         io.setRobotPose(pose);
     }
@@ -41,7 +47,7 @@ public class QuestNavSubsystem extends SubsystemBase {
         return new InstantCommand(() -> {
             Pose2d currentPose = io.getCorrectedPose().toPose2d();
             Pose2d newPose = new Pose2d(currentPose.getTranslation(), yaw);
-            io.setRobotPose(newPose);
+            io.setRobotPose(new Pose3d(newPose));
         }, this);
 
     }
