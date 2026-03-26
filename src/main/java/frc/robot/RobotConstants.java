@@ -401,7 +401,7 @@ public final class RobotConstants {
                                 0.035 // Trust down to 2 degrees rotational
                 );
                 public static final Transform2d ROBOT_TO_QUEST = new Transform2d(
-                                new Translation2d(.0958, .20249092),
+                                new Translation2d(0.03977125, 0.0412963),
                                 Rotation2d.kCCW_90deg);
         }
 
