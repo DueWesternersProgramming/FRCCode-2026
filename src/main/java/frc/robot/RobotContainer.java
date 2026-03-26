@@ -259,7 +259,7 @@ public class RobotContainer {
         private void createNamedCommands() {
                 // Add commands here to be able to execute in auto
 
-                NamedCommands.registerCommand("Start Intake", intakeSubsystem.setIntakeSpeedCommand(.8));
+                NamedCommands.registerCommand("Start Intake", intakeSubsystem.setIntakeSpeedCommand(1));
 
                 // These two commands never end, so we have to use a time based race condition.
                 NamedCommands.registerCommand("Interpolate Score",

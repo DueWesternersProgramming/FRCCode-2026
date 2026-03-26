@@ -4,10 +4,10 @@
   "holonomicMode": true,
   "pathFolders": [
     "Concepts",
+    "Depot Left Side",
     "HP Right Side",
     "Left Side Middle Rush",
-    "Depot Left Side",
-    "Right Side Herd",
+    "Left Side Pinturn Rush",
     "Right Side Middle Rush"
   ],
   "autoFolders": [],
