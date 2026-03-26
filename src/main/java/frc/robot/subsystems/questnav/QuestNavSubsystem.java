@@ -61,8 +61,8 @@ public class QuestNavSubsystem extends SubsystemBase {
         Logger.recordOutput("QuestNavSubsystem/isPoseInTolerance", isPoseWithinTolerance);
 
         if (DriverStation.isEnabled() && RobotState.isQuestNavPoseReset && isPoseWithinTolerance) {
-            RobotState.offerQuestMeasurement(new TimestampedPose(getRobotPose(),
-                    inputs.timestamp));
+            // RobotState.offerQuestMeasurement(new TimestampedPose(getRobotPose(),
+            //         inputs.timestamp));
         }
     }
 

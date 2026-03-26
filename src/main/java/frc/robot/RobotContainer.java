@@ -307,13 +307,13 @@ public class RobotContainer {
 
                 // QuestNav Offset Calibration:
 
-                // new JoystickButton(driveJoystick, 6).onTrue(QuestCalibration
-                // .CollectCalibrationDataCommand(
-                // driveSubsystem::runChassisSpeeds,
-                // driveSubsystem::resetOdometry,
-                // questNavSubsystem::getUncorrectedPose,
-                // driveSubsystem,
-                // questNavSubsystem));
+                new JoystickButton(driveJoystick, 9).whileTrue(QuestCalibration
+                .CollectCalibrationDataCommand(
+                driveSubsystem::runChassisSpeeds,
+                driveSubsystem::resetOdometry,
+                questNavSubsystem::getUncorrectedPose,
+                //driveSubsystem,
+                questNavSubsystem)).whileTrue(Commands.print("Calibrating"));
 
                 if (!CowboyUtils.isSim()) { // Real robot
 

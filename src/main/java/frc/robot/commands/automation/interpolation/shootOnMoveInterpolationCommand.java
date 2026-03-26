@@ -113,7 +113,7 @@ public class shootOnMoveInterpolationCommand extends Command {
 
                 driveSubsystem.drive(
                                 ySquared, xSquared,
-                                0,
+                                rotOutput,
                                 true,
                                 true,
                                 false);

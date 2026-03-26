@@ -45,7 +45,7 @@ public class QuestCalibration {
                         Consumer<ChassisSpeeds> driveOutput,
                         Consumer<Pose2d> resetPose,
                         Supplier<Pose2d> getQuestUncorrected,
-                        DriveSubsystem driveSubsystem,
+                        //DriveSubsystem driveSubsystem,
                         QuestNavSubsystem questNavSubsystem) {
 
                 double turnDegreesPerSecondRate = 37.5;
@@ -55,17 +55,13 @@ public class QuestCalibration {
                 double rotationTime = 360 / turnDegreesPerSecondRate;
                 double samplePeriod = rotationTime / 15.0; // 15 samples around circle
 
-                Command turningCommand = Commands.run(
-                                () -> driveOutput.accept(
-                                                new ChassisSpeeds(
-                                                                0,
-                                                                0,
-                                                                Units.degreesToRadians(turnDegreesPerSecondRate))))
-                                .beforeStarting(() -> {
-                                        System.out.println("Starting Quest Calibration Data Collection");
-                                        resetPose.accept(new Pose2d());
-                                })
-                                .withTimeout(rotationTime);
+                // Command turningCommand = Commands.run(
+                //                 () -> driveSubsystem.drive(0, 0, .3, true, true, false))
+                //                 .beforeStarting(() -> {
+                //                         System.out.println("Starting Quest Calibration Data Collection");
+                //                         resetPose.accept(new Pose2d());
+                //                 })
+                //                 .withTimeout(rotationTime);
 
                 // Command that samples poses periodically
                 Timer timer = new Timer();
@@ -78,12 +74,13 @@ public class QuestCalibration {
 
                 // Run sampling while turning
                 return new ParallelDeadlineGroup(
-                                turningCommand,
+                                Commands.print("haha"),
+                                //turningCommand,
                                 samplingCommand).andThen(() -> {
                                         driveOutput.accept(new ChassisSpeeds());
                                         String csvText = ConvertCordsToCSVText(collectedPoses);
                                         System.out.println(csvText);
-                                }, driveSubsystem, questNavSubsystem);
+                                }, questNavSubsystem);
         }
 
         public static String ConvertCordsToCSVText(List<Pose2d> poses) {

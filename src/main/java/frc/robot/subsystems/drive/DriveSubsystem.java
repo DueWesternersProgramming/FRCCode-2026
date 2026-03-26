@@ -169,7 +169,6 @@ public class DriveSubsystem extends SubsystemBase {
                 });
 
         Logger.recordOutput("DriveSubsystem/OdometryPoseHybrid", hybridOdometry.getEstimatedPosition());
-        //Logger.recordOutput("HubDistance", hybridOdometry.getEstimatedPosition().getTranslation().getDistance(ScoringConstants.BLUE_ALLIANCE_HUB.getTranslation()));
         RobotState.robotPose = hybridOdometry.getEstimatedPosition();
     }
 
@@ -181,8 +180,6 @@ public class DriveSubsystem extends SubsystemBase {
         while ((timestampedPose = RobotState.getAprilTagCameraMeasurments().poll()) != null) {
             hybridOdometry.addVisionMeasurement(
                     timestampedPose.pose(), timestampedPose.timestamp());
-            // visionOdometry.addVisionMeasurement(
-            // timestampedPose.pose(), timestampedPose.timestamp());
         }
 
         // QuestNav poses:
@@ -193,9 +190,6 @@ public class DriveSubsystem extends SubsystemBase {
                 hybridOdometry.addVisionMeasurement(
                         timestampedPose.pose(), timestampedPose.timestamp(),
                         QuestNavConstants.QUESTNAV_STD_DEVS);
-                // questNavOdometry.addVisionMeasurement(
-                // timestampedPose.pose(), timestampedPose.timestamp(),
-                // QuestNavConstants.QUESTNAV_STD_DEVS);
             }
         }
     }
