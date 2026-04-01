@@ -46,12 +46,12 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.3688118811881194,
+      "waypointRelativePos": 1.3294605809128552,
       "rotationDegrees": 180.0
     },
     {
-      "waypointRelativePos": 1.670175438596491,
-      "rotationDegrees": 149.25256654210696
+      "waypointRelativePos": 1.8273858921161803,
+      "rotationDegrees": 175.77966215338336
     }
   ],
   "constraintZones": [],
@@ -73,7 +73,7 @@
   "folder": "Right Side Middle Rush",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -55.09170168946292
+    "rotation": -102.2847736911821
   },
   "useDefaultConstraints": false
 }
