@@ -108,27 +108,19 @@ public class shootOnMoveInterpolationCommand extends Command {
                 Logger.recordOutput("Interpolation/currentAngle", currentRobotPose.getRotation().getRadians());
                 
                 double rotOutput = angleController.calculate(currentRobotPose.getRotation().getRadians(), predictedAngleToRobot);
-                // calculate(
-                //                 currentRobotPose.getRotation().getRadians());
 
                 driveSubsystem.drive(
-                                ySquared, xSquared,
+                                (ySquared*MathUtil.clamp(0.3,1,Math.abs(Math.sin(predictedAngleToRobot)))), (xSquared*MathUtil.clamp(.3,1,Math.abs(Math.sin(predictedAngleToRobot)))),
                                 rotOutput,
                                 true,
                                 true,
                                 false);
 
-                // if (RobotState.canRotate) {
-                //         driveSubsystem.drive(ySquared, xSquared, rotSquared, true, true,
-                //                         RobotState.isAntiTippingEnabled);
-                // } else {                //         driveSubsystem.drive(ySquared, xSquared, 0, true, true, true);
-                // }
-
-                double shooterSpeed = MathUtil.clamp(0, -1, rotOutput);
+                double shooterSpeed = MathUtil.clamp(0, -1, shooterSubsystem.getPercentFromDistance(predictedDistanceToHub));
 
 
                 //shooterSubsystem.setPercentSpeed(joystick.getRawAxis(3));
-                shooterSubsystem.setPercentSpeed(shooterSubsystem.getPercentFromDistance(predictedDistanceToHub));
+                shooterSubsystem.setPercentSpeed(shooterSpeed);
                 Logger.recordOutput("Interpolation/predictedDistanceToHub", predictedDistanceToHub);
         };
 

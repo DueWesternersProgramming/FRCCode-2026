@@ -32,7 +32,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     
     public double getPercentFromDistance(double distanceMeters){
-        return -((distanceMeters * 0.1585) + 0.21);
+        return -((distanceMeters * 0.1585) + 0.2);
     }
 
     public double getTimeOfFlightFromDistance(double distanceMeters){
