@@ -102,15 +102,13 @@ public class shootOnMoveInterpolationCommand extends Command {
 
                 double predictedAngleToRobot = Math.atan2(dy, dx);
 
-                // angleController.setGoal(predictedAngleToRobot);
-
                 Logger.recordOutput("Interpolation/targetAngle", Units.radiansToDegrees(predictedAngleToRobot));
                 Logger.recordOutput("Interpolation/currentAngle", currentRobotPose.getRotation().getRadians());
                 
                 double rotOutput = angleController.calculate(currentRobotPose.getRotation().getRadians(), predictedAngleToRobot);
 
                 driveSubsystem.drive(
-                                (ySquared*MathUtil.clamp(0.3,1,Math.abs(Math.sin(predictedAngleToRobot)))), (xSquared*MathUtil.clamp(.3,1,Math.abs(Math.sin(predictedAngleToRobot)))),
+                                (ySquared*MathUtil.clamp(Math.abs(Math.sin(predictedAngleToRobot)),.3,1)), (xSquared*MathUtil.clamp(Math.abs(Math.sin(predictedAngleToRobot)),.3,1)),
                                 rotOutput,
                                 true,
                                 true,
@@ -131,7 +129,5 @@ public class shootOnMoveInterpolationCommand extends Command {
 
         @Override
         public void end(boolean interrupted) {
-                // angleController.reset(
-                //                 driveSubsystem.getPose().getRotation().getRadians());
         }
 }
