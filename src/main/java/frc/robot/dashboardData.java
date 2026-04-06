@@ -12,7 +12,7 @@ import frc.robot.utils.CowboyUtils;
  * Elastic driver dashboard.
  */
 public class dashboardData {
-    public static void controllerStatus() {
+    private static void controllerStatus() {
         String port0Name = DriverStation.getJoystickName(0);
         String port1Name = DriverStation.getJoystickName(1);
 
@@ -24,12 +24,12 @@ public class dashboardData {
         }
     }
 
-    public static void matchTime() {
+    private static void matchTime() {
         double matchTime = DriverStation.getMatchTime();
         SmartDashboard.putNumber("Match Time", matchTime);
     }
 
-    public static void updateHubStatus() {
+    private static void updateHubStatus() {
         Optional<Alliance> alliance = DriverStation.getAlliance();
         double matchTime = DriverStation.getMatchTime();
 

@@ -49,9 +49,7 @@ public class AprilTagCameraIOPhoton implements AprilTagCameraIO {
 
         List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults(); // Call this only once!!
 
-        if (!results.isEmpty()) {
-
-            // photonPoseEstimator.setLastPose(RobotState.robotPose);
+        if (!results.isEmpty()) {            
             try {
 
                 if (results.size() > 0) {

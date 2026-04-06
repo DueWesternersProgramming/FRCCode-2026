@@ -24,13 +24,14 @@ public class ShooterSubsystemIOSparkMax implements ShooterSubsystemIO {
     shooterMotorConfig = new SparkMaxConfig();
     closedLoopController = shooterMotor.getClosedLoopController();
 
-    shooterMotorConfig.smartCurrentLimit(30)
+    shooterMotorConfig.smartCurrentLimit(40)
                       .idleMode(IdleMode.kCoast);
 
     // kV is often roughly (1.0 / Max RPM). For a Neo, ~0.00017 is a starting point.
     FeedForwardConfig shooterFF = new FeedForwardConfig();
                 shooterFF.kV(0.00017);
     shooterMotorConfig.closedLoop.apply(shooterFF);
+    shooterMotorConfig.closedLoop.pid(3, 0, 0);
 
     shooterMotor.configure(shooterMotorConfig, 
                            ResetMode.kResetSafeParameters, 

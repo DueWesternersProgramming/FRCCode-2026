@@ -26,13 +26,6 @@ public class RobotState {
 
     public static HubState hubState = new HubState(false, -1);
 
-    public static enum IndexerStates{
-        OFF,
-        FEEDING,
-        REVERSE,
-        JAMMED //Maybe will be able to implement this?
-    }
-
     public static enum AutoMode {
         PP_AUTO,
         DYNAMIC_AUTO
