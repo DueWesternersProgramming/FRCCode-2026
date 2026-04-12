@@ -43,6 +43,8 @@ public class ModuleIOSpark implements ModuleIO {
                 m_drivingPIDController = m_drivingSparkMax.getClosedLoopController();
                 m_turningPIDController = m_turningSparkMax.getClosedLoopController();
 
+                m_drivingSparkMax.getOutputCurrent();
+
                 m_drivingConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
                 m_turningConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
@@ -197,6 +199,9 @@ public class ModuleIOSpark implements ModuleIO {
                 inputs.moduleState = getState();
                 inputs.steeringAbsoluteEncoderPosition =  m_turningAbsoluteEncoder.getPosition();
                 inputs.steeringRelativeEncoderPosition = m_turningEncoder.getPosition();
+                inputs.driveMotorCurrent = m_drivingSparkMax.getOutputCurrent();
+                inputs.driveMotorCurrent = m_turningSparkMax.getOutputCurrent();
+
         }
 
 }

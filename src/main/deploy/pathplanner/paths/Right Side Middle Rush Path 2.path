@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.07619658119658,
-        "y": 3.582792022792023
+        "x": 8.280797619047618,
+        "y": 3.559904761904762
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.948286324786322,
-        "y": 2.4317663817663835
+        "x": 8.15288736263736,
+        "y": 2.4088791208791225
       },
       "isLocked": false,
       "linkedName": "Neutral Balls Left"
@@ -54,7 +54,21 @@
       "rotationDegrees": 175.77966215338336
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.0540942928039705,
+      "maxWaypointRelativePos": 1.8560794044664974,
+      "constraints": {
+        "maxVelocity": 4.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {

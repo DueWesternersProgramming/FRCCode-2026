@@ -48,12 +48,12 @@
     },
     {
       "anchor": {
-        "x": 1.7465769230769244,
-        "y": 5.011769230769231
+        "x": 1.6510595238095247,
+        "y": 6.550845238095238
       },
       "prevControl": {
-        "x": 5.176897435897438,
-        "y": 5.628064102564102
+        "x": 1.867011904761906,
+        "y": 4.175369047619047
       },
       "nextControl": null,
       "isLocked": false,
@@ -71,7 +71,7 @@
     },
     {
       "waypointRelativePos": 2.6912280701754354,
-      "rotationDegrees": -158.1041576602789
+      "rotationDegrees": -158.10415766027893
     }
   ],
   "constraintZones": [
@@ -114,7 +114,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -18.5757244106811
+    "rotation": -14.503087636223407
   },
   "reversed": false,
   "folder": "Left Side Head-On Rush",

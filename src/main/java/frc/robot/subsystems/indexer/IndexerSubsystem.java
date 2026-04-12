@@ -27,10 +27,10 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public Command runIndexerAgitationContinousCommand() {
         return Commands.repeatingSequence(
-                setIndexerSpeedCommand(.9,1)
-                // new WaitCommand(1),
-                // setIndexerSpeedCommand(-.8,-.6),
-                // new WaitCommand(0)
+                setIndexerSpeedCommand(.9,1),
+                new WaitCommand(3),
+                setIndexerSpeedCommand(-.8,-.6),
+                new WaitCommand(0.2)
                 );
     }
 

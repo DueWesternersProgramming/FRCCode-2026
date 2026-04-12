@@ -14,6 +14,8 @@ public interface ModuleIO {
         public double steeringAbsoluteEncoderPosition = 0.0;
         public SwerveModuleState moduleState = new SwerveModuleState();
         public SwerveModulePosition modulePosition = new SwerveModulePosition();
+        public double driveMotorCurrent = 0.0;
+        public double turnMotorCurrent = 0.0;
     }
 
     default void updateInputs(ModuleIOInputs inputs) {
