@@ -26,55 +26,56 @@ public class LEDSubsystemIOCandle implements LEDSubsystemIO {
     private AnimationTypes currentAnimation = AnimationTypes.NONE;
 
     public LEDSubsystemIOCandle() {
-        // candle = new CANdle(PortConstants.CAN.CANDLE, "rio");
-        // candleConfig = new CANdleConfiguration();
-        // candleConfig.LED.StripType = StripTypeValue.RGB;
+        candle = new CANdle(PortConstants.CAN.CANDLE, "rio");
+        candleConfig = new CANdleConfiguration();
+        candleConfig.LED.StripType = StripTypeValue.RGB;
 
-        // candleConfig.LED.BrightnessScalar = .5;
-        // candleConfig.CANdleFeatures.StatusLedWhenActive = StatusLedWhenActiveValue.Enabled;
+        candleConfig.LED.BrightnessScalar = .5;
+        candleConfig.CANdleFeatures.StatusLedWhenActive = StatusLedWhenActiveValue.Enabled;
 
-        // candle.getConfigurator().apply(candleConfig);
-        // runningAnimation = false;
+        candle.getConfigurator().apply(candleConfig);
+        runningAnimation = false;
 
-        // for (int i = 0; i < 8; ++i) {
-        //     candle.setControl(new EmptyAnimation(i));
-        // }
+        for (int i = 0; i < 8; ++i) {
+            candle.setControl(new EmptyAnimation(i));
+        }
     }
 
     @Override
     public void setAnimation(AnimationTypes animation) {
-        // currentAnimation = animation;
-        // switch (animation) {
-        //     default:
-        //     case ColorFlow:
-        //         candle.setControl(
-        //                 new ColorFlowAnimation(0, LEDConstants.LED_COUNT).withSlot(0)
-        //                         .withColor(LEDConstants.ANIMATION_COLOR));
-        //         break;
-        //     case Rainbow:
-        //         candle.setControl(
-        //                 new RainbowAnimation(0, LEDConstants.LED_COUNT).withSlot(0));
-        //         break;
-        //     case Twinkle:
-        //         candle.setControl(
-        //                 new TwinkleAnimation(0, LEDConstants.LED_COUNT).withSlot(0)
-        //                         .withColor(LEDConstants.ANIMATION_COLOR));
-        //         break;
-        //     case TwinkleOff:
-        //         candle.setControl(
-        //                 new TwinkleOffAnimation(0, LEDConstants.LED_COUNT).withSlot(0)
-        //                         .withColor(LEDConstants.ANIMATION_COLOR));
-        //         break;
-        //     case Fire:
-        //         candle.setControl(
-        //                 new FireAnimation(0, LEDConstants.LED_COUNT).withSlot(0));
-        //         break;
-        // }
+        currentAnimation = animation;
+        switch (animation) {
+            default:
+            case ColorFlow:
+                candle.setControl(
+                        new ColorFlowAnimation(0, LEDConstants.LED_COUNT).withSlot(0)
+                                .withColor(LEDConstants.ANIMATION_COLOR));
+                break;
+            case Rainbow:
+                candle.setControl(
+                        new RainbowAnimation(0, LEDConstants.LED_COUNT).withSlot(0));
+                break;
+            case Twinkle:
+                candle.setControl(
+                        new TwinkleAnimation(0, LEDConstants.LED_COUNT).withSlot(0)
+                                .withColor(LEDConstants.ANIMATION_COLOR));
+                break;
+            case TwinkleOff:
+                candle.setControl(
+                        new TwinkleOffAnimation(0, LEDConstants.LED_COUNT).withSlot(0)
+                                .withColor(LEDConstants.ANIMATION_COLOR));
+                break;
+            case Fire:
+                candle.setControl(
+                        new FireAnimation(0, LEDConstants.LED_COUNT).withSlot(0));
+                break;
+        }
     }
+
 
     @Override
     public void updateInputs(LEDSubsystemIOInputs inputs) {
-        // inputs.currentAnimation = currentAnimation;
-        // inputs.temp = candle.getDeviceTemp().getValueAsDouble();
+        inputs.currentAnimation = currentAnimation;
+        inputs.temp = candle.getDeviceTemp().getValueAsDouble();
     }
 }

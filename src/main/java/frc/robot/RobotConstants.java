@@ -77,7 +77,7 @@ public final class RobotConstants {
                                                                                                            // methods in
                                                                                                            // CowboyUtils.
 
-                public static final Pose2d BLUE_ALLIANCE_FEEDING_TARGET = new Pose2d(1.65, 5.3, new Rotation2d());
+                public static final Pose2d BLUE_ALLIANCE_FEEDING_TARGET = new Pose2d(1, 1, new Rotation2d());
 
                 public static final Pose2d[][] BUMP_POSITION_POSES;
                 static {
@@ -418,6 +418,14 @@ public final class RobotConstants {
         }
 
         public static final class LEDConstants {
+
+                public static enum LEDModes {
+                        IDLE,
+                        INTAKING,
+                        SHOOTING,
+                        REVERSING
+                }
+
                 public static final int LED_COUNT = 300;
 
                 public static enum AnimationTypes {

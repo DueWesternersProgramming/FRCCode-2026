@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
+import frc.robot.RobotConstants.LEDConstants.LEDModes;
 import frc.robot.RobotConstants.ScoringConstants.FieldZones;
 import frc.robot.commands.automation.interpolation.shootOnMoveInterpolationCommand;
 import frc.robot.commands.automation.interpolation.shootSimpleInterpolationCommand;
@@ -15,6 +16,7 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.feeder.FeederSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.utils.CowboyUtils;
 
@@ -23,14 +25,35 @@ import java.util.function.Supplier;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 
-public class AutomatedScoring {
+/**
+ * This class is used to automate the 'superstructure' of our robot - this is
+ * where any automation
+ * should go where commands are built up and abstracted away into a single
+ * command.
+ */
+public class AutomatedCommands {
 
         public static Command exampleCommandDynamicAuton(Integer exampleParam) {
                 return Commands.print("EA Sports: It's in the game! Example Param: " + exampleParam);
         }
 
+        public static Command intakeCommand(IntakeSubsystem intakeSubsystem, LEDSubsystem ledSubsystem) {
+                return Commands.parallel(
+                                new SequentialCommandGroup(
+                                                intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1),
+                                                intakeSubsystem.setIntakeSpeedCommand(1)),
+                                ledSubsystem.setLEDModeCommand(LEDModes.INTAKING));
+        }
+
+        public static Command reverseSuperstructure(IntakeSubsystem intakeSubsystem, IndexerSubsystem indexerSubsystem,
+                        FeederSubsystem feederSubsystem, LEDSubsystem ledSubsystem) {
+                return Commands.parallel(indexerSubsystem.setIndexerSpeedCommand(-.3, -1),
+                                intakeSubsystem.setIntakeSpeedCommand(-.6), feederSubsystem.setFeederSpeed(-.5),
+                                ledSubsystem.setLEDModeCommand(LEDModes.REVERSING));
+        }
+
         /**
-         * Automaticly agitates and outtakes balls through the shooter while active.
+         * Agitates and outtakes balls through the shooter while active.
          * 
          * @param target Placement of the balls, using interpolation for distance. No
          *               rotation control here.
@@ -81,28 +104,29 @@ public class AutomatedScoring {
                         Joystick driveJoystick,
                         IntakeSubsystem intakeSubsystem, IndexerSubsystem indexerSubsystem,
                         FeederSubsystem feederSubsystem,
-                        ShooterSubsystem shooterSubsystem) {
+                        ShooterSubsystem shooterSubsystem, LEDSubsystem ledSubsystem) {
 
-                if (CowboyUtils.getFieldZoneFromPose(driveSubsystem.getPose()) == FieldZones.NEUTRAL_ZONE) { // In the
-                                                                                                             // center
-                                                                                                             // feeding
-                                                                                                             // to a
-                                                                                                             // spot on
-                                                                                                             // your
-                                                                                                             // zone
+                if (CowboyUtils.getFieldZoneFromPose(
+                                driveSubsystem.getPose()) != (CowboyUtils.isRedAlliance() ? FieldZones.RED_ZONE
+                                                : FieldZones.BLUE_ZONE)) { // Passing shots
                         return (Commands.parallel(
                                         new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem,
-                                                        driveJoystick, ()->CowboyUtils.getAllianceFeedingPosition()),
+                                                        driveJoystick, () -> CowboyUtils.getAllianceFeedingPosition()),
                                         Commands.sequence(
                                                         new WaitCommand(.5),
-                                                        Commands.parallel(
+                                                        Commands.parallel(// shootOnMoveInterpolationCommand takes care
+                                                                          // of the shooter speed for us. The
+                                                                          // indexing/agitation cycles get ran here in
+                                                                          // parallel with one another and the
+                                                                          // shooter/drivetrain command.
                                                                         intakeSubsystem.runIntakeAgitationContinousCommand(),
                                                                         indexerSubsystem.runIndexerAgitationContinousCommand(),
-                                                                        feederSubsystem.startFeedingBallsCommand()))));
-                } else { // In an alliance zone for scoring in the hub
+                                                                        feederSubsystem.startFeedingBallsCommand())),
+                                        ledSubsystem.setLEDModeCommand(LEDModes.SHOOTING)));
+                } else { // Shooting spots
                         return (Commands.defer(() -> Commands.parallel(
                                         new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem,
-                                                        driveJoystick, ()->CowboyUtils.getAllianceHubPose()),
+                                                        driveJoystick, () -> CowboyUtils.getAllianceHubPose()),
                                         Commands.sequence(
                                                         new WaitCommand(.5),
                                                         Commands.parallel(
@@ -117,13 +141,15 @@ public class AutomatedScoring {
          * Stops all super structure and ball control systems.
          */
         public static Command stopAllSuperStructure(IntakeSubsystem intakeSubsystem, IndexerSubsystem indexerSubsystem,
-                        FeederSubsystem feederSubsystem, ShooterSubsystem shooterSubsystem) {
+                        FeederSubsystem feederSubsystem, ShooterSubsystem shooterSubsystem, LEDSubsystem ledSubsystem) {
                 return (Commands.sequence(
                                 Commands.parallel(
                                                 intakeSubsystem.stopIntakingCommand(),
                                                 indexerSubsystem.stopIndexing(),
                                                 feederSubsystem.stopFeedingBallsCommand(),
-                                                shooterSubsystem.setPercentSpeedCommand(0))));
+                                                shooterSubsystem.setPercentSpeedCommand(0),
+                                                ledSubsystem.setLEDModeCommand(LEDModes.IDLE))));
+
         }
 
         public static Command PPmoveToPose(Pose2d pose) {

@@ -4,18 +4,13 @@
 
 package frc.robot;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -28,18 +23,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.RobotSystemsCheckCommand;
-import frc.robot.commands.automation.AimAlongArcRadiusCommand;
-import frc.robot.commands.automation.AutomatedScoring;
+import frc.robot.commands.automation.AutomatedCommands;
 import frc.robot.commands.drive.TeleopDriveCommand;
 import frc.robot.configurableAutos.AutoCommandDef;
 import frc.robot.configurableAutos.AutoParamDef;
@@ -76,9 +67,7 @@ import frc.robot.subsystems.shooter.ShooterSubsystemIO;
 import frc.robot.subsystems.shooter.ShooterSubsystemIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystemIOSparkMax;
 import frc.robot.subsystems.vision.VisionSubsystem;
-import frc.robot.RobotConstants.PortConstants;
 import frc.robot.utils.CowboyUtils;
-import frc.robot.utils.QuestCalibration;
 import frc.robot.utils.CowboyUtils.RobotModes;
 import frc.robot.utils.FuelSim;
 import frc.robot.RobotConstants.PortConstants.CAN;
@@ -263,21 +252,23 @@ public class RobotContainer {
 
                 // These two commands never end, so we have to use a time based race condition.
                 NamedCommands.registerCommand("Interpolate Score",
-                                Commands.defer(()->AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem, indexerSubsystem,
-                                                feederSubsystem, shooterSubsystem, ()->CowboyUtils.getAllianceHubPose()), allSubsystemsSet));
+                                Commands.defer(() -> AutomatedCommands.shootFromHopperContinousCommand(intakeSubsystem,
+                                                indexerSubsystem,
+                                                feederSubsystem, shooterSubsystem,
+                                                () -> CowboyUtils.getAllianceHubPose()), allSubsystemsSet));
                 NamedCommands.registerCommand("Interpolate Pass",
-                                Commands.defer(()->AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem, indexerSubsystem,
-                                                feederSubsystem, shooterSubsystem, ()->CowboyUtils.getAllianceFeedingPosition()), allSubsystemsSet));
+                                Commands.defer(() -> AutomatedCommands.shootFromHopperContinousCommand(intakeSubsystem,
+                                                indexerSubsystem,
+                                                feederSubsystem, shooterSubsystem,
+                                                () -> CowboyUtils.getAllianceFeedingPosition()), allSubsystemsSet));
 
-                NamedCommands.registerCommand("Stop All Superstructure", AutomatedScoring.stopAllSuperStructure(
-                                intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem));
+                NamedCommands.registerCommand("Stop All Superstructure", AutomatedCommands.stopAllSuperStructure(
+                                intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem, ledSubsystem));
 
                 NamedCommands.registerCommand("Example", new RunCommand(() -> {
                         System.out.println("Running...");
                 }));
 
-
-                
                 dynamicAutoRegistry = new DynamicAutoRegistry();
 
                 dynamicAutoRegistry.registerCommand(new AutoCommandDef("Example Command",
@@ -287,7 +278,8 @@ public class RobotContainer {
                                                                 params.get("Example Param")))));
 
                 dynamicAutoRegistry.registerCommand(new AutoCommandDef("Score From Position",
-                                List.of(new AutoParamDef("Position", 1),new AutoParamDef("Time", 5)), params -> Commands.deferredProxy(
+                                List.of(new AutoParamDef("Position", 1), new AutoParamDef("Time", 5)),
+                                params -> Commands.deferredProxy(
                                                 // this is the command factory
                                                 () -> DynamicAutoCommands.DynamicAutoScorePosition(
                                                                 params.get("Position"),
@@ -306,42 +298,40 @@ public class RobotContainer {
                 driveSubsystem.setDefaultCommand(new TeleopDriveCommand(driveSubsystem, driveJoystick));
 
                 // QuestNav Offset Calibration:
-
-                new JoystickButton(driveJoystick, 9).whileTrue(QuestCalibration
-                .CollectCalibrationDataCommand(
-                driveSubsystem::runChassisSpeeds,
-                driveSubsystem::resetOdometry,
-                questNavSubsystem::getUncorrectedPose,
-                //driveSubsystem,
-                questNavSubsystem)).whileTrue(Commands.print("Calibrating"));
+                // new JoystickButton(driveJoystick, 9).whileTrue(QuestCalibration
+                // .CollectCalibrationDataCommand(
+                // driveSubsystem::runChassisSpeeds,
+                // driveSubsystem::resetOdometry,
+                // questNavSubsystem::getUncorrectedPose,
+                // //driveSubsystem,
+                // questNavSubsystem)).whileTrue(Commands.print("Calibrating"));
 
                 if (!CowboyUtils.isSim()) { // Real robot
 
                         // Right operator trigger, enables shoot on the move and turrets the robot.
                         new Trigger(() -> operatorJoystick.getRawAxis(3) > .4)
-                                        .whileTrue(AutomatedScoring.teleopShootOnMoveAutomationCommand(
+                                        .whileTrue(AutomatedCommands.teleopShootOnMoveAutomationCommand(
                                                         driveSubsystem, driveJoystick, intakeSubsystem,
-                                                        indexerSubsystem, feederSubsystem, shooterSubsystem))
-                                        .onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,
-                                                        indexerSubsystem, feederSubsystem, shooterSubsystem));
+                                                        indexerSubsystem, feederSubsystem, shooterSubsystem,
+                                                        ledSubsystem))
+                                        .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
+                                                        indexerSubsystem, feederSubsystem, shooterSubsystem,
+                                                        ledSubsystem));
 
                         // Left operator trigger, runs intake while held.
                         new Trigger(() -> operatorJoystick.getRawAxis(2) > .4)
-                                        .whileTrue(new SequentialCommandGroup(
-                                                        intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1),
-                                                        intakeSubsystem.setIntakeSpeedCommand(1)))
-                                        .onFalse(intakeSubsystem.stopIntakingCommand());
+                                        .whileTrue(AutomatedCommands.intakeCommand(intakeSubsystem, ledSubsystem))
+                                        .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
+                                                        indexerSubsystem, feederSubsystem, shooterSubsystem,
+                                                        ledSubsystem));
 
                         // Operator X button, reverses indexer if needed to clear jams
                         new JoystickButton(operatorJoystick, 3)
-                                        .whileTrue(indexerSubsystem.setIndexerSpeedCommand(-.3, -1)).whileTrue(intakeSubsystem.setIntakeSpeedCommand(-.6))
-                                        .onFalse(indexerSubsystem.stopIndexing()).onFalse(intakeSubsystem.stopIntakingCommand()).whileTrue(feederSubsystem.setFeederSpeed(-.5)).onFalse(feederSubsystem.setFeederSpeed(0));
-
-                        // new JoystickButton(driveJoystick, 11)
-                        // .whileTrue(new ParallelCommandGroup(new
-                        // AimAlongArcRadiusCommand(driveSubsystem, 3.5, driveJoystick),
-                        // AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem,indexerSubsystem,feederSubsystem,
-                        // shooterSubsystem,.8))).onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem));
+                                        .whileTrue(AutomatedCommands.reverseSuperstructure(intakeSubsystem,
+                                                        indexerSubsystem, feederSubsystem, ledSubsystem))
+                                        .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
+                                                        indexerSubsystem, feederSubsystem, shooterSubsystem,
+                                                        ledSubsystem));
 
                         new JoystickButton(driveJoystick, 1).onTrue(RobotState.setCanRotate(true))
                                         .onFalse(RobotState.setCanRotate(false));
@@ -359,21 +349,19 @@ public class RobotContainer {
                 else { // Sim, just the one Logitech F310 controller for testing
 
                         new Trigger(() -> driveJoystick.getRawAxis(3) > .4)
-                                        .whileTrue(AutomatedScoring.teleopShootOnMoveAutomationCommand(
+                                        .whileTrue(AutomatedCommands.teleopShootOnMoveAutomationCommand(
                                                         driveSubsystem, driveJoystick, intakeSubsystem,
-                                                        indexerSubsystem, feederSubsystem, shooterSubsystem))
-                                        .onFalse(AutomatedScoring.stopAllSuperStructure(intakeSubsystem,
-                                                        indexerSubsystem, feederSubsystem, shooterSubsystem));
+                                                        indexerSubsystem, feederSubsystem, shooterSubsystem,
+                                                        ledSubsystem))
+                                        .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
+                                                        indexerSubsystem, feederSubsystem, shooterSubsystem,
+                                                        ledSubsystem));
 
                         new Trigger(() -> driveJoystick.getRawAxis(2) > .4)
-                                        .whileTrue(new SequentialCommandGroup(
-                                                        intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1),
-                                                        intakeSubsystem.setIntakeSpeedCommand(.8)))
-                                        .onFalse(intakeSubsystem.stopIntakingCommand());
-
-                        new JoystickButton(operatorJoystick, 6)
-                                        .whileTrue(indexerSubsystem.setIndexerSpeedCommand(-.3, -1))
-                                        .onFalse(indexerSubsystem.stopIndexing());
+                                        .whileTrue(AutomatedCommands.intakeCommand(intakeSubsystem, ledSubsystem))
+                                        .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
+                                                        indexerSubsystem, feederSubsystem, shooterSubsystem,
+                                                        ledSubsystem));
 
                         new JoystickButton(driveJoystick, 8)
                                         .whileTrue(new SequentialCommandGroup(

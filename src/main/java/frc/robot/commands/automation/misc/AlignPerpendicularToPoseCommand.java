@@ -1,4 +1,4 @@
-package frc.robot.commands.automation;
+package frc.robot.commands.automation.misc;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;

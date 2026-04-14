@@ -1,9 +1,10 @@
-package frc.robot.commands.automation;
+package frc.robot.commands.automation.misc;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.automation.AutomatedCommands;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.utils.CowboyUtils;
 
@@ -26,7 +27,7 @@ public class AutomatedBumpCrossing extends Command {
         public void initialize(){
             Pose2d bumpPose = CowboyUtils.getBumpPosition(CowboyUtils.getClosestBump(driveSubsystem.getPose()));
 
-            CommandScheduler.getInstance().schedule(AutomatedScoring.PPmoveToPose(bumpPose));
+            CommandScheduler.getInstance().schedule(AutomatedCommands.PPmoveToPose(bumpPose));
         }
 
         @Override

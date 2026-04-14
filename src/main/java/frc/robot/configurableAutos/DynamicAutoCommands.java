@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotContainer;
 import frc.robot.RobotConstants.ScoringConstants;
 import frc.robot.RobotConstants.ScoringConstants.DynamicAutoScoringPositions;
-import frc.robot.commands.automation.AutomatedScoring;
+import frc.robot.commands.automation.AutomatedCommands;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.feeder.FeederSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
@@ -37,7 +37,7 @@ public class DynamicAutoCommands {
         
         goalPose = ScoringConstants.BLUE_ALLIANCE_DYNAMIC_AUTO_SCORING_POSES[position];
 
-        Command cmd = new SequentialCommandGroup(AutomatedScoring.PPmoveToPose(goalPose),AutomatedScoring.shootFromHopperContinousCommand(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem,()->CowboyUtils.getAllianceHubPose()));
+        Command cmd = new SequentialCommandGroup(AutomatedCommands.PPmoveToPose(goalPose),AutomatedCommands.shootFromHopperContinousCommand(intakeSubsystem,indexerSubsystem,feederSubsystem,shooterSubsystem,()->CowboyUtils.getAllianceHubPose()));
         
         
         return Commands.defer(() -> cmd, RobotContainer.allSubsystemsSet);

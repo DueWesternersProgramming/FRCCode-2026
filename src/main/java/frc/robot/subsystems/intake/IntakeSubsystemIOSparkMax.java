@@ -16,11 +16,9 @@ public class IntakeSubsystemIOSparkMax implements IntakeSubsystemIO {
     SparkMax deploymentMotor;
 
     SparkMaxConfig intakeMotorConfig;
-    SparkMaxConfig deploymentMotorConfig;
 
     public IntakeSubsystemIOSparkMax() {
         intakeMotor = new SparkMax(PortConstants.CAN.INTAKE_MOTOR, MotorType.kBrushless);
-        deploymentMotor = new SparkMax(PortConstants.CAN.INTAKE_DEPLOYMENT_MOTOR, MotorType.kBrushless);
 
         SparkMaxConfig intakeMotorConfig = new SparkMaxConfig();
         intakeMotorConfig.smartCurrentLimit(30).idleMode(IdleMode.kCoast).inverted(true);
@@ -33,20 +31,8 @@ public class IntakeSubsystemIOSparkMax implements IntakeSubsystemIO {
     }
 
     @Override
-    public void setDeploymentMotorPercentSpeed(double percent){
-        deploymentMotor.set(percent);
-    }
-
-    @Override
-    public double getDeploymentMotorEncoderRevs(){
-        return deploymentMotor.getEncoder().getPosition();
-    }
-
-    @Override
     public void updateInputs(IntakeSubsystemIOInputs inputs) {
         inputs.intakePercent = intakeMotor.getAppliedOutput();
         inputs.intakeTempC = intakeMotor.getMotorTemperature();
-        //inputs.deployMotorEncoderPosition = 0;
-
     }
 }
