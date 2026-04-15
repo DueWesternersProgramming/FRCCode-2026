@@ -200,9 +200,12 @@ public class DriveSubsystem extends SubsystemBase {
         antiTipping.calculate();
 
         updateOdometry();
+        
         Logger.recordOutput("Module states", getModuleStates());
 
         Logger.recordOutput("Gyro", gyroIO.getGyroYawAngle());
+
+        Logger.recordOutput("DriveSubsystem/CurrentFieldZone", CowboyUtils.getFieldZoneFromPose(getPose()).name());
 
         for (int i = 0; i < moduleIO.length; i++) {
             moduleIO[i].updateInputs(moduleInputs[i]);

@@ -80,8 +80,8 @@ public class CowboyUtils {
 
     public static FieldZones getFieldZoneFromPose(Pose2d pose) {
         double x = pose.getX();
-        double blueThreshold = getAllianceHubPose().getX();
-        double redThreshold = getAllianceHubPose().getX();
+        double blueThreshold = ScoringConstants.BLUE_ALLIANCE_HUB.getX();
+        double redThreshold = FlippingUtil.flipFieldPose(ScoringConstants.BLUE_ALLIANCE_HUB).getX();
 
         if (x < blueThreshold) {
             return FieldZones.BLUE_ZONE;

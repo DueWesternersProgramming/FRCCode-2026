@@ -5,6 +5,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
@@ -106,35 +107,35 @@ public class AutomatedCommands {
                         FeederSubsystem feederSubsystem,
                         ShooterSubsystem shooterSubsystem, LEDSubsystem ledSubsystem) {
 
-                if (CowboyUtils.getFieldZoneFromPose(
-                                driveSubsystem.getPose()) != (CowboyUtils.isRedAlliance() ? FieldZones.RED_ZONE
-                                                : FieldZones.BLUE_ZONE)) { // Passing shots
-                        return (Commands.parallel(
-                                        new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem,
-                                                        driveJoystick, () -> CowboyUtils.getAllianceFeedingPosition()),
-                                        Commands.sequence(
-                                                        new WaitCommand(.5),
-                                                        Commands.parallel(// shootOnMoveInterpolationCommand takes care
-                                                                          // of the shooter speed for us. The
-                                                                          // indexing/agitation cycles get ran here in
-                                                                          // parallel with one another and the
-                                                                          // shooter/drivetrain command.
-                                                                        intakeSubsystem.runIntakeAgitationContinousCommand(),
-                                                                        indexerSubsystem.runIndexerAgitationContinousCommand(),
-                                                                        feederSubsystem.startFeedingBallsCommand())),
-                                        ledSubsystem.setLEDModeCommand(LEDModes.SHOOTING)));
-                } else { // Shooting spots
-                        return (Commands.defer(() -> Commands.parallel(
-                                        new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem,
-                                                        driveJoystick, () -> CowboyUtils.getAllianceHubPose()),
-                                        Commands.sequence(
-                                                        new WaitCommand(.5),
-                                                        Commands.parallel(
-                                                                        intakeSubsystem.runIntakeAgitationContinousCommand(),
-                                                                        indexerSubsystem.runIndexerAgitationContinousCommand(),
-                                                                        feederSubsystem.startFeedingBallsCommand()))),
-                                        RobotContainer.allSubsystemsSet));
-                }
+                return Commands.defer(() -> {
+                        if (CowboyUtils.getFieldZoneFromPose(
+                                        driveSubsystem.getPose()) != (CowboyUtils.isRedAlliance() ? FieldZones.RED_ZONE
+                                                        : FieldZones.BLUE_ZONE)) { // Passing shots
+                                return Commands.parallel(
+                                                new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem,
+                                                                driveJoystick,
+                                                                () -> CowboyUtils.getAllianceFeedingPosition()),
+                                                Commands.sequence(
+                                                                new WaitCommand(.5),
+                                                                Commands.parallel(
+                                                                                intakeSubsystem.runIntakeAgitationContinousCommand(),
+                                                                                indexerSubsystem.runIndexerAgitationContinousCommand(),
+                                                                                feederSubsystem.startFeedingBallsCommand())),
+                                                ledSubsystem.setLEDModeCommand(LEDModes.SHOOTING));
+                        } else { // Shooting spots
+                                return Commands.parallel(
+                                                //new FunctionalCommand(()->{}, null, null, null, null);
+                                                new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem,
+                                                                driveJoystick, () -> CowboyUtils.getAllianceHubPose()),
+                                                Commands.sequence(
+                                                                new WaitCommand(.5),
+                                                                Commands.parallel(
+                                                                                intakeSubsystem.runIntakeAgitationContinousCommand(),
+                                                                                indexerSubsystem.runIndexerAgitationContinousCommand(),
+                                                                                feederSubsystem.startFeedingBallsCommand())),
+                                                ledSubsystem.setLEDModeCommand(LEDModes.SHOOTING));
+                        }
+                }, RobotContainer.allSubsystemsSet);
         }
 
         /**

@@ -20,7 +20,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void setRPM(double rpm){
-        io.setRMP(rpm);
+        io.setRPM(rpm);
     }
 
     public Command setPercentSpeedCommand(double percent){
@@ -31,12 +31,12 @@ public class ShooterSubsystem extends SubsystemBase {
         return new InstantCommand(()->setRPM(percent), this);
     }
     
-    public double getPercentFromDistance(double distanceMeters){
-        return -((distanceMeters * 0.1585) + 0.2);
+    public double getRPMFromDistance(double distanceMeters){
+        return 1000; //TODO
     }
 
     public double getTimeOfFlightFromDistance(double distanceMeters){
-        return 1; //TODO: Make this equation
+        return 1.4; //TODO: Make this equation
     }    
 
     @Override

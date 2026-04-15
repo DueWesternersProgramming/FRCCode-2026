@@ -9,14 +9,11 @@ public class ShooterSubsystemIOSim implements ShooterSubsystemIO {
         this.percent = percent;
     }
 
-    public void setRMP(double rpm){
+    public void setRPM(double rpm){
         this.rpm = rpm;
     }
 
     @Override
     public void updateInputs(ShooterSubsystemIOInputs inputs) {
-        inputs.motorRMP = rpm;
-        inputs.motorPercent = -percent;
-        inputs.motorTempC = 0;
     }
 }

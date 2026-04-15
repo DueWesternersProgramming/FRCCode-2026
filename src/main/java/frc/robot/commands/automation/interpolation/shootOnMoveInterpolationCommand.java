@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotConstants;
 import frc.robot.RobotState;
@@ -114,11 +115,15 @@ public class shootOnMoveInterpolationCommand extends Command {
                                 true,
                                 false);
 
-                double shooterSpeed = MathUtil.clamp(0, -1, shooterSubsystem.getPercentFromDistance(predictedDistanceToHub));
+                double shooterSpeed = shooterSubsystem.getRPMFromDistance(predictedDistanceToHub);
 
-
-                //shooterSubsystem.setPercentSpeed(joystick.getRawAxis(3));
-                shooterSubsystem.setPercentSpeed(shooterSpeed);
+                if (SmartDashboard.getBoolean("shooterCalibrationActive", false)){
+                        shooterSubsystem.setPercentSpeed(-joystick.getRawAxis(3)); //directly taken as a percent, read out rpm on dashboard
+                }
+                else{
+                        shooterSubsystem.setRPM(shooterSpeed);
+                }
+                
                 Logger.recordOutput("Interpolation/predictedDistanceToHub", predictedDistanceToHub);
         };
 

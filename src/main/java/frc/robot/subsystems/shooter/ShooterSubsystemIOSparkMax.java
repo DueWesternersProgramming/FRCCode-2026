@@ -3,55 +3,71 @@ package frc.robot.subsystems.shooter;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.RobotConstants.PortConstants;
-import frc.robot.RobotConstants.SwerveModuleConstants;
 
 public class ShooterSubsystemIOSparkMax implements ShooterSubsystemIO {
-    SparkMax shooterMotor;
-    SparkMaxConfig shooterMotorConfig;
+    SparkMax leftShooterMotor;
+    SparkMax rightShooterMotor;
+    SparkMaxConfig leftShooterMotorConfig;
+    SparkMaxConfig rightShooterMotorConfig;
     SparkClosedLoopController closedLoopController;
 
     public ShooterSubsystemIOSparkMax() {
-    shooterMotor = new SparkMax(PortConstants.CAN.SHOOTER_MOTOR, MotorType.kBrushless);
-    shooterMotorConfig = new SparkMaxConfig();
-    closedLoopController = shooterMotor.getClosedLoopController();
+        leftShooterMotor = new SparkMax(PortConstants.CAN.LEFT_SHOOTER_MOTOR, MotorType.kBrushless);
+        rightShooterMotor = new SparkMax(PortConstants.CAN.RIGHT_SHOOTER_MOTOR, MotorType.kBrushless);
 
-    shooterMotorConfig.smartCurrentLimit(40)
-                      .idleMode(IdleMode.kCoast);
+        leftShooterMotorConfig = new SparkMaxConfig();
+        rightShooterMotorConfig = new SparkMaxConfig();
 
-    // kV is often roughly (1.0 / Max RPM). For a Neo, ~0.00017 is a starting point.
-    FeedForwardConfig shooterFF = new FeedForwardConfig();
-                shooterFF.kV(0.00017);
-    shooterMotorConfig.closedLoop.apply(shooterFF);
-    shooterMotorConfig.closedLoop.pid(3, 0, 0);
+        leftShooterMotorConfig.smartCurrentLimit(40)
+                .idleMode(IdleMode.kCoast);
 
-    shooterMotor.configure(shooterMotorConfig, 
-                           ResetMode.kResetSafeParameters, 
-                           PersistMode.kNoPersistParameters);
-}
+        closedLoopController = leftShooterMotor.getClosedLoopController();
 
-    @Override
-    public void setRMP(double rpm){
-        closedLoopController.setSetpoint(rpm, ControlType.kVelocity);
+        leftShooterMotorConfig.closedLoop
+                .pid(0.5, 0, 0)
+                .outputRange(-1, 1);
+
+        leftShooterMotorConfig.closedLoop.maxMotion
+                .maxAcceleration(4000)
+                .cruiseVelocity(6500)
+                .allowedProfileError(25);
+
+        rightShooterMotorConfig.smartCurrentLimit(40)
+                .idleMode(IdleMode.kCoast).follow(leftShooterMotor).inverted(true);
+
+        leftShooterMotor.configure(leftShooterMotorConfig,
+                ResetMode.kResetSafeParameters,
+                PersistMode.kNoPersistParameters);
+
+        rightShooterMotor.configure(rightShooterMotorConfig, ResetMode.kResetSafeParameters,
+                PersistMode.kNoPersistParameters);
     }
 
     @Override
-    public void setPercentSpeed(double speed){
-        closedLoopController.setSetpoint(speed, ControlType.kDutyCycle);
+    public void setRPM(double rpm) {
+        closedLoopController.setSetpoint(rpm, ControlType.kMAXMotionVelocityControl);
+    }
+
+    @Override
+    public void setPercentSpeed(double speed) {
+
     }
 
     @Override
     public void updateInputs(ShooterSubsystemIOInputs inputs) {
-        inputs.motorPercent = -shooterMotor.getAppliedOutput();
-        inputs.motorRMP = shooterMotor.getEncoder().getVelocity();
-        inputs.motorTempC = shooterMotor.getMotorTemperature();
+        inputs.leftMotorRPM = leftShooterMotor.getEncoder().getVelocity();
+        inputs.leftMotorTempC = leftShooterMotor.getMotorTemperature();
+        inputs.leftMotorCurrentDraw = leftShooterMotor.getOutputCurrent();
+
+        inputs.rightMotorRPM = rightShooterMotor.getEncoder().getVelocity();
+        inputs.rightMotorTempC = rightShooterMotor.getMotorTemperature();
+        inputs.rightMotorCurrentDraw = rightShooterMotor.getOutputCurrent();
     }
 }

@@ -33,7 +33,7 @@ public class shootSimpleInterpolationCommand extends Command {
 
         double distanceToHub = currentRobotPose.getTranslation().getDistance(target.getTranslation());
 
-        shooterSubsystem.setPercentSpeed(shooterSubsystem.getPercentFromDistance(distanceToHub));
+        shooterSubsystem.setRPM(shooterSubsystem.getRPMFromDistance(distanceToHub));
     }
 
     @Override
@@ -43,6 +43,6 @@ public class shootSimpleInterpolationCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        shooterSubsystem.setPercentSpeed(0);
+        shooterSubsystem.setRPM(0);
     }
 }

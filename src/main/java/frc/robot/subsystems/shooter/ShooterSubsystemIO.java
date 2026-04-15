@@ -3,13 +3,16 @@ package frc.robot.subsystems.shooter;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ShooterSubsystemIO {
-//Sets the motor rotations per minute and temperature to 0
+
     @AutoLog
     public static class ShooterSubsystemIOInputs {
-        public double motorRMP = 0.0;
-        public double motorPercent = 0.0;
-        public double motorTempC = 0.0;
+        public double leftMotorRPM = 0.0;
+        public double leftMotorTempC = 0.0;
+        public double leftMotorCurrentDraw = 0.0;
 
+        public double rightMotorRPM = 0.0;
+        public double rightMotorTempC = 0.0;
+        public double rightMotorCurrentDraw = 0.0;
     }
 
     default void updateInputs(ShooterSubsystemIOInputs inputs) {
@@ -18,7 +21,7 @@ public interface ShooterSubsystemIO {
     default void setPercentSpeed(double percent){
     }
 
-    default void setRMP(double rpm){
+    default void setRPM(double rpm){
 
     }
 }
