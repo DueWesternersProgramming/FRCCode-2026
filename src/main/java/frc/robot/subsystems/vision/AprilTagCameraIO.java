@@ -38,4 +38,8 @@ public interface AprilTagCameraIO {
         return 0;
     }
 
+    default void setCameraTransformOffset(Transform3d offset){
+        
+    }
+
 }

@@ -9,7 +9,11 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotState;
 import frc.robot.RobotConstants.SubsystemEnabledConstants;
@@ -21,11 +25,17 @@ import frc.robot.utils.TimestampedPose;
 import java.util.List;
 import java.util.Optional;
 
-public class AprilTagCameraIOPhoton implements AprilTagCameraIO {
+public class TurretedAprilTagCameraIOPhoton implements AprilTagCameraIO {
     public PhotonCamera photonCamera;
     public PhotonPoseEstimator photonPoseEstimator;
+    private int servoPort;
+    private Servo servo;
+    private VisionSource source;
 
-    public AprilTagCameraIOPhoton(VisionSource source) {
+    public TurretedAprilTagCameraIOPhoton(VisionSource source, int servoPort) {
+        this.servoPort = servoPort;
+        this.source = source;
+
         photonCamera = new PhotonCamera(source.name());
 
         photonPoseEstimator = new PhotonPoseEstimator(
@@ -33,6 +43,9 @@ public class AprilTagCameraIOPhoton implements AprilTagCameraIO {
                 PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                 source.robotToCamera());
         photonPoseEstimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
+        
+        servo = new Servo(servoPort);
+        servo.setAngle(90);
     }
 
     @Override
@@ -116,6 +129,11 @@ public class AprilTagCameraIOPhoton implements AprilTagCameraIO {
     @Override
     public void setCameraTransformOffset(Transform3d offset){
         photonPoseEstimator.setRobotToCameraTransform(offset);
+    }
+
+    public void setTurretPosition(double angle){
+        servo.setAngle(angle);
+        setCameraTransformOffset(source.robotToCamera().plus(new Transform3d(new Translation3d(), new Rotation3d(0, 0, angle))));
     }
 
 }

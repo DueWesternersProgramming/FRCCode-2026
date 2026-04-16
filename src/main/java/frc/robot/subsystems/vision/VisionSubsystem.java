@@ -1,25 +1,16 @@
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
 import frc.robot.RobotConstants.SubsystemEnabledConstants;
 import frc.robot.RobotConstants.VisionConstants;
 import frc.robot.RobotConstants.VisionConstants.AprilTagCameraConfig;
-import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.utils.CowboyUtils;
 import frc.robot.utils.CowboyUtils.RobotModes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
 import org.littletonrobotics.junction.Logger;
-import org.photonvision.EstimatedRobotPose;
 import org.photonvision.simulation.VisionSystemSim;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -40,9 +31,12 @@ public class VisionSubsystem extends SubsystemBase {
             switch (RobotModes.currentMode) {
                 case REAL:
                     if (SubsystemEnabledConstants.VISION_SUBSYSTEM_ENABLED) {
-                        io = new AprilTagCameraIOPhoton(
-                                config.source());
-
+                        if (config.servoPort() >= 0) {
+                            io = new TurretedAprilTagCameraIOPhoton(config.source(), config.servoPort());
+                        } else {
+                            io = new AprilTagCameraIOPhoton(
+                                    config.source());
+                        }
                     } else {
                         io = new AprilTagCameraIO() {
                         };

@@ -308,7 +308,8 @@ public final class RobotConstants {
                         HYBRID
                 }
 
-                public static final record AprilTagCameraConfig(VisionSource source, SimCameraConfig simConfig) {
+                public static final record AprilTagCameraConfig(VisionSource source, int servoPort,
+                                SimCameraConfig simConfig) {
                 }
 
                 public record VisionSource(String name, Transform3d robotToCamera) {
@@ -341,6 +342,7 @@ public final class RobotConstants {
                                                                                                                 -20),
                                                                                                 Units.degreesToRadians(
                                                                                                                 -15)))),
+                                                -1,
                                                 SimCameraConfig.ARDUCAM_OV9281_45),
                                 // Front Right
                                 new AprilTagCameraConfig(
@@ -361,6 +363,7 @@ public final class RobotConstants {
                                                                                                                 -20),
                                                                                                 Units.degreesToRadians(
                                                                                                                 15)))),
+                                                -1,
                                                 SimCameraConfig.ARDUCAM_OV9281_45));
 
                 public static final Transform3d[] CAMERA_POSITIONS = {
