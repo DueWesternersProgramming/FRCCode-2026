@@ -37,7 +37,7 @@ public class ShooterSubsystemIOSparkMax implements ShooterSubsystemIO {
         leftShooterMotorConfig.closedLoop.feedForward.kS(0).kV(0);
 
         leftShooterMotorConfig.closedLoop.maxMotion
-                .maxAcceleration(4000)
+                .maxAcceleration(3000)
                 .cruiseVelocity(6500)
                 .allowedProfileError(25);
 
@@ -60,6 +60,11 @@ public class ShooterSubsystemIOSparkMax implements ShooterSubsystemIO {
     @Override
     public void setPercentSpeed(double speed) {
         closedLoopController.setSetpoint(speed, ControlType.kDutyCycle);
+    }
+
+    @Override
+    public void setVoltage(double volts){
+        closedLoopController.setSetpoint(volts, ControlType.kVoltage);
     }
 
     @Override

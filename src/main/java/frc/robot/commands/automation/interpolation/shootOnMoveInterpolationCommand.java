@@ -50,7 +50,6 @@ public class shootOnMoveInterpolationCommand extends Command {
 
                 double xRaw = -(joystick.getRawAxis(Controller.DRIVE_COMMAND_X_AXIS));
                 double yRaw = -(joystick.getRawAxis(Controller.DRIVE_COMMAND_Y_AXIS));
-                double rotRaw = -(joystick.getRawAxis(Controller.DRIVE_COMMAND_ROT_AXIS));
 
                 double xConstrained = MathUtil.applyDeadband(
                                 MathUtil.clamp(xRaw, -TeleopConstants.MAX_SPEED_PERCENT,
@@ -61,14 +60,8 @@ public class shootOnMoveInterpolationCommand extends Command {
                                                 TeleopConstants.MAX_SPEED_PERCENT),
                                 RobotConstants.PortConstants.Controller.JOYSTICK_AXIS_THRESHOLD);
 
-                double rotConstrained = MathUtil.applyDeadband(
-                                MathUtil.clamp(rotRaw, -TeleopConstants.MAX_SPEED_PERCENT,
-                                                TeleopConstants.MAX_SPEED_PERCENT),
-                                RobotConstants.PortConstants.Controller.JOYSTICK_AXIS_THRESHOLD);
-
                 double xSquared = Math.copySign(xConstrained * xConstrained, xConstrained);
                 double ySquared = Math.copySign(yConstrained * yConstrained, yConstrained);
-                double rotSquared = Math.copySign(rotConstrained * rotConstrained, rotConstrained);
 
                 Pose2d currentRobotPose = driveSubsystem.getPose();
 
@@ -112,7 +105,7 @@ public class shootOnMoveInterpolationCommand extends Command {
                 double shooterSpeed = shooterSubsystem.getRPMFromDistance(predictedDistanceToHub);
 
                 if (Tuning.tuningEnabled.get()){
-                        shooterSubsystem.setPercentSpeed(Tuning.tuningVoltage.get()); //directly taken as a percent, read out rpm on dashboard
+                        shooterSubsystem.setVoltage(Tuning.tuningVoltage.get()); //directly taken as a percent, read out rpm on dashboard
                 }
                 else{
                         shooterSubsystem.setRPM(shooterSpeed);

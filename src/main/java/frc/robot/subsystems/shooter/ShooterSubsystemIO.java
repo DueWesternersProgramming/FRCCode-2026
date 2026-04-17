@@ -24,4 +24,8 @@ public interface ShooterSubsystemIO {
     default void setRPM(double rpm){
 
     }
+
+    default void setVoltage(double volts){
+        
+    }
 }
