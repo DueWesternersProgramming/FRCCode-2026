@@ -11,6 +11,8 @@ import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -31,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.RobotSystemsCheckCommand;
 import frc.robot.commands.automation.AutomatedCommands;
+import frc.robot.commands.automation.interpolation.shootOnMoveInterpolationCommand;
 import frc.robot.commands.drive.TeleopDriveCommand;
 import frc.robot.configurableAutos.AutoCommandDef;
 import frc.robot.configurableAutos.AutoParamDef;
@@ -101,7 +104,7 @@ public class RobotContainer {
         PowerDistribution pdp;
 
         private final Field2d field = new Field2d();
-
+        
         public RobotContainer() {
                 System.out.println("Robot Mode: " + CowboyUtils.RobotModes.currentMode);
 
@@ -307,6 +310,7 @@ public class RobotContainer {
                 // questNavSubsystem)).whileTrue(Commands.print("Calibrating"));
 
                 if (!CowboyUtils.isSim()) { // Real robot
+                        new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem, driveJoystick, null);
 
                         // Right operator trigger, enables shoot on the move and turrets the robot.
                         new Trigger(() -> operatorJoystick.getRawAxis(3) > .4)

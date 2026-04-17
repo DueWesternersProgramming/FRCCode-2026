@@ -26,7 +26,7 @@ public class ShooterSubsystemIOSparkMax implements ShooterSubsystemIO {
         rightShooterMotorConfig = new SparkMaxConfig();
 
         leftShooterMotorConfig.smartCurrentLimit(40)
-                .idleMode(IdleMode.kCoast);
+                .idleMode(IdleMode.kCoast).inverted(true);
 
         closedLoopController = leftShooterMotor.getClosedLoopController();
 
@@ -34,13 +34,15 @@ public class ShooterSubsystemIOSparkMax implements ShooterSubsystemIO {
                 .pid(0.5, 0, 0)
                 .outputRange(-1, 1);
 
+        leftShooterMotorConfig.closedLoop.feedForward.kS(0).kV(0);
+
         leftShooterMotorConfig.closedLoop.maxMotion
                 .maxAcceleration(4000)
                 .cruiseVelocity(6500)
                 .allowedProfileError(25);
 
         rightShooterMotorConfig.smartCurrentLimit(40)
-                .idleMode(IdleMode.kCoast).follow(leftShooterMotor).inverted(true);
+                .idleMode(IdleMode.kCoast).follow(leftShooterMotor, true);
 
         leftShooterMotor.configure(leftShooterMotorConfig,
                 ResetMode.kResetSafeParameters,
@@ -57,7 +59,7 @@ public class ShooterSubsystemIOSparkMax implements ShooterSubsystemIO {
 
     @Override
     public void setPercentSpeed(double speed) {
-
+        closedLoopController.setSetpoint(speed, ControlType.kDutyCycle);
     }
 
     @Override

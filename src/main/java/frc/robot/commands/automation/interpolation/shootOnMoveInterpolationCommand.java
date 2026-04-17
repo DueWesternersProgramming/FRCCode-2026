@@ -3,29 +3,23 @@ package frc.robot.commands.automation.interpolation;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotConstants;
-import frc.robot.RobotState;
+import frc.robot.Tuning;
 import frc.robot.RobotConstants.PortConstants.Controller;
 import frc.robot.RobotConstants.TeleopConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.utils.CowboyUtils;
 
 public class shootOnMoveInterpolationCommand extends Command {
 
-        // Angular controller (RADIANS)
         private final PIDController angleController = new PIDController(
                         1.25, 0.0, 0.0);
 
@@ -110,21 +104,21 @@ public class shootOnMoveInterpolationCommand extends Command {
 
                 driveSubsystem.drive(
                                 (ySquared*MathUtil.clamp(Math.abs(Math.sin(predictedAngleToRobot)),.3,1)), (xSquared*MathUtil.clamp(Math.abs(Math.sin(predictedAngleToRobot)),.3,1)),
-                                rotOutput,
+                                Tuning.sotmEnabled.get() ? rotOutput : 0,
                                 true,
                                 true,
                                 false);
 
                 double shooterSpeed = shooterSubsystem.getRPMFromDistance(predictedDistanceToHub);
 
-                if (SmartDashboard.getBoolean("shooterCalibrationActive", false)){
-                        shooterSubsystem.setPercentSpeed(-joystick.getRawAxis(3)); //directly taken as a percent, read out rpm on dashboard
+                if (Tuning.tuningEnabled.get()){
+                        shooterSubsystem.setPercentSpeed(Tuning.tuningVoltage.get()); //directly taken as a percent, read out rpm on dashboard
                 }
                 else{
                         shooterSubsystem.setRPM(shooterSpeed);
                 }
                 
-                Logger.recordOutput("Interpolation/predictedDistanceToHub", predictedDistanceToHub);
+                Logger.recordOutput("Tuning/predictedDistanceToHub", predictedDistanceToHub);
         };
 
         @Override
