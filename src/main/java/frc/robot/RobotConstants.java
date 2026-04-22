@@ -258,7 +258,7 @@ public final class RobotConstants {
 
                         public static final int FEEDER_MOTOR = 20;
 
-                        public static final int LEFT_SHOOTER_MOTOR = 17;
+                        public static final int LEFT_SHOOTER_MOTOR = 16;
                         public static final int RIGHT_SHOOTER_MOTOR = 17;
 
                 }

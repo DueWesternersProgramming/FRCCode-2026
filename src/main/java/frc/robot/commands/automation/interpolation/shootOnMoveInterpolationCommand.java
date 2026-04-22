@@ -90,8 +90,8 @@ public class shootOnMoveInterpolationCommand extends Command {
 
                 double predictedAngleToRobot = Math.atan2(dy, dx);
 
-                Logger.recordOutput("Interpolation/targetAngle", Units.radiansToDegrees(predictedAngleToRobot));
-                Logger.recordOutput("Interpolation/currentAngle", currentRobotPose.getRotation().getRadians());
+                // Logger.recordOutput("Interpolation/targetAngle", Units.radiansToDegrees(predictedAngleToRobot));
+                // Logger.recordOutput("Interpolation/currentAngle", currentRobotPose.getRotation().getRadians());
                 
                 double rotOutput = angleController.calculate(currentRobotPose.getRotation().getRadians(), predictedAngleToRobot);
 
@@ -102,16 +102,14 @@ public class shootOnMoveInterpolationCommand extends Command {
                                 true,
                                 false);
 
-                double shooterSpeed = shooterSubsystem.getRPMFromDistance(predictedDistanceToHub);
+                double shooterSpeed = !Tuning.tuningEnabled.get() ? shooterSubsystem.getRPMFromDistance(predictedDistanceToHub) : Tuning.tuningRPM.get();
 
-                if (Tuning.tuningEnabled.get()){
-                        shooterSubsystem.setVoltage(Tuning.tuningVoltage.get()); //directly taken as a percent, read out rpm on dashboard
-                }
-                else{
-                        shooterSubsystem.setRPM(shooterSpeed);
-                }
                 
-                Logger.recordOutput("Tuning/predictedDistanceToHub", predictedDistanceToHub);
+                shooterSubsystem.setRPM(shooterSpeed);
+                
+                
+                Logger.recordOutput("Target RPM", shooterSpeed);
+                Logger.recordOutput("Interpolation/predictedDistanceToHub", predictedDistanceToHub);
         };
 
         @Override

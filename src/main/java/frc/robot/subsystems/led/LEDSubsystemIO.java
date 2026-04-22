@@ -2,6 +2,8 @@ package frc.robot.subsystems.led;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import com.ctre.phoenix6.signals.RGBWColor;
+
 import frc.robot.RobotConstants.LEDConstants.AnimationTypes;
 
 public interface LEDSubsystemIO {
@@ -15,7 +17,7 @@ public interface LEDSubsystemIO {
     default void updateInputs(LEDSubsystemIOInputs inputs) {
     }
 
-    default public void setAnimation(AnimationTypes animation){}
+    default public void setAnimation(AnimationTypes animation, RGBWColor color){}
 
 
 }

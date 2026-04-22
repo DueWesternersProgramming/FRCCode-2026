@@ -12,58 +12,78 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.RobotConstants.PortConstants;
 
 public class ShooterSubsystemIOSparkMax implements ShooterSubsystemIO {
-    SparkMax leftShooterMotor;
-    SparkMax rightShooterMotor;
-    SparkMaxConfig leftShooterMotorConfig;
-    SparkMaxConfig rightShooterMotorConfig;
-    SparkClosedLoopController closedLoopController;
+    private SparkMax leftShooterMotor;
+    private SparkMax rightShooterMotor;
+    private SparkMaxConfig leftShooterMotorConfig;
+    private SparkMaxConfig rightShooterMotorConfig;
+    private SparkClosedLoopController closedLoopController;
+
+    private static final double MAX_RPM = 6500.0;
 
     public ShooterSubsystemIOSparkMax() {
-        leftShooterMotor = new SparkMax(PortConstants.CAN.LEFT_SHOOTER_MOTOR, MotorType.kBrushless);
-        rightShooterMotor = new SparkMax(PortConstants.CAN.RIGHT_SHOOTER_MOTOR, MotorType.kBrushless);
+        leftShooterMotor = new SparkMax(
+                PortConstants.CAN.LEFT_SHOOTER_MOTOR,
+                MotorType.kBrushless);
+
+        rightShooterMotor = new SparkMax(
+                PortConstants.CAN.RIGHT_SHOOTER_MOTOR,
+                MotorType.kBrushless);
 
         leftShooterMotorConfig = new SparkMaxConfig();
         rightShooterMotorConfig = new SparkMaxConfig();
 
-        leftShooterMotorConfig.smartCurrentLimit(40)
-                .idleMode(IdleMode.kCoast).inverted(true);
-
-        closedLoopController = leftShooterMotor.getClosedLoopController();
+        // LEFT MOTOR CONFIG
+        leftShooterMotorConfig
+                .smartCurrentLimit(40)
+                .idleMode(IdleMode.kCoast)
+                .inverted(true);
 
         leftShooterMotorConfig.closedLoop
-                .pid(0.5, 0, 0)
-                .outputRange(-1, 1);
+                // Much smaller P to prevent oscillation
+                .pid(0.00005, 0.0, 0.0)
+                // Allow full forward and reverse output
+                .outputRange(-1.0, 1.0);
 
-        leftShooterMotorConfig.closedLoop.feedForward.kS(0).kV(0);
+        //Basic feedforward (helps stabilize velocity control)
+        leftShooterMotorConfig.closedLoop.feedForward
+                .kV(0.000165);
 
-        leftShooterMotorConfig.closedLoop.maxMotion
-                .maxAcceleration(3000)
-                .cruiseVelocity(6500)
-                .allowedProfileError(25);
+        // RIGHT MOTOR CONFIG (follower)
+        rightShooterMotorConfig
+                .smartCurrentLimit(40)
+                .idleMode(IdleMode.kCoast)
+                .follow(leftShooterMotor, true); // inverted follower
 
-        rightShooterMotorConfig.smartCurrentLimit(40)
-                .idleMode(IdleMode.kCoast).follow(leftShooterMotor, true);
-
-        leftShooterMotor.configure(leftShooterMotorConfig,
+        // Apply configs
+        leftShooterMotor.configure(
+                leftShooterMotorConfig,
                 ResetMode.kResetSafeParameters,
                 PersistMode.kNoPersistParameters);
 
-        rightShooterMotor.configure(rightShooterMotorConfig, ResetMode.kResetSafeParameters,
+        rightShooterMotor.configure(
+                rightShooterMotorConfig,
+                ResetMode.kResetSafeParameters,
                 PersistMode.kNoPersistParameters);
+
+        closedLoopController = leftShooterMotor.getClosedLoopController();
     }
 
     @Override
     public void setRPM(double rpm) {
-        closedLoopController.setSetpoint(rpm, ControlType.kMAXMotionVelocityControl);
+        // Use standard velocity control (not MAXMotion)
+        
+        closedLoopController.setSetpoint(rpm, ControlType.kVelocity);
     }
 
     @Override
     public void setPercentSpeed(double speed) {
+        // Direct duty cycle control (no sign flipping)
         closedLoopController.setSetpoint(speed, ControlType.kDutyCycle);
     }
 
     @Override
-    public void setVoltage(double volts){
+    public void setVoltage(double volts) {
+        // Direct voltage control
         closedLoopController.setSetpoint(volts, ControlType.kVoltage);
     }
 

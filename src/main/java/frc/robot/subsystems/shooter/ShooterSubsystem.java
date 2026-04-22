@@ -45,7 +45,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     
     public double getRPMFromDistance(double distanceMeters){
-        return interpolationTable.get(distanceMeters);
+        return (488.96555*distanceMeters) + 1821.2949;
     }
 
     public double getTimeOfFlightFromDistance(double distanceMeters){

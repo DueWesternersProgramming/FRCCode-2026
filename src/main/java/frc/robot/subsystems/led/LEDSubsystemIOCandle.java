@@ -42,33 +42,35 @@ public class LEDSubsystemIOCandle implements LEDSubsystemIO {
     }
 
     @Override
-    public void setAnimation(AnimationTypes animation) {
+    public void setAnimation(AnimationTypes animation, RGBWColor color) {
         currentAnimation = animation;
         switch (animation) {
             default:
             case ColorFlow:
                 candle.setControl(
-                        new ColorFlowAnimation(0, LEDConstants.LED_COUNT).withSlot(0)
-                                .withColor(LEDConstants.ANIMATION_COLOR));
+                        new ColorFlowAnimation(0, 100).withSlot(0)
+                                .withColor(color));
                 break;
             case Rainbow:
                 candle.setControl(
-                        new RainbowAnimation(0, LEDConstants.LED_COUNT).withSlot(0));
+                        new RainbowAnimation(0, 100).withSlot(0));
                 break;
             case Twinkle:
                 candle.setControl(
-                        new TwinkleAnimation(0, LEDConstants.LED_COUNT).withSlot(0)
-                                .withColor(LEDConstants.ANIMATION_COLOR));
+                        new TwinkleAnimation(0, 100).withSlot(0)
+                                .withColor(color));
                 break;
             case TwinkleOff:
                 candle.setControl(
-                        new TwinkleOffAnimation(0, LEDConstants.LED_COUNT).withSlot(0)
-                                .withColor(LEDConstants.ANIMATION_COLOR));
+                        new TwinkleOffAnimation(0, 100).withSlot(0)
+                                .withColor(color));
                 break;
             case Fire:
                 candle.setControl(
-                        new FireAnimation(0, LEDConstants.LED_COUNT).withSlot(0));
+                        new FireAnimation(0, 100).withSlot(0));
                 break;
+            case SetAll:
+                candle.setControl(new SolidColor(9, 69).withColor(color));
         }
     }
 

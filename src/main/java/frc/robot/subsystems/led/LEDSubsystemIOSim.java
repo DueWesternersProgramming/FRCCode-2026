@@ -1,11 +1,13 @@
 package frc.robot.subsystems.led;
 
+import com.ctre.phoenix6.signals.RGBWColor;
+
 import frc.robot.RobotConstants.LEDConstants.AnimationTypes;
 
 public class LEDSubsystemIOSim implements LEDSubsystemIO {
     private AnimationTypes currentAnimation = null;
 
-    public LEDSubsystemIOSim(){
+    public LEDSubsystemIOSim() {
     }
 
     @Override
@@ -14,7 +16,7 @@ public class LEDSubsystemIOSim implements LEDSubsystemIO {
     }
 
     @Override
-    public void setAnimation(AnimationTypes animation) {
+    public void setAnimation(AnimationTypes animation, RGBWColor color) {
         currentAnimation = animation;
     }
 }
