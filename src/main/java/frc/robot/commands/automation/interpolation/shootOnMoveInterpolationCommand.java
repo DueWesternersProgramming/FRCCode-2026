@@ -27,16 +27,18 @@ public class shootOnMoveInterpolationCommand extends Command {
         ShooterSubsystem shooterSubsystem;
         Joystick joystick;
         Supplier<Pose2d> targetSupplier;
+        boolean sinScalarEnabled;
 
         public shootOnMoveInterpolationCommand(
                         DriveSubsystem driveSubsystem,
                         ShooterSubsystem shooterSubsystem,
-                        Joystick joystick, Supplier<Pose2d> targetSupplier) {
+                        Joystick joystick, Supplier<Pose2d> targetSupplier, boolean sinScalarEnabled) {
 
                 this.driveSubsystem = driveSubsystem;
                 this.shooterSubsystem = shooterSubsystem;
                 this.joystick = joystick;
                 this.targetSupplier = targetSupplier;
+                this.sinScalarEnabled = sinScalarEnabled;
 
                 addRequirements(driveSubsystem);
 
@@ -90,20 +92,18 @@ public class shootOnMoveInterpolationCommand extends Command {
 
                 double predictedAngleToRobot = Math.atan2(dy, dx);
 
-                // Logger.recordOutput("Interpolation/targetAngle", Units.radiansToDegrees(predictedAngleToRobot));
-                // Logger.recordOutput("Interpolation/currentAngle", currentRobotPose.getRotation().getRadians());
-                
                 double rotOutput = angleController.calculate(currentRobotPose.getRotation().getRadians(), predictedAngleToRobot);
 
+                double sinScaler = sinScalarEnabled ? MathUtil.clamp(Math.abs(Math.sin(predictedAngleToRobot)),.4,1) : 1;
+
                 driveSubsystem.drive(
-                                (ySquared*MathUtil.clamp(Math.abs(Math.sin(predictedAngleToRobot)),.3,1)), (xSquared*MathUtil.clamp(Math.abs(Math.sin(predictedAngleToRobot)),.3,1)),
+                                (ySquared*sinScaler), (xSquared*sinScaler),
                                 Tuning.sotmEnabled.get() ? rotOutput : 0,
                                 true,
                                 true,
                                 false);
 
                 double shooterSpeed = !Tuning.tuningEnabled.get() ? shooterSubsystem.getRPMFromDistance(predictedDistanceToHub) : Tuning.tuningRPM.get();
-
                 
                 shooterSubsystem.setRPM(shooterSpeed);
                 

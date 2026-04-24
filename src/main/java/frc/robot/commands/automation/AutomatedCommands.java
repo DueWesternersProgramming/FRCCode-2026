@@ -114,7 +114,7 @@ public class AutomatedCommands {
                                 return Commands.parallel(
                                                 new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem,
                                                                 driveJoystick,
-                                                                () -> CowboyUtils.getAllianceFeedingPosition()),
+                                                                () -> CowboyUtils.getAppropriateFeedingPose(), false),
                                                 Commands.sequence(
                                                                 new WaitCommand(.5),
                                                                 Commands.parallel(
@@ -124,9 +124,8 @@ public class AutomatedCommands {
                                                 ledSubsystem.setLEDModeCommand(LEDModes.SHOOTING));
                         } else { // Shooting spots
                                 return Commands.parallel(
-                                                //new FunctionalCommand(()->{}, null, null, null, null);
                                                 new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem,
-                                                                driveJoystick, () -> CowboyUtils.getAllianceHubPose()),
+                                                                driveJoystick, () -> CowboyUtils.getAllianceHubPose(), true),
                                                 Commands.sequence(
                                                                 new WaitCommand(.5),
                                                                 Commands.parallel(

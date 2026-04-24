@@ -263,7 +263,7 @@ public class RobotContainer {
                                 Commands.defer(() -> AutomatedCommands.shootFromHopperContinousCommand(intakeSubsystem,
                                                 indexerSubsystem,
                                                 feederSubsystem, shooterSubsystem,
-                                                () -> CowboyUtils.getAllianceFeedingPosition()), allSubsystemsSet));
+                                                () -> CowboyUtils.getAppropriateFeedingPose()), allSubsystemsSet));
 
                 NamedCommands.registerCommand("Stop All Superstructure", AutomatedCommands.stopAllSuperStructure(
                                 intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem, ledSubsystem));
@@ -310,7 +310,6 @@ public class RobotContainer {
                 // questNavSubsystem)).whileTrue(Commands.print("Calibrating"));
 
                 if (!CowboyUtils.isSim()) { // Real robot
-                        new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem, driveJoystick, null);
 
                         // Right operator trigger, enables shoot on the move and turrets the robot.
                         new Trigger(() -> operatorJoystick.getRawAxis(3) > .4)

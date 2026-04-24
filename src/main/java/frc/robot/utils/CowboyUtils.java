@@ -40,9 +40,23 @@ public class CowboyUtils {
                 : FlippingUtil.flipFieldPose(ScoringConstants.BLUE_ALLIANCE_HUB);
     }
 
-    public static Pose2d getAllianceFeedingPosition() {
-        return isBlueAlliance() ? ScoringConstants.BLUE_ALLIANCE_FEEDING_TARGET
-                : FlippingUtil.flipFieldPose(ScoringConstants.BLUE_ALLIANCE_FEEDING_TARGET);
+    public static Pose2d getAppropriateFeedingPose() {
+        if (isBlueAlliance()) {
+            if (RobotState.robotPose.getY() > 4) {
+                System.out.println("RIGHT");
+                return ScoringConstants.BLUE_ALLIANCE_LEFT_FEEDING_TARGET;
+            } else {
+                System.out.println("LEFT");
+                return ScoringConstants.BLUE_ALLIANCE_RIGHT_FEEDING_TARGET;
+            }
+        }
+        else {
+            if (RobotState.robotPose.getY() < 4) {
+                return FlippingUtil.flipFieldPose(ScoringConstants.BLUE_ALLIANCE_RIGHT_FEEDING_TARGET);
+            } else {
+                return FlippingUtil.flipFieldPose(ScoringConstants.BLUE_ALLIANCE_LEFT_FEEDING_TARGET);
+            }
+        }
     }
 
     public static BumpLabels getClosestBump(Pose2d robotPose) {

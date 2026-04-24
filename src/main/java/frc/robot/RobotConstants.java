@@ -77,7 +77,8 @@ public final class RobotConstants {
                                                                                                            // methods in
                                                                                                            // CowboyUtils.
 
-                public static final Pose2d BLUE_ALLIANCE_FEEDING_TARGET = new Pose2d(1, 1, new Rotation2d());
+                public static final Pose2d BLUE_ALLIANCE_LEFT_FEEDING_TARGET = new Pose2d(1, 7, new Rotation2d());
+                public static final Pose2d BLUE_ALLIANCE_RIGHT_FEEDING_TARGET = new Pose2d(1, 1.5, new Rotation2d());
 
                 public static final Pose2d[][] BUMP_POSITION_POSES;
                 static {

@@ -39,12 +39,9 @@ public class ShooterSubsystemIOSparkMax implements ShooterSubsystemIO {
                 .inverted(true);
 
         leftShooterMotorConfig.closedLoop
-                // Much smaller P to prevent oscillation
                 .pid(0.00005, 0.0, 0.0)
-                // Allow full forward and reverse output
                 .outputRange(-1.0, 1.0);
 
-        //Basic feedforward (helps stabilize velocity control)
         leftShooterMotorConfig.closedLoop.feedForward
                 .kV(0.000165);
 
