@@ -85,9 +85,9 @@ public class AutomatedCommands {
         public static Command shootFromHopperContinousCommand(IntakeSubsystem intakeSubsystem,
                         IndexerSubsystem indexerSubsystem, FeederSubsystem feederSubsystem,
                         ShooterSubsystem shooterSubsystem,
-                        double speed) {
+                        double rpm) {
                 return (Commands.sequence(
-                                shooterSubsystem.setPercentSpeedCommand(-speed),
+                                shooterSubsystem.setRPMCommand(rpm),
                                 new WaitCommand(.5),
                                 Commands.parallel(
                                                 intakeSubsystem.runIntakeAgitationContinousCommand(),

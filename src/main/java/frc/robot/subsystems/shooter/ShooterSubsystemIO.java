@@ -13,6 +13,8 @@ public interface ShooterSubsystemIO {
         public double rightMotorRPM = 0.0;
         public double rightMotorTempC = 0.0;
         public double rightMotorCurrentDraw = 0.0;
+
+        public boolean reachedTargetVelocity = false;
     }
 
     default void updateInputs(ShooterSubsystemIOInputs inputs) {
@@ -27,5 +29,9 @@ public interface ShooterSubsystemIO {
 
     default void setVoltage(double volts){
         
+    }
+
+    default boolean hasReachedTargetVelocity(){
+        return false;
     }
 }

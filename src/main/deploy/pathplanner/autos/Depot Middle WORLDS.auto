@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Depot Left Side Path 1"
+                  "pathName": "Depot Middle WORLDS Path 1"
                 }
               },
               {
@@ -34,12 +34,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Depot Left Side Path 2"
           }
         },
         {

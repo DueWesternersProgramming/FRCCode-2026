@@ -13,6 +13,10 @@ public class ShooterSubsystemIOSim implements ShooterSubsystemIO {
         this.rpm = rpm;
     }
 
+    public boolean hasReachedTargetVelocity(){
+        return true;
+    }
+
     @Override
     public void updateInputs(ShooterSubsystemIOInputs inputs) {
     }

@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.RobotSystemsCheckCommand;
 import frc.robot.commands.automation.AutomatedCommands;
@@ -104,7 +105,7 @@ public class RobotContainer {
         PowerDistribution pdp;
 
         private final Field2d field = new Field2d();
-        
+
         public RobotContainer() {
                 System.out.println("Robot Mode: " + CowboyUtils.RobotModes.currentMode);
 
@@ -298,21 +299,34 @@ public class RobotContainer {
 
         private void configureButtonBindings() {
 
-                driveSubsystem.setDefaultCommand(new TeleopDriveCommand(driveSubsystem, driveJoystick));
-
-                // QuestNav Offset Calibration:
-                // new JoystickButton(driveJoystick, 9).whileTrue(QuestCalibration
-                // .CollectCalibrationDataCommand(
-                // driveSubsystem::runChassisSpeeds,
-                // driveSubsystem::resetOdometry,
-                // questNavSubsystem::getUncorrectedPose,
-                // //driveSubsystem,
-                // questNavSubsystem)).whileTrue(Commands.print("Calibrating"));
+                driveSubsystem.setDefaultCommand(new TeleopDriveCommand(driveSubsystem, driveJoystick)); // Same for
+                                                                                                         // both sim and
+                                                                                                         // real. The
+                                                                                                         // joystick
+                                                                                                         // axis
+                                                                                                         // constants
+                                                                                                         // change
+                                                                                                         // depending on
+                                                                                                         // mode.
 
                 if (!CowboyUtils.isSim()) { // Real robot
 
-                        // Right operator trigger, enables shoot on the move and turrets the robot.
-                        new Trigger(() -> operatorJoystick.getRawAxis(3) > .4)
+                        new JoystickButton(operatorJoystick, 0).onTrue(shooterSubsystem.increaseRPMModificationSpeed());
+                        new JoystickButton(driveJoystick, 0).onTrue(shooterSubsystem.decreaseRPMModificationSpeed());
+
+                        // Manual feeding button
+                        new POVButton(operatorJoystick, 0).whileTrue(AutomatedCommands.shootFromHopperContinousCommand(
+                                        intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem, 6500));
+
+                        //Manual scoring button, used ONLY if vision goes down mid-match.
+                        new POVButton(operatorJoystick, 180)
+                                        .whileTrue(AutomatedCommands.shootFromHopperContinousCommand(
+                                                        intakeSubsystem, indexerSubsystem, feederSubsystem,
+                                                        shooterSubsystem, 4000));
+
+                        // Right operator trigger, enables SOTM and turrets the robot. Used for both
+                        // automated feeding and scoring.
+                        new Trigger(() -> operatorJoystick.getRawAxis(3) > .3)
                                         .whileTrue(AutomatedCommands.teleopShootOnMoveAutomationCommand(
                                                         driveSubsystem, driveJoystick, intakeSubsystem,
                                                         indexerSubsystem, feederSubsystem, shooterSubsystem,
@@ -322,7 +336,7 @@ public class RobotContainer {
                                                         ledSubsystem));
 
                         // Left operator trigger, runs intake while held.
-                        new Trigger(() -> operatorJoystick.getRawAxis(2) > .4)
+                        new Trigger(() -> operatorJoystick.getRawAxis(2) > .3)
                                         .whileTrue(AutomatedCommands.intakeCommand(intakeSubsystem, ledSubsystem))
                                         .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
                                                         indexerSubsystem, feederSubsystem, shooterSubsystem,
@@ -346,6 +360,7 @@ public class RobotContainer {
                                                                                         new Rotation2d())),
                                                         driveSubsystem.gyroReset()));
 
+                        //Manually re-seed the encoders in the Neo motors. Used if there is any mid match misalignment, ONLY used if needed. Reset on robot boot is ALWAYS ran.
                         new JoystickButton(driveJoystick, 7).onTrue(driveSubsystem.resetEncodersCommand());
                 }
 

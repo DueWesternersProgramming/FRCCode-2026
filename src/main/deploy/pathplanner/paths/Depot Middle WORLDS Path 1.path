@@ -8,51 +8,37 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.924443463306803,
-        "y": 4.904263182428343
+        "x": 3.0140512820512835,
+        "y": 4.662923076923078
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.89416273955388,
-        "y": 5.6716258246936855
+        "x": 0.8046923076923092,
+        "y": 5.604807692307693
       },
       "prevControl": {
-        "x": 1.9742255733584666,
-        "y": 4.922194470625197
+        "x": 1.1302820512820526,
+        "y": 5.2327051282051285
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Depot"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.44232365145228547,
-      "rotationDegrees": -29.999999999999996
+      "waypointRelativePos": 0.2,
+      "rotationDegrees": -11.678982914016007
     }
   ],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.7005813953488286,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 1.0,
-        "maxAcceleration": 10.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 2.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -61,10 +47,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -26.42531060962899
+    "rotation": -21.53710484364986
   },
   "reversed": false,
-  "folder": "Depot Left Side",
+  "folder": "Depot Middle WORLDS",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
