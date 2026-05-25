@@ -64,7 +64,7 @@ import frc.robot.subsystems.led.LEDSubsystemIO;
 import frc.robot.subsystems.led.LEDSubsystemIOCandle;
 import frc.robot.subsystems.led.LEDSubsystemIOSim;
 import frc.robot.subsystems.questnav.QuestNavIO;
-import frc.robot.subsystems.questnav.QuestNavIOReal;
+//import frc.robot.subsystems.questnav.QuestNavIOReal;
 import frc.robot.subsystems.questnav.QuestNavSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystemIO;
@@ -80,7 +80,7 @@ import frc.robot.RobotState.AutoMode;
 //@Logged(name = "RobotContainer")
 public class RobotContainer {
         public final VisionSubsystem visionSubsystem = new VisionSubsystem();
-        public final QuestNavSubsystem questNavSubsystem;
+        //public final QuestNavSubsystem questNavSubsystem;
         public final DriveSubsystem driveSubsystem;
         public final IntakeSubsystem intakeSubsystem;
         public final IndexerSubsystem indexerSubsystem;
@@ -133,7 +133,8 @@ public class RobotContainer {
                                 };
                                 driveSubsystem = new DriveSubsystem(moduleIOs, new GyroIONAVX());
 
-                                questNavSubsystem = new QuestNavSubsystem(new QuestNavIOReal());
+                                //questNavSubsystem = new QuestNavSubsystem(new QuestNavIOReal());
+                                
 
                                 intakeSubsystem = new IntakeSubsystem(new IntakeSubsystemIOSparkMax());
 
@@ -157,7 +158,7 @@ public class RobotContainer {
 
                                 driveSubsystem = new DriveSubsystem(moduleIOs, new GyroIOSim());
 
-                                questNavSubsystem = new QuestNavSubsystem(new QuestNavIOReal());
+                                //questNavSubsystem = new QuestNavSubsystem(new QuestNavIOReal());
 
                                 intakeSubsystem = new IntakeSubsystem(new IntakeSubsystemIOSim());
 
@@ -186,8 +187,8 @@ public class RobotContainer {
                                 driveSubsystem = new DriveSubsystem(moduleIOs, new GyroIO() {
                                 });
 
-                                questNavSubsystem = new QuestNavSubsystem(new QuestNavIO() {
-                                });
+                                // questNavSubsystem = new QuestNavSubsystem(new QuestNavIO() {
+                                // });
 
                                 intakeSubsystem = new IntakeSubsystem(new IntakeSubsystemIO() {
 
@@ -311,18 +312,18 @@ public class RobotContainer {
 
                 if (!CowboyUtils.isSim()) { // Real robot
 
-                        new JoystickButton(operatorJoystick, 0).onTrue(shooterSubsystem.increaseRPMModificationSpeed());
-                        new JoystickButton(driveJoystick, 0).onTrue(shooterSubsystem.decreaseRPMModificationSpeed());
+                        new JoystickButton(operatorJoystick, 5).onTrue(shooterSubsystem.decreaseRPMModificationSpeed());
+                        new JoystickButton(driveJoystick, 6).onTrue(shooterSubsystem.increaseRPMModificationSpeed());
 
                         // Manual feeding button
                         new POVButton(operatorJoystick, 0).whileTrue(AutomatedCommands.shootFromHopperContinousCommand(
-                                        intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem, 6500));
+                                        intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem, 5700)).onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem, ledSubsystem));;
 
                         //Manual scoring button, used ONLY if vision goes down mid-match.
                         new POVButton(operatorJoystick, 180)
                                         .whileTrue(AutomatedCommands.shootFromHopperContinousCommand(
                                                         intakeSubsystem, indexerSubsystem, feederSubsystem,
-                                                        shooterSubsystem, 4000));
+                                                        shooterSubsystem, 4000)).onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem, ledSubsystem));;
 
                         // Right operator trigger, enables SOTM and turrets the robot. Used for both
                         // automated feeding and scoring.
@@ -355,9 +356,9 @@ public class RobotContainer {
 
                         new JoystickButton(driveJoystick, 6)
                                         .whileTrue(new SequentialCommandGroup(
-                                                        Commands.deferredProxy(
-                                                                        () -> questNavSubsystem.resetPoseYaw(
-                                                                                        new Rotation2d())),
+                                                        //Commands.deferredProxy(
+                                                                        // () -> questNavSubsystem.resetPoseYaw(
+                                                                        //                 new Rotation2d())),
                                                         driveSubsystem.gyroReset()));
 
                         //Manually re-seed the encoders in the Neo motors. Used if there is any mid match misalignment, ONLY used if needed. Reset on robot boot is ALWAYS ran.
@@ -383,9 +384,9 @@ public class RobotContainer {
 
                         new JoystickButton(driveJoystick, 8)
                                         .whileTrue(new SequentialCommandGroup(
-                                                        Commands.deferredProxy(
-                                                                        () -> questNavSubsystem.resetPoseYaw(
-                                                                                        new Rotation2d())),
+                                                        // Commands.deferredProxy(
+                                                        //                 () -> questNavSubsystem.resetPoseYaw(
+                                                        //                                 new Rotation2d())),
                                                         driveSubsystem.gyroReset()));
                 }
         }

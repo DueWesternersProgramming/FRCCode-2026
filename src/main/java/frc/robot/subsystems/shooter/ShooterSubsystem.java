@@ -22,7 +22,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public Command decreaseRPMModificationSpeed(){
-        return Commands.runOnce(()->rpmModification+=25);
+        return Commands.runOnce(()->rpmModification-=25);
     }
 
     public void setRPMModificationSpeed(double rpm){
@@ -54,7 +54,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     
     public double getRPMFromDistance(double distanceMeters){
-        return (488.96555*distanceMeters) + 1821.2949 + rpmModification;
+        return (488.96555*distanceMeters) + 1671.2949 + rpmModification;
     }
 
     public double getTimeOfFlightFromDistance(double distanceMeters){

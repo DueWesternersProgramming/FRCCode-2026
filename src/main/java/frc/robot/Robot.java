@@ -97,7 +97,8 @@ public class Robot extends LoggedRobot {
      */
     @Override
     public void autonomousInit() {
-        robotContainer.questNavSubsystem.setRobotPose(RobotState.robotPose);
+        //robotContainer.questNavSubsystem.setRobotPose(RobotState.robotPose);
+        
         RobotState.isQuestNavPoseReset = true;
 
         if (robotContainer.getSelectedAutoMode() == AutoMode.DYNAMIC_AUTO) {
@@ -119,7 +120,7 @@ public class Robot extends LoggedRobot {
         CommandScheduler.getInstance().cancelAll();
 
         if (!DriverStation.isFMSAttached()) {
-            robotContainer.questNavSubsystem.setRobotPose(RobotState.robotPose);
+            //robotContainer.questNavSubsystem.setRobotPose(RobotState.robotPose);
             RobotState.isQuestNavPoseReset = true;
 
         }
