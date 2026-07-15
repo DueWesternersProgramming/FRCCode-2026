@@ -17,4 +17,17 @@ public class BLine {
                 .beforeStarting(Commands.print(name + ": start"))
                 .andThen(Commands.print(name + ": end"));
     }
+
+    public static Command BLineTrajectory(DriveSubsystem driveSubsystem, Path path, boolean mirrorVertically) {
+        if (mirrorVertically) {
+            path.mirror();
+        }
+
+        return Commands.sequence(driveSubsystem.getBLineBuilder().build(path));
+    }
+
+    public static Path getPathFromFile(String name) {
+        return new Path(name);
+    }
+
 }

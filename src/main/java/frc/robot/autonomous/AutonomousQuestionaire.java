@@ -1,7 +1,9 @@
 package frc.robot.autonomous;
 
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import java.util.List;
+import java.util.function.Supplier;
+
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -18,7 +20,7 @@ public class AutonomousQuestionaire<T> {
 
   public AutonomousQuestionaire(String key, Option<T> defaultOption, List<Option<T>> options) {
     SendableChooser<T> sendableChooser = new SendableChooser<>();
-    
+
     sendableChooser.setDefaultOption(defaultOption.label(), defaultOption.value());
 
     for (Option<T> option : options) {
@@ -34,5 +36,13 @@ public class AutonomousQuestionaire<T> {
 
   public T get() {
     return chooser.get();
+  }
+
+  /**
+   * Convenience method for questionnaires that store Supplier<T>.
+   */
+  @SuppressWarnings("unchecked")
+  public <R> R getSupplied() {
+    return ((Supplier<R>) chooser.get()).get();
   }
 }

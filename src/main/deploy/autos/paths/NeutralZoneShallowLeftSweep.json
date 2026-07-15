@@ -1,0 +1,112 @@
+{
+  "path_elements": [
+    {
+      "type": "waypoint",
+      "translation_target": {
+        "x_meters": 6.17085,
+        "y_meters": 5.57057,
+        "intermediate_handoff_radius_meters": 0.5
+      },
+      "rotation_target": {
+        "rotation_radians": 0.84606,
+        "profiled_rotation": true
+      }
+    },
+    {
+      "type": "waypoint",
+      "translation_target": {
+        "x_meters": 5.96458,
+        "y_meters": 6.79809,
+        "intermediate_handoff_radius_meters": 0.2
+      },
+      "rotation_target": {
+        "rotation_radians": 1.25224,
+        "profiled_rotation": true
+      }
+    },
+    {
+      "type": "translation",
+      "x_meters": 6.43748,
+      "y_meters": 7.21565,
+      "intermediate_handoff_radius_meters": 0.5
+    },
+    {
+      "type": "waypoint",
+      "translation_target": {
+        "x_meters": 6.56325,
+        "y_meters": 6.27992,
+        "intermediate_handoff_radius_meters": 0.5
+      },
+      "rotation_target": {
+        "rotation_radians": 1.25224,
+        "profiled_rotation": true
+      }
+    },
+    {
+      "type": "rotation",
+      "rotation_radians": 1.73639,
+      "t_ratio": 0.95044,
+      "profiled_rotation": true
+    },
+    {
+      "type": "translation",
+      "x_meters": 6.4727,
+      "y_meters": 3.42745,
+      "intermediate_handoff_radius_meters": 0.2
+    },
+    {
+      "type": "rotation",
+      "rotation_radians": -1.48148,
+      "t_ratio": 0.0,
+      "profiled_rotation": true
+    },
+    {
+      "type": "waypoint",
+      "translation_target": {
+        "x_meters": 6.49282,
+        "y_meters": 5.5907,
+        "intermediate_handoff_radius_meters": 0.15
+      },
+      "rotation_target": {
+        "rotation_radians": -1.4946,
+        "profiled_rotation": true
+      }
+    },
+    {
+      "type": "waypoint",
+      "translation_target": {
+        "x_meters": 5.67195,
+        "y_meters": 5.63251,
+        "intermediate_handoff_radius_meters": 0.5
+      },
+      "rotation_target": {
+        "rotation_radians": 0.01227,
+        "profiled_rotation": true
+      }
+    }
+  ],
+  "constraints": {
+    "max_velocity_meters_per_sec": [
+      {
+        "value": 1.7,
+        "start_ordinal": 0,
+        "end_ordinal": 1
+      },
+      {
+        "value": 3.0,
+        "start_ordinal": 2,
+        "end_ordinal": 4
+      },
+      {
+        "value": 1.6,
+        "start_ordinal": 5,
+        "end_ordinal": 5
+      },
+      {
+        "value": 2.0,
+        "start_ordinal": 6,
+        "end_ordinal": 6
+      }
+    ]
+  }
+}

@@ -149,8 +149,9 @@ public class DriveSubsystem extends SubsystemBase {
                 .withDefaultShouldFlip(); // Auto-flip for red alliance
 
         // if it is autonomous, assume that we start in the correct initial position
+
         if (RobotModes.currentMode == RobotModes.simMode) {
-            bLinePathBuilder = bLinePathBuilder.withPoseReset(this::setPose); // Reset odometry at path start
+            //bLinePathBuilder = bLinePathBuilder.withPoseReset(this::setPose); // Reset odometry at path start
         }
 
         // AdvantageKit logging
