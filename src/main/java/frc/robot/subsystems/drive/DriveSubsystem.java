@@ -2,6 +2,7 @@ package frc.robot.subsystems.drive;
 
 import java.util.stream.IntStream;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotConstants;
 import frc.robot.RobotState;
+import frc.robot.lib.BLine.FollowPath;
 import frc.robot.utils.AntiTipping;
 import frc.robot.utils.CowboyUtils;
 import frc.robot.RobotConstants.DrivetrainConstants;
@@ -34,6 +36,9 @@ import frc.robot.subsystems.drive.gyro.GyroIOInputsAutoLogged;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.utils.SwerveUtils;
 import frc.robot.utils.TimestampedPose;
+import frc.robot.utils.CowboyUtils.RobotModes;
+
+import com.google.flatbuffers.Constants;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.PIDConstants;
@@ -69,6 +74,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     AntiTipping antiTipping;
 
+    FollowPath.Builder bLinePathBuilder;
+
     /** Creates a new Drivetrain. */
     public DriveSubsystem(ModuleIO[] moduleIOs, GyroIO gyroIO) {
         this.moduleIO = moduleIOs;
@@ -102,7 +109,7 @@ public class DriveSubsystem extends SubsystemBase {
         // Configure AutoBuilder
         AutoBuilder.configure(
                 this::getPose, // Robot pose supplier
-                this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+                this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
                 this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds) -> runChassisSpeeds(speeds, false), // Method that will drive the robot given ROBOT RELATIVE
                                                              // ChassisSpeeds. Also optionally outputs individual module
@@ -129,6 +136,29 @@ public class DriveSubsystem extends SubsystemBase {
         );
         PathfindingCommand.warmupCommand().schedule();
 
+        // B-Line Path Builder
+        bLinePathBuilder = new FollowPath.Builder(
+                this, // The drive subsystem to require
+                this::getPose, // Supplier for current robot pose
+                this::getChassisSpeeds, // Supplier for current speeds
+                this::runChassisSpeeds, // Consumer to drive the robot
+                new PIDController(10.0, 0.0, 0.0), // Translation PID
+                new PIDController(3.0, 0.0, 0.0), // Rotation PID
+                new PIDController(2.0, 0.0, 0.0) // Cross-track PID
+        )
+                .withDefaultShouldFlip(); // Auto-flip for red alliance
+
+        // if it is autonomous, assume that we start in the correct initial position
+        if (RobotModes.currentMode == RobotModes.simMode) {
+            bLinePathBuilder = bLinePathBuilder.withPoseReset(this::setPose); // Reset odometry at path start
+        }
+
+        // AdvantageKit logging
+        FollowPath.setDoubleLoggingConsumer(p -> Logger.recordOutput(p.getFirst(), p.getSecond()));
+        FollowPath.setBooleanLoggingConsumer(p -> Logger.recordOutput(p.getFirst(), p.getSecond()));
+        FollowPath.setPoseLoggingConsumer(p -> Logger.recordOutput(p.getFirst(), p.getSecond()));
+        FollowPath.setTranslationListLoggingConsumer(p -> Logger.recordOutput(p.getFirst(), p.getSecond()));
+
         antiTipping = new AntiTipping(
                 gyroIO::getGyroRollAngle,
                 gyroIO::getGyroPitchAngle,
@@ -139,6 +169,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
+    public FollowPath.Builder getBLineBuilder() {
+        return bLinePathBuilder;
+    }
+
     public SwerveModuleState[] getModuleStates() {
 
         SwerveModuleState[] states = new SwerveModuleState[moduleIO.length];
@@ -147,6 +181,32 @@ public class DriveSubsystem extends SubsystemBase {
         }
 
         return states;
+    }
+
+    @Override
+    public void periodic() {
+
+        antiTipping.calculate();
+
+        updateOdometry();
+
+        Logger.recordOutput("Module states", getModuleStates());
+
+        Logger.recordOutput("Gyro", gyroIO.getGyroYawAngle());
+
+        Logger.recordOutput("DriveSubsystem/CurrentFieldZone", CowboyUtils.getFieldZoneFromPose(getPose()).name());
+
+        for (int i = 0; i < moduleIO.length; i++) {
+            moduleIO[i].updateInputs(moduleInputs[i]);
+            // e.g. produces “DriveModule0”, “DriveModule1”, etc.
+            // FL, FR, RL, RR
+            Logger.processInputs("DriveSubsystem/DriveModule" + i, moduleInputs[i]);
+        }
+        gyroIO.updateInputs(gyroInputs);
+        Logger.processInputs("DriveSubsystem/Gyro", gyroInputs);
+
+        updateOdometrySensorMeasurements();
+
     }
 
     private void updateOdometry() {
@@ -194,37 +254,11 @@ public class DriveSubsystem extends SubsystemBase {
         }
     }
 
-    @Override
-    public void periodic() {
-
-        antiTipping.calculate();
-
-        updateOdometry();
-        
-        Logger.recordOutput("Module states", getModuleStates());
-
-        Logger.recordOutput("Gyro", gyroIO.getGyroYawAngle());
-
-        Logger.recordOutput("DriveSubsystem/CurrentFieldZone", CowboyUtils.getFieldZoneFromPose(getPose()).name());
-
-        for (int i = 0; i < moduleIO.length; i++) {
-            moduleIO[i].updateInputs(moduleInputs[i]);
-            // e.g. produces “DriveModule0”, “DriveModule1”, etc.
-            // FL, FR, RL, RR
-            Logger.processInputs("DriveSubsystem/DriveModule" + i, moduleInputs[i]);
-        }
-        gyroIO.updateInputs(gyroInputs);
-        Logger.processInputs("DriveSubsystem/Gyro", gyroInputs);
-
-        updateOdometrySensorMeasurements();
-
-    }
-
     public Pose2d getPose() {
         return hybridOdometry.getEstimatedPosition();
     }
 
-    public void resetOdometry(Pose2d pose) {
+    public void setPose(Pose2d pose) {
         hybridOdometry.resetPosition(
                 gyroIO.getGyroYawRotation2d(),
                 new SwerveModulePosition[] {
@@ -315,12 +349,13 @@ public class DriveSubsystem extends SubsystemBase {
 
         ChassisSpeeds speeds;
         // if (antiTipping.isTipping() && antiTippingEnabled) {
-        //     ChassisSpeeds ogSpeeds = antiTipping.getVelocityAntiTipping();
-        //     speeds = ogSpeeds;// new ChassisSpeeds(ogSpeeds.vyMetersPerSecond, ogSpeeds.vxMetersPerSecond,
-        //                       // ogSpeeds.omegaRadiansPerSecond);
-        //} else {
-            speeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered);
-        //}
+        // ChassisSpeeds ogSpeeds = antiTipping.getVelocityAntiTipping();
+        // speeds = ogSpeeds;// new ChassisSpeeds(ogSpeeds.vyMetersPerSecond,
+        // ogSpeeds.vxMetersPerSecond,
+        // // ogSpeeds.omegaRadiansPerSecond);
+        // } else {
+        speeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered);
+        // }
 
         Rotation2d rotation = gyroIO.getGyroYawRotation2d();
 
@@ -471,8 +506,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
-    public Command resetEncodersCommand(){
-        return new InstantCommand(()->resetEncoders(), this);
+    public Command resetEncodersCommand() {
+        return new InstantCommand(() -> resetEncoders(), this);
     }
 
     /** Zeroes the heading of the robot. */
@@ -491,11 +526,12 @@ public class DriveSubsystem extends SubsystemBase {
 
     /**
      * 
-     * @return FIELD RELATIVE chassis speeds
+     * @return ROBOT RELATIVE chassis speeds
      */
     public ChassisSpeeds getChassisSpeeds() {
         SwerveModuleState[] states = getModuleStates();
-        return ChassisSpeeds.fromRobotRelativeSpeeds(DrivetrainConstants.DRIVE_KINEMATICS.toChassisSpeeds(states), gyroIO.getGyroYawRotation2d());
+        return ChassisSpeeds.fromFieldRelativeSpeeds(DrivetrainConstants.DRIVE_KINEMATICS.toChassisSpeeds(states),
+                gyroIO.getGyroYawRotation2d());
     }
 
     public Command gyroReset() {

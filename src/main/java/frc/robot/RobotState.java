@@ -26,11 +26,6 @@ public class RobotState {
 
     public static HubState hubState = new HubState(false, -1);
 
-    public static enum AutoMode {
-        PP_AUTO,
-        DYNAMIC_AUTO
-    }
-
     public static Queue<TimestampedPose> getQuestMeasurments() {
         return questMeasurements;
     }

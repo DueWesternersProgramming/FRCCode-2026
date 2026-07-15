@@ -9,13 +9,13 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
+import frc.robot.RobotConstants.FeederConstants;
 import frc.robot.RobotConstants.LEDConstants.LEDModes;
 import frc.robot.RobotConstants.ScoringConstants.FieldZones;
 import frc.robot.commands.automation.interpolation.shootOnMoveInterpolationCommand;
 import frc.robot.commands.automation.interpolation.shootSimpleInterpolationCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.feeder.FeederSubsystem;
-import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -46,10 +46,20 @@ public class AutomatedCommands {
                                 ledSubsystem.setLEDModeCommand(LEDModes.INTAKING));
         }
 
-        public static Command reverseSuperstructure(IntakeSubsystem intakeSubsystem, IndexerSubsystem indexerSubsystem,
+        public static Command runIntakeAgitationContinousCommand(IntakeSubsystem intakeSubsystem) {
+                return Commands.repeatingSequence(
+                                intakeSubsystem.setIntakeSpeedCommand(-.7),
+                                new WaitCommand(.12),
+                                intakeSubsystem.setIntakeSpeedCommand(.8),
+                                new WaitCommand(2));
+        }
+
+        public static Command reverseSuperstructure(IntakeSubsystem intakeSubsystem,
                         FeederSubsystem feederSubsystem, LEDSubsystem ledSubsystem) {
-                return Commands.parallel(indexerSubsystem.setIndexerSpeedCommand(-.3, -1),
-                                intakeSubsystem.setIntakeSpeedCommand(-.6), feederSubsystem.setFeederSpeed(-.5),
+                return Commands.parallel(
+                                intakeSubsystem.setIntakeSpeedCommand(-.6),
+                                feederSubsystem.setFeederSpeedCommand(FeederConstants.FLOOR_ROLLERS_REVERSE_SPEED,
+                                                FeederConstants.VERTICAL_ROLLERS_REVERSE_SPEED),
                                 ledSubsystem.setLEDModeCommand(LEDModes.REVERSING));
         }
 
@@ -61,7 +71,6 @@ public class AutomatedCommands {
          */
         public static Command shootFromHopperContinousCommand(
                         IntakeSubsystem intakeSubsystem,
-                        IndexerSubsystem indexerSubsystem,
                         FeederSubsystem feederSubsystem,
                         ShooterSubsystem shooterSubsystem,
                         Supplier<Pose2d> targetSupplier) {
@@ -72,9 +81,10 @@ public class AutomatedCommands {
                                 Commands.sequence(
                                                 new WaitCommand(.5),
                                                 Commands.parallel(
-                                                                intakeSubsystem.runIntakeAgitationContinousCommand(),
-                                                                indexerSubsystem.runIndexerAgitationContinousCommand(),
-                                                                feederSubsystem.startFeedingBallsCommand())));
+                                                                runIntakeAgitationContinousCommand(intakeSubsystem),
+                                                                feederSubsystem.setFeederSpeedCommand(
+                                                                                FeederConstants.FLOOR_ROLLERS_FEEDING_SPEED,
+                                                                                FeederConstants.VERTICAL_ROLLERS_FEEDING_SPEED))));
         }
 
         /**
@@ -83,16 +93,17 @@ public class AutomatedCommands {
          * @param speed Percent for the shooter wheel to spin at.
          */
         public static Command shootFromHopperContinousCommand(IntakeSubsystem intakeSubsystem,
-                        IndexerSubsystem indexerSubsystem, FeederSubsystem feederSubsystem,
+                        FeederSubsystem feederSubsystem,
                         ShooterSubsystem shooterSubsystem,
                         double rpm) {
                 return (Commands.sequence(
                                 shooterSubsystem.setRPMCommand(rpm),
                                 new WaitCommand(.5),
                                 Commands.parallel(
-                                                intakeSubsystem.runIntakeAgitationContinousCommand(),
-                                                indexerSubsystem.runIndexerAgitationContinousCommand(),
-                                                feederSubsystem.startFeedingBallsCommand())));
+                                                runIntakeAgitationContinousCommand(intakeSubsystem),
+                                                feederSubsystem.setFeederSpeedCommand(
+                                                                FeederConstants.FLOOR_ROLLERS_FEEDING_SPEED,
+                                                                FeederConstants.VERTICAL_ROLLERS_FEEDING_SPEED))));
         }
 
         /**
@@ -103,7 +114,7 @@ public class AutomatedCommands {
          */
         public static Command teleopShootOnMoveAutomationCommand(DriveSubsystem driveSubsystem,
                         Joystick driveJoystick,
-                        IntakeSubsystem intakeSubsystem, IndexerSubsystem indexerSubsystem,
+                        IntakeSubsystem intakeSubsystem,
                         FeederSubsystem feederSubsystem,
                         ShooterSubsystem shooterSubsystem, LEDSubsystem ledSubsystem) {
 
@@ -118,20 +129,23 @@ public class AutomatedCommands {
                                                 Commands.sequence(
                                                                 new WaitCommand(.5),
                                                                 Commands.parallel(
-                                                                                intakeSubsystem.runIntakeAgitationContinousCommand(),
-                                                                                indexerSubsystem.runIndexerAgitationContinousCommand(),
-                                                                                feederSubsystem.startFeedingBallsCommand())),
+                                                                                AutomatedCommands.runIntakeAgitationContinousCommand(intakeSubsystem),
+                                                                                feederSubsystem.setFeederSpeedCommand(
+                                                                                                FeederConstants.FLOOR_ROLLERS_FEEDING_SPEED,
+                                                                                                FeederConstants.VERTICAL_ROLLERS_FEEDING_SPEED))),
                                                 ledSubsystem.setLEDModeCommand(LEDModes.SHOOTING));
                         } else { // Shooting spots
                                 return Commands.parallel(
                                                 new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem,
-                                                                driveJoystick, () -> CowboyUtils.getAllianceHubPose(), true),
+                                                                driveJoystick, () -> CowboyUtils.getAllianceHubPose(),
+                                                                true),
                                                 Commands.sequence(
                                                                 new WaitCommand(.5),
                                                                 Commands.parallel(
-                                                                                intakeSubsystem.runIntakeAgitationContinousCommand(),
-                                                                                indexerSubsystem.runIndexerAgitationContinousCommand(),
-                                                                                feederSubsystem.startFeedingBallsCommand())),
+                                                                                AutomatedCommands.runIntakeAgitationContinousCommand(intakeSubsystem),
+                                                                                feederSubsystem.setFeederSpeedCommand(
+                                                                                                FeederConstants.FLOOR_ROLLERS_FEEDING_SPEED,
+                                                                                                FeederConstants.VERTICAL_ROLLERS_FEEDING_SPEED))),
                                                 ledSubsystem.setLEDModeCommand(LEDModes.SHOOTING));
                         }
                 }, RobotContainer.allSubsystemsSet);
@@ -140,31 +154,14 @@ public class AutomatedCommands {
         /**
          * Stops all super structure and ball control systems.
          */
-        public static Command stopAllSuperStructure(IntakeSubsystem intakeSubsystem, IndexerSubsystem indexerSubsystem,
+        public static Command stopAllSuperStructure(IntakeSubsystem intakeSubsystem,
                         FeederSubsystem feederSubsystem, ShooterSubsystem shooterSubsystem, LEDSubsystem ledSubsystem) {
                 return (Commands.sequence(
                                 Commands.parallel(
                                                 intakeSubsystem.stopIntakingCommand(),
-                                                indexerSubsystem.stopIndexing(),
-                                                feederSubsystem.stopFeedingBallsCommand(),
+                                                feederSubsystem.setFeederSpeedCommand(0, 0),
                                                 shooterSubsystem.setPercentSpeedCommand(0),
                                                 ledSubsystem.setLEDModeCommand(LEDModes.IDLE))));
-
-        }
-
-        public static Command PPmoveToPose(Pose2d pose) {
-                PathConstraints constraints = new PathConstraints(
-                                3.0, 3.0,
-                                Units.degreesToRadians(360), Units.degreesToRadians(540));
-
-                // Since AutoBuilder is configured, we can use it to build pathfinding commands
-                Command pathfindingCommand = AutoBuilder.pathfindToPose(
-                                pose,
-                                constraints // Rotation delay distance in meters. This is how far the robot should
-                                            // travel
-                                            // before attempting to rotate.
-                );
-                return Commands.deferredProxy(() -> pathfindingCommand);
 
         }
 }

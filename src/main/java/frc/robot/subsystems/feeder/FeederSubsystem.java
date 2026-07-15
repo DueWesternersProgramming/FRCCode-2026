@@ -17,26 +17,18 @@ public class FeederSubsystem extends SubsystemBase {
         this.io = io;
     }
 
-    public Command setFeederSpeed(double speed){
-        return new InstantCommand(()->io.setFeederPercentSpeed(speed), this);
-    }
-
-    public Command startFeedingBallsCommand() {
+    public Command setFeederSpeedCommand(double floorRollers, double cageRollers) {
         return new InstantCommand(() -> {
-            io.setFeederPercentSpeed(1);
+            io.setFloorRollersPercentSpeed(floorRollers);
+            io.setVerticalRollersPercentSpeed(cageRollers);
         }, this);
     }
 
-    public Command stopFeedingBallsCommand() {
-        return new InstantCommand(()->io.setFeederPercentSpeed(0), this);
-    }
-
-    public Command pullBallsBackCommand(){
+    public Command pullBallsBackCommand() {
         return Commands.sequence(
-            setFeederSpeed(-.5),
-            new WaitCommand(.25),
-            setFeederSpeed(0)
-        );
+                setFeederSpeedCommand(-.5, -.5),
+                new WaitCommand(.25),
+                setFeederSpeedCommand(0,0));
     }
 
     @Override

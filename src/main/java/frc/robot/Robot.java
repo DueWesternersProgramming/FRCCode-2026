@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.RobotConstants.SimMode;
 import frc.robot.RobotConstants.LEDConstants.LEDModes;
-import frc.robot.RobotState.AutoMode;
 import frc.robot.commands.automation.AutomatedCommands;
 import frc.robot.utils.FuelSim;
 
@@ -62,7 +61,6 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotInit() {
-        Pathfinding.setPathfinder(new LocalADStarAK());
         robotContainer.ledSubsystem.setLEDMode(LEDModes.IDLE);
     }
 
@@ -76,7 +74,6 @@ public class Robot extends LoggedRobot {
 
         CommandScheduler.getInstance().run();
         dashboardData.periodic();
-
 
     }
 
@@ -99,15 +96,11 @@ public class Robot extends LoggedRobot {
     public void autonomousInit() {
         robotContainer.questNavSubsystem.setRobotPose(RobotState.robotPose);
         RobotState.isQuestNavPoseReset = true;
-
-        if (robotContainer.getSelectedAutoMode() == AutoMode.DYNAMIC_AUTO) {
-            CommandScheduler.getInstance().schedule(robotContainer.dynamicAutoRegistry.buildAuto());
-        } else {
-            m_autonomousCommand = robotContainer.getPPAutonomousCommand();
-            if (m_autonomousCommand != null) {
-                CommandScheduler.getInstance().schedule(m_autonomousCommand);
-            }
+        m_autonomousCommand = robotContainer.automomousManager.getAutonomousCommand();
+        if (m_autonomousCommand != null) {
+            CommandScheduler.getInstance().schedule(m_autonomousCommand);
         }
+
     }
 
     @Override

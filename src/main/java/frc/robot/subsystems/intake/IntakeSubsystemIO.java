@@ -18,8 +18,4 @@ public interface IntakeSubsystemIO {
 
     default void setPercentSpeed(double percent){
     }
-
-    default double getDeploymentMotorEncoderRevs(){return 0.0;}
-
-    default void setDeploymentMotorPercentSpeed(double percent){}
 }

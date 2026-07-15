@@ -13,29 +13,48 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class FeederSubsystemIOSparkMax implements FeederSubsystemIO {
-    SparkMax feederMotor;
-    double percent = 0;
-    SparkMaxConfig feederMotorConfig;
+    SparkMax floorRollersSparkMax;
+    SparkMax verticalRollersSparkMax;
+
+    SparkMaxConfig sparkMaxConfig;
+
+
+    double floorRollersPercent = 0;
+    double verticalRollersPercent = 0;
 
     public FeederSubsystemIOSparkMax() {
-        feederMotor = new SparkMax(PortConstants.CAN.FEEDER_MOTOR, MotorType.kBrushless);
+        floorRollersSparkMax = new SparkMax(PortConstants.CAN.FLOOR_ROLLERS_MOTOR, MotorType.kBrushless);
+        verticalRollersSparkMax = new SparkMax(PortConstants.CAN.VERTICAL_ROLLERS_MOTOR, MotorType.kBrushless);
 
-        feederMotorConfig = new SparkMaxConfig();
-        feederMotorConfig.smartCurrentLimit(40).idleMode(IdleMode.kCoast);
-        feederMotor.configure(feederMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        sparkMaxConfig = new SparkMaxConfig();
+        sparkMaxConfig.smartCurrentLimit(40).idleMode(IdleMode.kCoast);
+        
+        floorRollersSparkMax.configure(sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        verticalRollersSparkMax.configure(sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     @Override
-    public void setFeederPercentSpeed(double percent) {
-        feederMotor.set(percent);
-        this.percent = percent;
+    public void setFloorRollersPercentSpeed(double percent) {
+        floorRollersSparkMax.set(percent);
+        floorRollersPercent = percent;
+    }
+
+    @Override
+    public void setVerticalRollersPercentSpeed(double percent) {
+        verticalRollersSparkMax.set(percent);
+        verticalRollersPercent = percent;
     }
 
     @Override
     public void updateInputs(FeederSubsystemIOInputs inputs) {
-        inputs.feederMotorRPM = feederMotor.getEncoder().getVelocity();
-        inputs.feederMotorTempC = feederMotor.getMotorTemperature();
-        inputs.feederPercent = percent;
+        inputs.floorRollersPercent = floorRollersPercent;
+        inputs.verticalRollersPercent = verticalRollersPercent;
 
+        inputs.floorRollersMotorRPM = floorRollersSparkMax.getEncoder().getVelocity();
+        inputs.verticalRollersMotorRPM = verticalRollersSparkMax.getEncoder().getVelocity();
+
+        inputs.floorRollersMotorTempC = floorRollersSparkMax.getMotorTemperature();
+        inputs.verticalRollersMotorTempC = verticalRollersSparkMax.getMotorTemperature();
     }
 }

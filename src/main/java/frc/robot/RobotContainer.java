@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Set;
 import org.littletonrobotics.junction.Logger;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -36,10 +36,7 @@ import frc.robot.commands.RobotSystemsCheckCommand;
 import frc.robot.commands.automation.AutomatedCommands;
 import frc.robot.commands.automation.interpolation.shootOnMoveInterpolationCommand;
 import frc.robot.commands.drive.TeleopDriveCommand;
-import frc.robot.configurableAutos.AutoCommandDef;
-import frc.robot.configurableAutos.AutoParamDef;
-import frc.robot.configurableAutos.DynamicAutoCommands;
-import frc.robot.configurableAutos.DynamicAutoRegistry;
+
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
@@ -51,10 +48,6 @@ import frc.robot.subsystems.feeder.FeederSubsystem;
 import frc.robot.subsystems.feeder.FeederSubsystemIO;
 import frc.robot.subsystems.feeder.FeederSubsystemIOSim;
 import frc.robot.subsystems.feeder.FeederSubsystemIOSparkMax;
-import frc.robot.subsystems.indexer.IndexerSubsystem;
-import frc.robot.subsystems.indexer.IndexerSubsystemIO;
-import frc.robot.subsystems.indexer.IndexerSubsystemIOSim;
-import frc.robot.subsystems.indexer.IndexerSubsystemIOSparkMax;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystemIO;
 import frc.robot.subsystems.intake.IntakeSubsystemIOSim;
@@ -75,7 +68,8 @@ import frc.robot.utils.CowboyUtils;
 import frc.robot.utils.CowboyUtils.RobotModes;
 import frc.robot.utils.FuelSim;
 import frc.robot.RobotConstants.PortConstants.CAN;
-import frc.robot.RobotState.AutoMode;
+import frc.robot.autonomous.AutomomousManager;
+import frc.robot.autonomous.AutomomousManager.AutoMode;
 
 //@Logged(name = "RobotContainer")
 public class RobotContainer {
@@ -83,7 +77,6 @@ public class RobotContainer {
         public final QuestNavSubsystem questNavSubsystem;
         public final DriveSubsystem driveSubsystem;
         public final IntakeSubsystem intakeSubsystem;
-        public final IndexerSubsystem indexerSubsystem;
         public final FeederSubsystem feederSubsystem;
         public final ShooterSubsystem shooterSubsystem;
         public final LEDSubsystem ledSubsystem;
@@ -97,10 +90,7 @@ public class RobotContainer {
 
         ModuleIO[] moduleIOs;
 
-        SendableChooser<Command> autoPPChooser = new SendableChooser<>();
-        SendableChooser<AutoMode> autoMode = new SendableChooser<>();
-
-        DynamicAutoRegistry dynamicAutoRegistry;
+        AutomomousManager automomousManager;
 
         PowerDistribution pdp;
 
@@ -137,7 +127,7 @@ public class RobotContainer {
 
                                 intakeSubsystem = new IntakeSubsystem(new IntakeSubsystemIOSparkMax());
 
-                                indexerSubsystem = new IndexerSubsystem(new IndexerSubsystemIOSparkMax());
+                               
 
                                 feederSubsystem = new FeederSubsystem(new FeederSubsystemIOSparkMax());
 
@@ -161,7 +151,7 @@ public class RobotContainer {
 
                                 intakeSubsystem = new IntakeSubsystem(new IntakeSubsystemIOSim());
 
-                                indexerSubsystem = new IndexerSubsystem(new IndexerSubsystemIOSim());
+                              
 
                                 feederSubsystem = new FeederSubsystem(new FeederSubsystemIOSim());
 
@@ -193,8 +183,7 @@ public class RobotContainer {
 
                                 });
 
-                                indexerSubsystem = new IndexerSubsystem(new IndexerSubsystemIO() {
-                                });
+                           
 
                                 feederSubsystem = new FeederSubsystem(new FeederSubsystemIO() {
                                 });
@@ -211,35 +200,19 @@ public class RobotContainer {
                 }
                 allSubsystemsSet.add(driveSubsystem);
                 allSubsystemsSet.add(intakeSubsystem);
-                allSubsystemsSet.add(indexerSubsystem);
                 allSubsystemsSet.add(feederSubsystem);
                 allSubsystemsSet.add(shooterSubsystem);
 
                 superStructureSet.add(intakeSubsystem);
-                superStructureSet.add(indexerSubsystem);
                 superStructureSet.add(feederSubsystem);
                 superStructureSet.add(shooterSubsystem);
 
-                createNamedCommands();
+                automomousManager = new AutomomousManager(driveSubsystem, intakeSubsystem, feederSubsystem, shooterSubsystem,ledSubsystem);
 
                 configureButtonBindings();
 
                 try {
                         pdp = new PowerDistribution(CAN.PDH, ModuleType.kRev);
-
-                        autoPPChooser = AutoBuilder.buildAutoChooser("Test Auto");
-
-                        Shuffleboard.getTab("Autonomous Selection").add(autoPPChooser);
-
-                        autoMode.addOption("Pathplanner", AutoMode.PP_AUTO);
-                        autoMode.setDefaultOption("Dynamic", AutoMode.DYNAMIC_AUTO);
-
-                        Shuffleboard.getTab("Autonomous Selection").add("PathPlannerAutoSelector", autoPPChooser);
-                        Shuffleboard.getTab("Autonomous Selection").add("AutoModeSelector", autoMode);
-
-                        Shuffleboard.getTab("Power").add(pdp);
-
-                        configureFuelSim();
 
                         DriverStation.silenceJoystickConnectionWarning(true);
                 } catch (
@@ -247,54 +220,6 @@ public class RobotContainer {
                 Exception e) {
                         e.printStackTrace();
                 }
-        }
-
-        private void createNamedCommands() {
-                // Add commands here to be able to execute in auto
-
-                NamedCommands.registerCommand("Start Intake", intakeSubsystem.setIntakeSpeedCommand(1));
-
-                // These two commands never end, so we have to use a time based race condition.
-                NamedCommands.registerCommand("Interpolate Score",
-                                Commands.defer(() -> AutomatedCommands.shootFromHopperContinousCommand(intakeSubsystem,
-                                                indexerSubsystem,
-                                                feederSubsystem, shooterSubsystem,
-                                                () -> CowboyUtils.getAllianceHubPose()), allSubsystemsSet));
-                NamedCommands.registerCommand("Interpolate Pass",
-                                Commands.defer(() -> AutomatedCommands.shootFromHopperContinousCommand(intakeSubsystem,
-                                                indexerSubsystem,
-                                                feederSubsystem, shooterSubsystem,
-                                                () -> CowboyUtils.getAppropriateFeedingPose()), allSubsystemsSet));
-
-                NamedCommands.registerCommand("Stop All Superstructure", AutomatedCommands.stopAllSuperStructure(
-                                intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem, ledSubsystem));
-
-                NamedCommands.registerCommand("Example", new RunCommand(() -> {
-                        System.out.println("Running...");
-                }));
-
-                dynamicAutoRegistry = new DynamicAutoRegistry();
-
-                dynamicAutoRegistry.registerCommand(new AutoCommandDef("Example Command",
-                                List.of(new AutoParamDef("Example Param", 0)), params -> Commands.deferredProxy(
-                                                // this is the command factory
-                                                () -> DynamicAutoCommands.exampleCommandDynamicAuton(
-                                                                params.get("Example Param")))));
-
-                dynamicAutoRegistry.registerCommand(new AutoCommandDef("Score From Position",
-                                List.of(new AutoParamDef("Position", 1), new AutoParamDef("Time", 5)),
-                                params -> Commands.deferredProxy(
-                                                // this is the command factory
-                                                () -> DynamicAutoCommands.DynamicAutoScorePosition(
-                                                                params.get("Position"),
-                                                                params.get("Time"),
-                                                                driveSubsystem,
-                                                                intakeSubsystem,
-                                                                indexerSubsystem,
-                                                                feederSubsystem,
-                                                                shooterSubsystem))));
-
-                dynamicAutoRegistry.publishCommands();
         }
 
         private void configureButtonBindings() {
@@ -316,12 +241,12 @@ public class RobotContainer {
 
                         // Manual feeding button
                         new POVButton(operatorJoystick, 0).whileTrue(AutomatedCommands.shootFromHopperContinousCommand(
-                                        intakeSubsystem, indexerSubsystem, feederSubsystem, shooterSubsystem, 6500));
+                                        intakeSubsystem, feederSubsystem, shooterSubsystem, 6500));
 
                         //Manual scoring button, used ONLY if vision goes down mid-match.
                         new POVButton(operatorJoystick, 180)
                                         .whileTrue(AutomatedCommands.shootFromHopperContinousCommand(
-                                                        intakeSubsystem, indexerSubsystem, feederSubsystem,
+                                                        intakeSubsystem, feederSubsystem,
                                                         shooterSubsystem, 4000));
 
                         // Right operator trigger, enables SOTM and turrets the robot. Used for both
@@ -329,25 +254,25 @@ public class RobotContainer {
                         new Trigger(() -> operatorJoystick.getRawAxis(3) > .3)
                                         .whileTrue(AutomatedCommands.teleopShootOnMoveAutomationCommand(
                                                         driveSubsystem, driveJoystick, intakeSubsystem,
-                                                        indexerSubsystem, feederSubsystem, shooterSubsystem,
+                                                        feederSubsystem, shooterSubsystem,
                                                         ledSubsystem))
                                         .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
-                                                        indexerSubsystem, feederSubsystem, shooterSubsystem,
+                                                        feederSubsystem, shooterSubsystem,
                                                         ledSubsystem));
 
                         // Left operator trigger, runs intake while held.
                         new Trigger(() -> operatorJoystick.getRawAxis(2) > .3)
                                         .whileTrue(AutomatedCommands.intakeCommand(intakeSubsystem, ledSubsystem))
                                         .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
-                                                        indexerSubsystem, feederSubsystem, shooterSubsystem,
+                                                        feederSubsystem, shooterSubsystem,
                                                         ledSubsystem));
 
                         // Operator X button, reverses indexer if needed to clear jams
                         new JoystickButton(operatorJoystick, 3)
                                         .whileTrue(AutomatedCommands.reverseSuperstructure(intakeSubsystem,
-                                                        indexerSubsystem, feederSubsystem, ledSubsystem))
+                                                        feederSubsystem, ledSubsystem))
                                         .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
-                                                        indexerSubsystem, feederSubsystem, shooterSubsystem,
+                                                        feederSubsystem, shooterSubsystem,
                                                         ledSubsystem));
 
                         new JoystickButton(driveJoystick, 1).onTrue(RobotState.setCanRotate(true))
@@ -369,16 +294,16 @@ public class RobotContainer {
                         new Trigger(() -> driveJoystick.getRawAxis(3) > .4)
                                         .whileTrue(AutomatedCommands.teleopShootOnMoveAutomationCommand(
                                                         driveSubsystem, driveJoystick, intakeSubsystem,
-                                                        indexerSubsystem, feederSubsystem, shooterSubsystem,
+                                                        feederSubsystem, shooterSubsystem,
                                                         ledSubsystem))
                                         .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
-                                                        indexerSubsystem, feederSubsystem, shooterSubsystem,
+                                                        feederSubsystem, shooterSubsystem,
                                                         ledSubsystem));
 
                         new Trigger(() -> driveJoystick.getRawAxis(2) > .4)
                                         .whileTrue(AutomatedCommands.intakeCommand(intakeSubsystem, ledSubsystem))
                                         .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
-                                                        indexerSubsystem, feederSubsystem, shooterSubsystem,
+                                                        feederSubsystem, shooterSubsystem,
                                                         ledSubsystem));
 
                         new JoystickButton(driveJoystick, 8)
@@ -388,21 +313,6 @@ public class RobotContainer {
                                                                                         new Rotation2d())),
                                                         driveSubsystem.gyroReset()));
                 }
-        }
-
-        public Command getPPAutonomousCommand() {
-                if (autoPPChooser.getSelected() != null) {
-                        return autoPPChooser.getSelected();
-                } else {
-                        return driveSubsystem.gyroReset();
-                }
-        }
-
-        public AutoMode getSelectedAutoMode() {
-                AutoMode selectedAutoMode = autoMode.getSelected();
-                Logger.recordOutput("RobotState/Selected Auto Mode", selectedAutoMode);
-
-                return selectedAutoMode;
         }
 
         public Command getTestingCommand() {

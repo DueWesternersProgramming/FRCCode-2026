@@ -14,16 +14,6 @@ public class IntakeSubsystemIOSim implements IntakeSubsystemIO {
     }
 
     @Override
-    public void setDeploymentMotorPercentSpeed(double percent){
-        
-    }
-
-    @Override
-    public double getDeploymentMotorEncoderRevs(){
-        return 0.0;
-    }
-
-    @Override
     public void updateInputs(IntakeSubsystemIOInputs inputs) {
         inputs.intakePercent = percent;
         inputs.intakeTempC = 0;

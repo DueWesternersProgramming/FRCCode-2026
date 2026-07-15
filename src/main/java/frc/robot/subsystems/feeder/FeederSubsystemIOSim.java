@@ -1,23 +1,27 @@
 package frc.robot.subsystems.feeder;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-
-import frc.robot.RobotState;
-
 public class FeederSubsystemIOSim implements FeederSubsystemIO {
-    public FeederSubsystemIOSim(){
+    public FeederSubsystemIOSim() {
 
     }
 
     @Override
-    public void setFeederPercentSpeed(double percent) {
+    public void setFloorRollersPercentSpeed(double percent) {
     }
 
+    @Override
+    public void setVerticalRollersPercentSpeed(double percent) {
+    }
 
     @Override
     public void updateInputs(FeederSubsystemIOInputs inputs) {
-        inputs.feederMotorRPM = 0.0;
-        inputs.feederMotorTempC = 0.0;
+        inputs.floorRollersPercent = 0.0;
+        inputs.verticalRollersPercent = 0.0;
+
+        inputs.floorRollersMotorRPM = 0.0;
+        inputs.verticalRollersMotorRPM = 0.0;
+
+        inputs.floorRollersMotorTempC = 0.0;
+        inputs.verticalRollersMotorTempC = 0.0;
     }
 }

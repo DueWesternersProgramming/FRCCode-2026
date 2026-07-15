@@ -3,8 +3,8 @@
   "editor_config": {
     "gui": {
       "robot": {
-        "length_meters": 0.91,
-        "width_meters": 0.91
+        "length_meters": 0.68,
+        "width_meters": 0.68
       },
       "protrusions": {
         "enabled": false,
@@ -25,14 +25,13 @@
       "default_auto_velocity_merge_tolerance_meters_per_sec": 0.3
     }
   },
-  "active_path_file_name": "ExitLeftBump.json",
-  "active_path_group_id": null,
+  "active_path_file_name": "leftsideonesweep.json",
+  "active_path_group_id": "group-02d2a573-ae68-46c9-bde5-335a91ff0fd6",
   "path_groups": [
     {
       "group_id": "group-c3637dd7-3ec0-4ff6-860f-fd46d613cc77",
       "display_name": "TraverseBump",
       "path_file_names": [
-        "ExitRightBump.json",
         "ExitLeftBump.json"
       ]
     },
@@ -42,33 +41,20 @@
       "path_file_names": [
         "NeutralZoneLeftSweep.json"
       ]
+    },
+    {
+      "group_id": "group-02d2a573-ae68-46c9-bde5-335a91ff0fd6",
+      "display_name": "Predefined Autos",
+      "path_file_names": [
+        "leftsideonesweep.json"
+      ]
     }
   ],
   "linked_targets": [],
   "paths": {
-    "NeutralZoneLeftSweep.json": {
-      "display_name": "NeutralZoneLeftSweep",
+    "leftsideonesweep.json": {
+      "display_name": "LeftSideOneSweep",
       "editor_metadata": null
-    },
-    "ExitRightBump.json": {
-      "display_name": "ExitRightBump",
-      "editor_metadata": {
-        "ranged_constraints": [
-          {
-            "key": "max_velocity_meters_per_sec",
-            "value": 3.0,
-            "start_ordinal": 1,
-            "end_ordinal": 1,
-            "source": "auto_velocity",
-            "auto_velocity": {
-              "velocity_safety_factor": 0.9,
-              "acceleration_safety_factor": 0.8,
-              "merge_tolerance_meters_per_sec": 0.3,
-              "input_signature": "{\"pathElements\":[{\"type\":\"waypoint\",\"xMeters\":10.335992019884996,\"yMeters\":4.512499031513743,\"handoffRadiusMeters\":0.5,\"rotationRadians\":0,\"profiledRotation\":true},{\"type\":\"translation\",\"xMeters\":11.233917338274026,\"yMeters\":4.786442516268988,\"handoffRadiusMeters\":0.5},{\"type\":\"translation\",\"xMeters\":12.04053,\"yMeters\":6.05724,\"handoffRadiusMeters\":0.5},{\"type\":\"translation\",\"xMeters\":13.43308,\"yMeters\":5.69198,\"handoffRadiusMeters\":0.5},{\"type\":\"translation\",\"xMeters\":14.55167919101009,\"yMeters\":5.463692090082071,\"handoffRadiusMeters\":0.5},{\"type\":\"waypoint\",\"xMeters\":15.5713576853456,\"yMeters\":4.390745855567261,\"handoffRadiusMeters\":0.5,\"rotationRadians\":0,\"profiledRotation\":true},{\"type\":\"waypoint\",\"xMeters\":14.947375271149646,\"yMeters\":0.8446982493369681,\"handoffRadiusMeters\":0.5,\"rotationRadians\":0,\"profiledRotation\":true}],\"scalarConstraints\":{\"maxVelocityMps\":null,\"maxAccelerationMps2\":null,\"maxVelocityDegPerSec\":null,\"maxAccelerationDegPerSec\":null},\"rotationRangedConstraints\":[{\"key\":\"max_velocity_deg_per_sec\",\"value\":720,\"startOrdinal\":1,\"endOrdinal\":1}],\"config\":{\"maxVelocityMps\":6,\"maxAccelerationMps2\":15,\"handoffRadiusMeters\":0.5,\"maxVelocityDegPerSec\":720,\"maxAccelerationDegPerSec\":1500,\"autoVelocityVelocitySafetyFactor\":0.9,\"autoVelocityAccelerationSafetyFactor\":0.8},\"options\":{\"velocitySafetyFactor\":0.9,\"accelerationSafetyFactor\":0.8,\"sampleStepMeters\":null}}"
-            }
-          }
-        ]
-      }
     },
     "ExitLeftBump.json": {
       "display_name": "ExitLeftBump",
@@ -89,6 +75,10 @@
           }
         ]
       }
+    },
+    "NeutralZoneLeftSweep.json": {
+      "display_name": "NeutralZoneLeftSweep",
+      "editor_metadata": null
     }
   },
   "field_assets": {}

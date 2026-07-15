@@ -19,28 +19,9 @@ public class IntakeSubsystem extends SubsystemBase {
         this.io = io;
     }
 
-    public void setDeploymentMotorSpeed(double percent) {
-        io.setDeploymentMotorPercentSpeed(percent);
-    }
-
-    public double getDeploymentMotorEncoderRevs() {
-        return io.getDeploymentMotorEncoderRevs();
-    }
 
     public Command setIntakeSpeedCommand(double speed) {
         return new InstantCommand(() -> io.setPercentSpeed(speed), this);
-    }
-
-    public Command runIntakeAgitationContinousCommand() {
-        return Commands.repeatingSequence(
-                setIntakeSpeedCommand(-.7),
-                new WaitCommand(.12),
-                setIntakeSpeedCommand(.8),
-                new WaitCommand(2));
-    }
-
-    public Command runIntakeNormalCommand() {
-        return new InstantCommand(() -> setDeploymentMotorSpeed(-.85), this);
     }
 
     public Command stopIntakingCommand() {
