@@ -1,5 +1,11 @@
 package frc.robot.commands.automation.misc;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.lib.BLine.Path;
@@ -13,7 +19,21 @@ public class BLine {
             path.mirror();
         }
 
-        return Commands.sequence(driveSubsystem.getBLineBuilder().build(path))
+        Pose2d startPose = path.getStartPose();
+
+        return Commands.either(
+                driveSubsystem.getBLineBuilder().build(path),
+                Commands.sequence(
+                        new DriveToPoseCommand(driveSubsystem, () -> startPose),
+                        driveSubsystem.getBLineBuilder().build(path)),
+                () -> driveSubsystem.getPose()
+                        .getTranslation()
+                        .getDistance(startPose.getTranslation()) < 0.10
+                        && Math.abs(
+                                driveSubsystem.getPose()
+                                        .getRotation()
+                                        .minus(startPose.getRotation())
+                                        .getDegrees()) < 5.0)
                 .beforeStarting(Commands.print(name + ": start"))
                 .andThen(Commands.print(name + ": end"));
     }
@@ -23,11 +43,47 @@ public class BLine {
             path.mirror();
         }
 
-        return Commands.sequence(driveSubsystem.getBLineBuilder().build(path));
+        Pose2d startPose = path.getStartPose();
+
+        return Commands.either(
+                driveSubsystem.getBLineBuilder().build(path),
+                Commands.sequence(
+                        new DriveToPoseCommand(driveSubsystem, () -> startPose),
+                        driveSubsystem.getBLineBuilder().build(path)),
+                () -> driveSubsystem.getPose()
+                        .getTranslation()
+                        .getDistance(startPose.getTranslation()) < 0.10
+                        && Math.abs(
+                                driveSubsystem.getPose()
+                                        .getRotation()
+                                        .minus(startPose.getRotation())
+                                        .getDegrees()) < 5.0);
     }
 
-    public static Path getPathFromFile(String name) {
-        return new Path(name);
+    public static Path getPath(String name, boolean mirrorVertically) {
+        Path path = new Path(name);
+
+        if (mirrorVertically) {
+            path.mirror();
+        }
+
+        return path;
     }
 
+    public static String getPathJson(String name) {
+        try {
+            java.nio.file.Path file = java.nio.file.Paths.get(
+                    Filesystem.getDeployDirectory().getAbsolutePath(),
+                    "autos",
+                    "paths",
+                    name + ".json");
+
+            return java.nio.file.Files.readString(file);
+
+        } catch (IOException e) {
+            throw new RuntimeException(
+                    "Failed to load B-Line path JSON: " + name,
+                    e);
+        }
+    }
 }
