@@ -316,7 +316,7 @@ public class AutomomousManager {
                 return BLine.BLineTrajectory(
                                 driveSubsystem,
                                 combinedPath,
-                                false);
+                                false); //Do NOT mirror the combined path, as individual paths have already been mirrored if needed
         }
 
         private void registerTriggerCommands() {

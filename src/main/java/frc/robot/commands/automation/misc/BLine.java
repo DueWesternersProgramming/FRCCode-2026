@@ -8,8 +8,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.lib.BLine.FlippingUtil;
 import frc.robot.lib.BLine.Path;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.utils.CowboyUtils;
 
 public class BLine {
     public static Command BLineTrajectory(DriveSubsystem driveSubsystem, String name, boolean mirrorVertically) {
@@ -19,7 +21,9 @@ public class BLine {
             path.mirror();
         }
 
-        Pose2d startPose = path.getStartPose();
+        Pose2d startPose = CowboyUtils.isRedAlliance()
+                ? FlippingUtil.flipFieldPose(path.getStartPose())
+                : path.getStartPose();
 
         return Commands.either(
                 driveSubsystem.getBLineBuilder().build(path),
@@ -43,7 +47,9 @@ public class BLine {
             path.mirror();
         }
 
-        Pose2d startPose = path.getStartPose();
+        Pose2d startPose = CowboyUtils.isRedAlliance()
+                ? FlippingUtil.flipFieldPose(path.getStartPose())
+                : path.getStartPose();
 
         return Commands.either(
                 driveSubsystem.getBLineBuilder().build(path),

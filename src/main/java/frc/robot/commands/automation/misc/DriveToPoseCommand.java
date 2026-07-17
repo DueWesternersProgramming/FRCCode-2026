@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.utils.CowboyUtils;
 
 import java.util.function.Supplier;
 
@@ -102,7 +103,13 @@ public class DriveToPoseCommand extends Command {
                         -Math.PI * 2,
                         Math.PI * 2);
 
-        drive.runChassisSpeeds(speeds); // <-- replace with your method
+        if (CowboyUtils.isRedAlliance()) {
+            speeds.vxMetersPerSecond = -speeds.vxMetersPerSecond;
+            speeds.vyMetersPerSecond = -speeds.vyMetersPerSecond;
+            speeds.omegaRadiansPerSecond = -speeds.omegaRadiansPerSecond;
+        }
+
+        drive.runChassisSpeeds(speeds,true);
     }
 
     @Override

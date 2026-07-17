@@ -150,10 +150,6 @@ public class DriveSubsystem extends SubsystemBase {
 
         // if it is autonomous, assume that we start in the correct initial position
 
-        if (RobotModes.currentMode == RobotModes.simMode) {
-            //bLinePathBuilder = bLinePathBuilder.withPoseReset(this::setPose); // Reset odometry at path start
-        }
-
         // AdvantageKit logging
         FollowPath.setDoubleLoggingConsumer(p -> Logger.recordOutput(p.getFirst(), p.getSecond()));
         FollowPath.setBooleanLoggingConsumer(p -> Logger.recordOutput(p.getFirst(), p.getSecond()));
@@ -337,11 +333,11 @@ public class DriveSubsystem extends SubsystemBase {
             m_currentRotation = rot;
         }
 
-        if (Robot.isSimulation() && CowboyUtils.isRedAlliance()) {
-            xSpeedCommanded = -xSpeedCommanded; // Away from the DS
-            ySpeedCommanded = -ySpeedCommanded; // Away from long wall
-            m_currentRotation = -m_currentRotation;
-        }
+        // if (Robot.isSimulation() && CowboyUtils.isRedAlliance()) {
+        //     xSpeedCommanded = -xSpeedCommanded; // Away from the DS
+        //     ySpeedCommanded = -ySpeedCommanded; // Away from long wall
+        //     m_currentRotation = -m_currentRotation;
+        // }
 
         // Convert the commanded speeds into the correct units for the drivetrain
         double xSpeedDelivered = xSpeedCommanded * DrivetrainConstants.MAX_SPEED_METERS_PER_SECOND;
