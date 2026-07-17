@@ -1,4 +1,4 @@
 package frc.robot.autonomous;
 
-public record BLinePathSource(String name, boolean mirror) {
+public record BLinePathSource(String name, boolean mirrorVertically) {
 }

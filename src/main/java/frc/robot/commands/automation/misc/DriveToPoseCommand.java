@@ -112,6 +112,9 @@ public class DriveToPoseCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        drive.runChassisSpeeds(new ChassisSpeeds()); // <-- replace if needed
+        drive.runChassisSpeeds(new ChassisSpeeds());
+        controller.getXController().reset();
+        controller.getYController().reset();
+        controller.getThetaController().reset(drive.getPose().getRotation().getDegrees());
     }
 }
