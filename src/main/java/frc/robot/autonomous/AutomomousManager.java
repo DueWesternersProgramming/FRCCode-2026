@@ -11,6 +11,7 @@ import com.google.gson.JsonParser;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.autonomous.AutonomousQuestionaire.Option;
@@ -52,7 +53,7 @@ public class AutomomousManager {
         private final AutonomousQuestionaire<Supplier<Command>> predefinedAutoChooser;
         private final AutonomousQuestionaire<AutoMode> autoMode;
 
-        private List<AutonomousQuestionaire<Supplier<BLinePathSource>>> dynamicAutoChoosers;
+        private List<AutonomousQuestionaire<Supplier<Object>>> dynamicAutoChoosers;
 
         DriveSubsystem driveSubsystem;
         IntakeSubsystem intakeSubsystem;
@@ -105,8 +106,8 @@ public class AutomomousManager {
 
                 dynamicAutoChoosers.add(
                                 new AutonomousQuestionaire<>(
-                                                "Autonomous/DynamicAuto/Selector1",
-                                                new Option<>("Default",
+                                                "Autonomous/DynamicAuto/ExitZoneAction",
+                                                new Option<>("No Exit",
                                                                 () -> new BLinePathSource("NothingPath", false)),
                                                 List.of(
                                                                 new Option<>("Exit Left Bump",
@@ -119,18 +120,38 @@ public class AutomomousManager {
 
                 dynamicAutoChoosers.add(
                                 new AutonomousQuestionaire<>(
-                                                "Autonomous/DynamicAuto/Selector2",
-                                                new Option<>("Default",
+                                                "Autonomous/DynamicAuto/IntakeAction",
+                                                new Option<>("No Intake",
                                                                 () -> new BLinePathSource("NothingPath", false)),
                                                 List.of(
-                                                                new Option<>("Sweep Neutral Zone (Deep Left)",
+                                                                new Option<>("Sweep Neutral Zone (Deep Left, 1/2)",
                                                                                 () -> new BLinePathSource(
-                                                                                                "NeutralZoneDeepLeftSweep",
+                                                                                                "NeutralZoneDeepLeftSweepHalf",
                                                                                                 false)),
-                                                                new Option<>("Sweep Neutral Zone (Deep Right)",
+                                                                new Option<>("Sweep Neutral Zone (Deep Right, 1/2)",
                                                                                 () -> new BLinePathSource(
-                                                                                                "NeutralZoneDeepLeftSweep",
-                                                                                                true)))));
+                                                                                                "NeutralZoneDeepLeftSweepHalf",
+                                                                                                true)),
+
+                                                                new Option<>("Sweep Neutral Zone (Deep Left, 1/4)",
+                                                                                () -> new BLinePathSource(
+                                                                                                "NeutralZoneDeepLeftSweepQuarter",
+                                                                                                false)),
+                                                                new Option<>("Sweep Neutral Zone (Deep Right, 1/4)",
+                                                                                () -> new BLinePathSource(
+                                                                                                "NeutralZoneDeepLeftSweepQuarter",
+                                                                                                true)),
+
+                                                                new Option<>("Sweep Neutral Zone (Shallow Left)",
+                                                                                () -> new BLinePathSource(
+                                                                                                "NeutralZoneShallowLeftSweep",
+                                                                                                false)),
+                                                                new Option<>("Sweep Neutral Zone (Shallow Right)",
+                                                                                () -> new BLinePathSource(
+                                                                                                "NeutralZoneShallowLeftSweep",
+                                                                                                true)),
+                                                                new Option<>("Custom Ball Seeking Command",
+                                                                                () -> Commands.print("I AM LOOKING FOR BALLS!!")))));
         }
 
         private Path combinePaths(List<BLinePathSource> paths) {
@@ -297,7 +318,6 @@ public class AutomomousManager {
                                         mirrorRotation(obj);
                                         break;
 
-                                // event triggers and anything else don't need mirroring
                                 default:
                                         break;
                         }
@@ -306,17 +326,46 @@ public class AutomomousManager {
 
         private Command getDynamicAutoCommand() {
 
-                List<BLinePathSource> selectedPaths = dynamicAutoChoosers.stream()
-                                .map(AutonomousQuestionaire::get)
-                                .map(Supplier::get)
-                                .toList();
+                try {
+                        List<Command> finalCommands = new ArrayList<>();
 
-                Path combinedPath = combinePaths(selectedPaths);
+                        List<BLinePathSource> tempCombinedPaths = new ArrayList<>();
 
-                return BLine.BLineTrajectory(
-                                driveSubsystem,
-                                combinedPath,
-                                false); //Do NOT mirror the combined path, as individual paths have already been mirrored if needed
+                        List<Object> selections = dynamicAutoChoosers.stream()
+                                        .map(AutonomousQuestionaire::get)
+                                        .map(Supplier::get)
+                                        .toList();
+
+                        for (Object item : selections) {
+                                if (item instanceof Command command) {
+                                        finalCommands.add(BLine.BLineTrajectory(
+                                                        driveSubsystem,
+                                                        combinePaths(tempCombinedPaths),
+                                                        false));
+
+                                        tempCombinedPaths.clear();
+
+                                        finalCommands.add(command);
+
+                                } else if (item instanceof BLinePathSource path) {
+                                        tempCombinedPaths.add(path);
+                                }
+                        }
+
+                        if (tempCombinedPaths.size() > 0) {
+                                finalCommands.add(BLine.BLineTrajectory(
+                                                driveSubsystem,
+                                                combinePaths(tempCombinedPaths),
+                                                false));
+                        }
+
+                        return Commands.sequence(finalCommands.stream().toArray(Command[]::new));
+
+                } catch (Exception e) {
+                        DriverStation.reportError("Dynamic Auto Error: " + e, true);
+                        return Commands.none();
+                }
+
         }
 
         private void registerTriggerCommands() {

@@ -25,7 +25,7 @@
       "default_auto_velocity_merge_tolerance_meters_per_sec": 0.3
     }
   },
-  "active_path_file_name": "NeutralZoneShallowLeftSweep.json",
+  "active_path_file_name": "neutralzonedeepleftsweepquarter.json",
   "active_path_group_id": null,
   "path_groups": [
     {
@@ -39,7 +39,7 @@
       "group_id": "group-93a44a8f-3b2e-4270-852a-95cfe2b592bd",
       "display_name": "NeutralZoneIntake",
       "path_file_names": [
-        "NeutralZoneDeepLeftSweep.json",
+        "NeutralZoneDeepLeftSweepHalf.json",
         "NeutralZoneShallowLeftSweep.json"
       ]
     },
@@ -51,16 +51,12 @@
   ],
   "linked_targets": [],
   "paths": {
-    "NeutralZoneShallowLeftSweep.json": {
-      "display_name": "NeutralZoneShallowLeftSweep",
-      "editor_metadata": null
-    },
     "LeftSideOneSweep.json": {
       "display_name": "LeftSideOneSweep",
       "editor_metadata": null
     },
-    "NeutralZoneDeepLeftSweep.json": {
-      "display_name": "NeutralZoneDeepLeftSweep",
+    "nothingpath.json": {
+      "display_name": "NothingPath",
       "editor_metadata": null
     },
     "ExitLeftBump.json": {
@@ -83,8 +79,16 @@
         ]
       }
     },
-    "nothingpath.json": {
-      "display_name": "NothingPath",
+    "NeutralZoneShallowLeftSweep.json": {
+      "display_name": "NeutralZoneShallowLeftSweep",
+      "editor_metadata": null
+    },
+    "neutralzonedeepleftsweepquarter.json": {
+      "display_name": "NeutralZoneDeepLeftSweepQuarter",
+      "editor_metadata": null
+    },
+    "NeutralZoneDeepLeftSweepHalf.json": {
+      "display_name": "NeutralZoneDeepLeftSweepHalf",
       "editor_metadata": null
     }
   },

@@ -1,44 +1,22 @@
 package frc.robot.commands.automation.misc;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.utils.CowboyUtils;
-
-import java.util.function.Supplier;
 
 public class DriveToPoseCommand extends Command {
 
     private final DriveSubsystem drive;
     private final Supplier<Pose2d> targetSupplier;
 
-    private final PIDController xController =
-            new PIDController(4.0, 0.0, 0.0);
-
-    private final PIDController yController =
-            new PIDController(4.0, 0.0, 0.0);
-
-    private final ProfiledPIDController thetaController =
-            new ProfiledPIDController(
-                    6.0,
-                    0.0,
-                    0.0,
-                    new TrapezoidProfile.Constraints(
-                            Math.PI * 4.0,
-                            Math.PI * 8.0));
-
-    private final HolonomicDriveController controller =
-            new HolonomicDriveController(
-                    xController,
-                    yController,
-                    thetaController);
+    private final PIDController xController = new PIDController(4.0, 0.0, 0.0);
+    private final PIDController yController = new PIDController(4.0, 0.0, 0.0);
+    private final PIDController thetaController = new PIDController(6.0, 0.0, 0.0);
 
     private static final double POSITION_TOLERANCE = 0.05; // meters
     private static final double ANGLE_TOLERANCE = 3.0; // degrees
@@ -59,16 +37,19 @@ public class DriveToPoseCommand extends Command {
     public void initialize() {
 
         System.out.println("DriveToPoseCommand: Initializing");
+
         Pose2d current = drive.getPose();
 
-        thetaController.reset(
-                current.getRotation().getRadians());
+        System.out.println("Initial Pose : " + current);
+        System.out.println("Target Pose  : " + targetSupplier.get());
 
-        controller.setTolerance(
-                new Pose2d(
-                        POSITION_TOLERANCE,
-                        POSITION_TOLERANCE,
-                        Rotation2d.fromDegrees(ANGLE_TOLERANCE)));
+        xController.reset();
+        yController.reset();
+        thetaController.reset();
+
+        xController.setTolerance(POSITION_TOLERANCE);
+        yController.setTolerance(POSITION_TOLERANCE);
+        thetaController.setTolerance(Math.toRadians(ANGLE_TOLERANCE));
     }
 
     @Override
@@ -77,51 +58,56 @@ public class DriveToPoseCommand extends Command {
         Pose2d current = drive.getPose();
         Pose2d target = targetSupplier.get();
 
-        ChassisSpeeds speeds =
-                controller.calculate(
-                        current,
-                        target,
-                        0.0,                      // desired translation speed
-                        target.getRotation());
+        double vx = xController.calculate(
+                current.getX(),
+                target.getX());
 
-        // Optional speed limiting
-        speeds.vxMetersPerSecond =
-                MathUtil.clamp(
-                        speeds.vxMetersPerSecond,
-                        -2.0,
-                        2.0);
+        double vy = yController.calculate(
+                current.getY(),
+                target.getY());
 
-        speeds.vyMetersPerSecond =
-                MathUtil.clamp(
-                        speeds.vyMetersPerSecond,
-                        -2.0,
-                        2.0);
+        double omega = thetaController.calculate(
+                current.getRotation().getRadians(),
+                target.getRotation().getRadians());
 
-        speeds.omegaRadiansPerSecond =
-                MathUtil.clamp(
-                        speeds.omegaRadiansPerSecond,
-                        -Math.PI * 2,
-                        Math.PI * 2);
+        vx = MathUtil.clamp(vx, -4.0, 4.0);
+        vy = MathUtil.clamp(vy, -4.0, 4.0);
+        omega = MathUtil.clamp(omega, -2.0 * Math.PI, 2.0 * Math.PI);
 
-        if (CowboyUtils.isRedAlliance()) {
-            speeds.vxMetersPerSecond = -speeds.vxMetersPerSecond;
-            speeds.vyMetersPerSecond = -speeds.vyMetersPerSecond;
-            speeds.omegaRadiansPerSecond = -speeds.omegaRadiansPerSecond;
-        }
+        ChassisSpeeds speeds = new ChassisSpeeds(vx, vy, omega);
 
-        drive.runChassisSpeeds(speeds,true);
+        System.out.println("Current Pose : " + current);
+        System.out.println("Target Pose  : " + target);
+        System.out.printf(
+                "Errors: x=%.3f y=%.3f theta=%.1f°%n",
+                target.getX() - current.getX(),
+                target.getY() - current.getY(),
+                target.getRotation()
+                        .minus(current.getRotation())
+                        .getDegrees());
+
+        System.out.printf(
+                "PID Outputs: vx=%.2f vy=%.2f omega=%.2f%n",
+                vx,
+                vy,
+                omega);
+
+        drive.runChassisSpeeds(speeds, true);
     }
 
     @Override
     public boolean isFinished() {
-        return controller.atReference();
+        return xController.atSetpoint()
+                && yController.atSetpoint()
+                && thetaController.atSetpoint();
     }
 
     @Override
     public void end(boolean interrupted) {
         drive.runChassisSpeeds(new ChassisSpeeds());
-        controller.getXController().reset();
-        controller.getYController().reset();
-        controller.getThetaController().reset(drive.getPose().getRotation().getDegrees());
+
+        xController.reset();
+        yController.reset();
+        thetaController.reset();
     }
 }

@@ -50,6 +50,8 @@ public class BLine {
         Pose2d startPose = CowboyUtils.isRedAlliance()
                 ? FlippingUtil.flipFieldPose(path.getStartPose())
                 : path.getStartPose();
+        
+        System.out.println("Start Pose: " + startPose);
 
         return Commands.either(
                 driveSubsystem.getBLineBuilder().build(path),

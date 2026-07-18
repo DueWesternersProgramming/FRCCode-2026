@@ -12,7 +12,7 @@ public class GyroIOSim implements GyroIO {
 
     @Override
     public double getGyroYawAngle() {
-        return fakeGyro + (CowboyUtils.isRedAlliance() ? 180 : 0);
+        return fakeGyro;// + (CowboyUtils.isRedAlliance() ? 180 : 0);
     }
 
     @Override
