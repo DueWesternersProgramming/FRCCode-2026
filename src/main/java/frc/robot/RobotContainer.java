@@ -236,18 +236,18 @@ public class RobotContainer {
 
                 if (!CowboyUtils.isSim()) { // Real robot
 
-                        new JoystickButton(operatorJoystick, 0).onTrue(shooterSubsystem.increaseRPMModificationSpeed());
-                        new JoystickButton(driveJoystick, 0).onTrue(shooterSubsystem.decreaseRPMModificationSpeed());
+                        // new JoystickButton(operatorJoystick, 0).onTrue(shooterSubsystem.increaseRPMModificationSpeed());
+                        // new JoystickButton(driveJoystick, 0).onTrue(shooterSubsystem.decreaseRPMModificationSpeed());
 
                         // Manual feeding button
                         new POVButton(operatorJoystick, 0).whileTrue(AutomatedCommands.shootFromHopperContinousCommand(
-                                        intakeSubsystem, feederSubsystem, shooterSubsystem, 6500));
+                                        intakeSubsystem, feederSubsystem, shooterSubsystem, 6000)).onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem, feederSubsystem, shooterSubsystem, ledSubsystem));
 
                         //Manual scoring button, used ONLY if vision goes down mid-match.
                         new POVButton(operatorJoystick, 180)
                                         .whileTrue(AutomatedCommands.shootFromHopperContinousCommand(
                                                         intakeSubsystem, feederSubsystem,
-                                                        shooterSubsystem, 4000));
+                                                        shooterSubsystem, 4000)).onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem, feederSubsystem, shooterSubsystem, ledSubsystem));
 
                         // Right operator trigger, enables SOTM and turrets the robot. Used for both
                         // automated feeding and scoring.
@@ -262,7 +262,7 @@ public class RobotContainer {
 
                         // Left operator trigger, runs intake while held.
                         new Trigger(() -> operatorJoystick.getRawAxis(2) > .3)
-                                        .whileTrue(AutomatedCommands.intakeCommand(intakeSubsystem, ledSubsystem))
+                                        .whileTrue(AutomatedCommands.intakeCommand(intakeSubsystem, feederSubsystem,ledSubsystem))
                                         .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
                                                         feederSubsystem, shooterSubsystem,
                                                         ledSubsystem));
@@ -270,7 +270,7 @@ public class RobotContainer {
                         // Operator X button, reverses indexer if needed to clear jams
                         new JoystickButton(operatorJoystick, 3)
                                         .whileTrue(AutomatedCommands.reverseSuperstructure(intakeSubsystem,
-                                                        feederSubsystem, ledSubsystem))
+                                                        feederSubsystem, shooterSubsystem, ledSubsystem))
                                         .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
                                                         feederSubsystem, shooterSubsystem,
                                                         ledSubsystem));
@@ -301,7 +301,7 @@ public class RobotContainer {
                                                         ledSubsystem));
 
                         new Trigger(() -> driveJoystick.getRawAxis(2) > .4)
-                                        .whileTrue(AutomatedCommands.intakeCommand(intakeSubsystem, ledSubsystem))
+                                        .whileTrue(AutomatedCommands.intakeCommand(intakeSubsystem, feederSubsystem, ledSubsystem))
                                         .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
                                                         feederSubsystem, shooterSubsystem,
                                                         ledSubsystem));

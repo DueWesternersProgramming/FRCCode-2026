@@ -377,6 +377,7 @@ public class AutomomousManager {
                 FollowPath.registerEventTrigger("RunIntake",
                                 AutomatedCommands.intakeCommand(
                                                 intakeSubsystem,
+                                                feederSubsystem,
                                                 ledSubsystem));
         }
 

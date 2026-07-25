@@ -34,14 +34,14 @@ public class ShooterSubsystemIOSparkMax implements ShooterSubsystemIO {
                 leftShooterMotorConfig
                                 .smartCurrentLimit(40)
                                 .idleMode(IdleMode.kCoast)
-                                .inverted(true);
+                                .inverted(false);
 
                 leftShooterMotorConfig.closedLoop
-                                .pid(0.00005, 0.0, 0.0)
+                                .pid(0.0001, 0.0, 0.0)
                                 .outputRange(-1.0, 1.0);
 
                 leftShooterMotorConfig.closedLoop.feedForward
-                                .kV(0.000165);
+                                .kV(0.00015);
 
                 // RIGHT MOTOR CONFIG (follower)
                 rightShooterMotorConfig

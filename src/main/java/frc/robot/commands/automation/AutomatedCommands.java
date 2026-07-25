@@ -38,8 +38,9 @@ public class AutomatedCommands {
                 return Commands.print("EA Sports: It's in the game! Example Param: " + exampleParam);
         }
 
-        public static Command intakeCommand(IntakeSubsystem intakeSubsystem, LEDSubsystem ledSubsystem) {
+        public static Command intakeCommand(IntakeSubsystem intakeSubsystem, FeederSubsystem feederSubsystem, LEDSubsystem ledSubsystem) {
                 return Commands.parallel(
+                                feederSubsystem.setFeederSpeedCommand(.3, -.6),
                                 new SequentialCommandGroup(
                                                 intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1),
                                                 intakeSubsystem.setIntakeSpeedCommand(1)),
@@ -55,11 +56,11 @@ public class AutomatedCommands {
         }
 
         public static Command reverseSuperstructure(IntakeSubsystem intakeSubsystem,
-                        FeederSubsystem feederSubsystem, LEDSubsystem ledSubsystem) {
+                        FeederSubsystem feederSubsystem, ShooterSubsystem shooterSubsystem, LEDSubsystem ledSubsystem) {
                 return Commands.parallel(
                                 intakeSubsystem.setIntakeSpeedCommand(-.6),
                                 feederSubsystem.setFeederSpeedCommand(FeederConstants.FLOOR_ROLLERS_REVERSE_SPEED,
-                                                FeederConstants.VERTICAL_ROLLERS_REVERSE_SPEED),
+                                                FeederConstants.VERTICAL_ROLLERS_REVERSE_SPEED), shooterSubsystem.setPercentSpeedCommand(-.4),
                                 ledSubsystem.setLEDModeCommand(LEDModes.REVERSING));
         }
 
