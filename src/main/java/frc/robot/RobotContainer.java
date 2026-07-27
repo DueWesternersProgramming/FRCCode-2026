@@ -233,6 +233,7 @@ public class RobotContainer {
                                                                                                          // change
                                                                                                          // depending on
                                                                                                          // mode.
+                feederSubsystem.setDefaultCommand(feederSubsystem.setFeederSpeedCommand(-.2, -.2));
 
                 if (!CowboyUtils.isSim()) { // Real robot
 
