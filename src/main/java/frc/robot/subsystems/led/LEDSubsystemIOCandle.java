@@ -14,10 +14,8 @@ import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.signals.StatusLedWhenActiveValue;
 import com.ctre.phoenix6.signals.StripTypeValue;
-
-import frc.robot.RobotConstants.LEDConstants;
 import frc.robot.RobotConstants.PortConstants;
-import frc.robot.RobotConstants.LEDConstants.AnimationTypes;
+import frc.robot.subsystems.led.LEDSubsystemConstants.AnimationTypes;
 
 public class LEDSubsystemIOCandle implements LEDSubsystemIO {
     CANdle candle;

@@ -11,9 +11,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotConstants;
-import frc.robot.RobotConstants.DrivetrainConstants;
 import frc.robot.RobotConstants.TeleopConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystemConstants;
 import frc.robot.utils.CowboyUtils;
 
 import java.util.function.DoubleSupplier;
@@ -73,7 +73,7 @@ public class AlignPerpendicularToPoseCommand extends Command {
                 perpendicularConstrained);
 
         ChassisSpeeds speeds = new ChassisSpeeds(
-                perpendicularSquared * DrivetrainConstants.MAX_SPEED_METERS_PER_SECOND,
+                perpendicularSquared * DriveSubsystemConstants.MAX_SPEED_METERS_PER_SECOND,
                 parallelSpeed,
                 angularSpeed);
 

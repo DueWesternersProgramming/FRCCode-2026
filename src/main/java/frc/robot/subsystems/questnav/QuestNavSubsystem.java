@@ -14,10 +14,10 @@ import frc.robot.RobotState;
 import frc.robot.utils.TimestampedPose;
 
 public class QuestNavSubsystem extends SubsystemBase {
-    public QuestNavIO io;
+    public QuestNavSubsystemIO io;
     QuestIOInputsAutoLogged inputs = new QuestIOInputsAutoLogged();
 
-    public QuestNavSubsystem(QuestNavIO io) {
+    public QuestNavSubsystem(QuestNavSubsystemIO io) {
         this.io = io;
     }
 
@@ -67,8 +67,8 @@ public class QuestNavSubsystem extends SubsystemBase {
         Logger.recordOutput("QuestNavSubsystem/isPoseInTolerance", isPoseWithinTolerance);
 
         if (DriverStation.isEnabled() && RobotState.isQuestNavPoseReset && isPoseWithinTolerance) {
-            // RobotState.offerQuestMeasurement(new TimestampedPose(getRobotPose(),
-            //         inputs.timestamp));
+            RobotState.offerQuestMeasurement(new TimestampedPose(getRobotPose(),
+                    inputs.timestamp));
         }
     }
 

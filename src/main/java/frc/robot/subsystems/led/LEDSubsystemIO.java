@@ -4,7 +4,8 @@ import org.littletonrobotics.junction.AutoLog;
 
 import com.ctre.phoenix6.signals.RGBWColor;
 
-import frc.robot.RobotConstants.LEDConstants.AnimationTypes;
+import frc.robot.subsystems.led.LEDSubsystemConstants.AnimationTypes;
+
 
 public interface LEDSubsystemIO {
 

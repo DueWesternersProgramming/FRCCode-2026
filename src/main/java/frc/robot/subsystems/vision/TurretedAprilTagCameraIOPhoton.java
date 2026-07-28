@@ -16,9 +16,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotState;
+import frc.robot.subsystems.vision.VisionSubsystemConstants.VisionSource;
 import frc.robot.RobotConstants.SubsystemEnabledConstants;
-import frc.robot.RobotConstants.VisionConstants.AprilTagCameraConfig;
-import frc.robot.RobotConstants.VisionConstants.VisionSource;
 import frc.robot.utils.CowboyUtils;
 import frc.robot.utils.TimestampedPose;
 

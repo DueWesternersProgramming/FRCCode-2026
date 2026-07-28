@@ -13,7 +13,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.RobotConstants.SwerveModuleConstants;
+import frc.robot.subsystems.drive.DriveSubsystemConstants;
 import frc.robot.sensors.CanCoder;
 
 public class ModuleIOSpark implements ModuleIO {
@@ -53,18 +53,18 @@ public class ModuleIOSpark implements ModuleIO {
                 // but we want meters and meters per second to use with WPILib's swerve APIs.
 
                 m_drivingConfig.encoder.positionConversionFactor(
-                                SwerveModuleConstants.DRIVING_ENCODER_POSITION_FACTOR_METERS_PER_ROTATION);
+                                DriveSubsystemConstants.DRIVING_ENCODER_POSITION_FACTOR_METERS_PER_ROTATION);
                 m_drivingConfig.encoder.velocityConversionFactor(
-                                SwerveModuleConstants.DRIVING_ENCODER_VELOCITY_FACTOR_METERS_PER_SECOND_PER_RPM);
+                                DriveSubsystemConstants.DRIVING_ENCODER_VELOCITY_FACTOR_METERS_PER_SECOND_PER_RPM);
 
                 // Apply position and velocity conversion factors for the turning encoder. We
                 // want these in radians and radians per second to use with WPILib's swerve
                 // APIs.
 
                 m_turningConfig.encoder.positionConversionFactor(
-                                SwerveModuleConstants.TURNING_ENCODER_POSITION_FACTOR_RADIANS_PER_ROTATION);
+                                DriveSubsystemConstants.TURNING_ENCODER_POSITION_FACTOR_RADIANS_PER_ROTATION);
                 m_turningConfig.encoder.velocityConversionFactor(
-                                SwerveModuleConstants.TURNING_ENCODER_VELOCITY_FACTOR_RADIANS_PER_SECOND_PER_RPM);
+                                DriveSubsystemConstants.TURNING_ENCODER_VELOCITY_FACTOR_RADIANS_PER_SECOND_PER_RPM);
 
                 // Invert the turning controller, since the output shaft rotates in the opposite
                 // direction of
@@ -78,38 +78,38 @@ public class ModuleIOSpark implements ModuleIO {
                 // longer route.
                 m_turningConfig.closedLoop.positionWrappingEnabled(true);
                 m_turningConfig.closedLoop.positionWrappingMinInput(
-                                SwerveModuleConstants.TURNING_ENCODER_POSITION_PID_MIN_INPUT_RADIANS);
+                                DriveSubsystemConstants.TURNING_ENCODER_POSITION_PID_MIN_INPUT_RADIANS);
                 m_turningConfig.closedLoop.positionWrappingMaxInput(
-                                SwerveModuleConstants.TURNING_ENCODER_POSITION_PID_MAX_INPUT_RADIANS);
+                                DriveSubsystemConstants.TURNING_ENCODER_POSITION_PID_MAX_INPUT_RADIANS);
 
                 // Set the PID gains for the driving motor.
 
-                m_drivingConfig.closedLoop.pid(SwerveModuleConstants.DRIVING_P, SwerveModuleConstants.DRIVING_I,
-                                SwerveModuleConstants.DRIVING_D);
+                m_drivingConfig.closedLoop.pid(DriveSubsystemConstants.DRIVING_P, DriveSubsystemConstants.DRIVING_I,
+                                DriveSubsystemConstants.DRIVING_D);
 
                 //FeedForwardConfig drivingFF = new FeedForwardConfig();
-                //drivingFF.kS(SwerveModuleConstants.DRIVING_FF); // TODO REVIEW THIS (replaced)
+                //drivingFF.kS(DriveSubsystemConstants.DRIVING_FF); // TODO REVIEW THIS (replaced)
 
                 FeedForwardConfig drivingFF = new FeedForwardConfig();
-                drivingFF.kV(SwerveModuleConstants.DRIVING_FF); //TODO change this name to be more specific
+                drivingFF.kV(DriveSubsystemConstants.DRIVING_FF); //TODO change this name to be more specific
                 m_drivingConfig.closedLoop.apply(drivingFF);
 
 
-                m_drivingConfig.closedLoop.outputRange(SwerveModuleConstants.DRIVING_MIN_OUTPUT_NORMALIZED,
-                                SwerveModuleConstants.DRIVING_MAX_OUTPUT_NORMALIZED);
+                m_drivingConfig.closedLoop.outputRange(DriveSubsystemConstants.DRIVING_MIN_OUTPUT_NORMALIZED,
+                                DriveSubsystemConstants.DRIVING_MAX_OUTPUT_NORMALIZED);
 
                 // Set the PID gains for the turning motor.
-                m_turningConfig.closedLoop.pid(SwerveModuleConstants.TURNING_P, SwerveModuleConstants.TURNING_I,
-                                SwerveModuleConstants.TURNING_D);// , SwerveModuleConstants.TURNING_FF); Set to 0
+                m_turningConfig.closedLoop.pid(DriveSubsystemConstants.TURNING_P, DriveSubsystemConstants.TURNING_I,
+                                DriveSubsystemConstants.TURNING_D);// , DriveSubsystemConstants.TURNING_FF); Set to 0
 
-                m_turningConfig.closedLoop.outputRange(SwerveModuleConstants.TURNING_MIN_OUTPUT_NORMALIZED,
-                                SwerveModuleConstants.TURNING_MAX_OUTPUT_NORMALIZED);
+                m_turningConfig.closedLoop.outputRange(DriveSubsystemConstants.TURNING_MIN_OUTPUT_NORMALIZED,
+                                DriveSubsystemConstants.TURNING_MAX_OUTPUT_NORMALIZED);
 
-                m_drivingConfig.idleMode(SwerveModuleConstants.DRIVING_MOTOR_IDLE_MODE);
-                m_turningConfig.idleMode(SwerveModuleConstants.TURNING_MOTOR_IDLE_MODE);
+                m_drivingConfig.idleMode(DriveSubsystemConstants.DRIVING_MOTOR_IDLE_MODE);
+                m_turningConfig.idleMode(DriveSubsystemConstants.TURNING_MOTOR_IDLE_MODE);
 
-                m_drivingConfig.smartCurrentLimit(SwerveModuleConstants.DRIVING_MOTOR_CURRENT_LIMIT_AMPS);
-                m_turningConfig.smartCurrentLimit(SwerveModuleConstants.TURNING_MOTOR_CURRENT_LIMIT_AMPS);
+                m_drivingConfig.smartCurrentLimit(DriveSubsystemConstants.DRIVING_MOTOR_CURRENT_LIMIT_AMPS);
+                m_turningConfig.smartCurrentLimit(DriveSubsystemConstants.TURNING_MOTOR_CURRENT_LIMIT_AMPS);
 
                 // Save the SPARK MAX configurations. If a SPARK MAX browns out during
                 // operation, it will maintain the above configurations.

@@ -1,6 +1,5 @@
 package frc.robot.subsystems.vision;
 
-import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -10,11 +9,9 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotState;
+import frc.robot.subsystems.vision.VisionSubsystemConstants.VisionSource;
 import frc.robot.RobotConstants.SubsystemEnabledConstants;
-import frc.robot.RobotConstants.VisionConstants.AprilTagCameraConfig;
-import frc.robot.RobotConstants.VisionConstants.VisionSource;
 import frc.robot.utils.CowboyUtils;
 import frc.robot.utils.TimestampedPose;
 

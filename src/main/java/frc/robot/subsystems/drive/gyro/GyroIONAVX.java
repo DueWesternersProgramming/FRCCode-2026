@@ -3,7 +3,7 @@ package frc.robot.subsystems.drive.gyro;
 import com.studica.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.RobotConstants.DrivetrainConstants;
+import frc.robot.subsystems.drive.DriveSubsystemConstants;
 
 public class GyroIONAVX implements GyroIO {
     private static AHRS m_gyro;
@@ -14,7 +14,7 @@ public class GyroIONAVX implements GyroIO {
 
     @Override
     public double getGyroYawAngle() {
-        return m_gyro.getYaw() * DrivetrainConstants.GYRO_ORIENTATION;
+        return m_gyro.getYaw() * DriveSubsystemConstants.GYRO_ORIENTATION;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class GyroIONAVX implements GyroIO {
 
     @Override
     public double getRate() {
-        return m_gyro.getRate() * DrivetrainConstants.GYRO_ORIENTATION;
+        return m_gyro.getRate() * DriveSubsystemConstants.GYRO_ORIENTATION;
     }
 
     @Override

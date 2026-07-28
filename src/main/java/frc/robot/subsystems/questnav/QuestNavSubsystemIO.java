@@ -1,13 +1,9 @@
 package frc.robot.subsystems.questnav;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.wpilibj2.command.Command;
-
 import org.littletonrobotics.junction.AutoLog;
 
-public interface QuestNavIO {
+public interface QuestNavSubsystemIO {
     @AutoLog
     public static class QuestIOInputs {
         public boolean connected = false;

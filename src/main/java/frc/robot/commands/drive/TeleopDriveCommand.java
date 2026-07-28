@@ -6,9 +6,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.TeleopConstants;
 import frc.robot.RobotConstants.PortConstants.Controller;
-import frc.robot.RobotConstants.DrivetrainConstants;
 import frc.robot.RobotState;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystemConstants;
 
 public class TeleopDriveCommand extends Command {
     private final DriveSubsystem drive;
@@ -22,12 +22,11 @@ public class TeleopDriveCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        // drive.drive(0, 0, 0, DrivetrainConstants.FIELD_RELATIVE, true);
     }
 
     @Override
     public void execute() {
-        boolean fieldRelative = DrivetrainConstants.FIELD_RELATIVE;
+        boolean fieldRelative = DriveSubsystemConstants.FIELD_RELATIVE;
 
         double xRaw = -(joystick.getRawAxis(Controller.DRIVE_COMMAND_X_AXIS));
         double yRaw = -(joystick.getRawAxis(Controller.DRIVE_COMMAND_Y_AXIS));

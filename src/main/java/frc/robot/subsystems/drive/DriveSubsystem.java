@@ -11,7 +11,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -19,33 +18,22 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
-import frc.robot.RobotConstants;
 import frc.robot.RobotState;
 import frc.robot.lib.BLine.FollowPath;
 import frc.robot.utils.AntiTipping;
 import frc.robot.utils.CowboyUtils;
-import frc.robot.RobotConstants.DrivetrainConstants;
-import frc.robot.RobotConstants.QuestNavConstants;
-import frc.robot.RobotConstants.ScoringConstants;
 import frc.robot.RobotConstants.SimMode;
-import frc.robot.RobotConstants.SubsystemEnabledConstants;
-import frc.robot.subsystems.drive.ModuleIO.ModuleIOInputs;
 import frc.robot.subsystems.drive.gyro.GyroIO;
 import frc.robot.subsystems.drive.gyro.GyroIOInputsAutoLogged;
-import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.subsystems.questnav.QuestNavSubsystemConstants;
 import frc.robot.utils.SwerveUtils;
 import frc.robot.utils.TimestampedPose;
-import frc.robot.utils.CowboyUtils.RobotModes;
-
-import com.google.flatbuffers.Constants;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import org.littletonrobotics.junction.Logger;
-import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The {@code Drivetrain} class contains fields and methods pertaining to the
@@ -59,8 +47,8 @@ public class DriveSubsystem extends SubsystemBase {
     private double m_currentTranslationDir = 0.0;
     private double m_currentTranslationMag = 0.0;
 
-    private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DrivetrainConstants.MAGNITUDE_SLEW_RATE);
-    private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DrivetrainConstants.ROTATIONAL_SLEW_RATE);
+    private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveSubsystemConstants.MAGNITUDE_SLEW_RATE);
+    private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveSubsystemConstants.ROTATIONAL_SLEW_RATE);
     private double m_prevTime = WPIUtilJNI.now() * 1e-6;
     private Rotation2d m_trackedRotation = new Rotation2d();
 
@@ -87,7 +75,7 @@ public class DriveSubsystem extends SubsystemBase {
                 .toArray(ModuleIOInputsAutoLogged[]::new);
 
         hybridOdometry = new SwerveDrivePoseEstimator(
-                DrivetrainConstants.DRIVE_KINEMATICS,
+                DriveSubsystemConstants.DRIVE_KINEMATICS,
                 gyroIO.getGyroYawRotation2d(),
                 new SwerveModulePosition[] {
                         moduleIOs[0].getPosition(),
@@ -211,7 +199,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         if (RobotBase.isSimulation() && SimMode.SIM_MODE == SimMode.SimModes.REGULAR) {
             m_trackedRotation = m_trackedRotation.plus(new Rotation2d(
-                    DrivetrainConstants.DRIVE_KINEMATICS.toChassisSpeeds(getModuleStates()).omegaRadiansPerSecond
+                    DriveSubsystemConstants.DRIVE_KINEMATICS.toChassisSpeeds(getModuleStates()).omegaRadiansPerSecond
                             * ModuleIOSim.getPeriodicRate()));
             gyroIO.setGyroAngle(m_trackedRotation.getDegrees());
         }
@@ -246,7 +234,7 @@ public class DriveSubsystem extends SubsystemBase {
             while ((timestampedPose = RobotState.getQuestMeasurments().poll()) != null) {
                 hybridOdometry.addVisionMeasurement(
                         timestampedPose.pose(), timestampedPose.timestamp(),
-                        QuestNavConstants.QUESTNAV_STD_DEVS);
+                        QuestNavSubsystemConstants.QUESTNAV_STD_DEVS);
             }
         }
     }
@@ -293,7 +281,7 @@ public class DriveSubsystem extends SubsystemBase {
             double directionSlewRate;
 
             if (m_currentTranslationMag != 0.0) {
-                directionSlewRate = Math.abs(DrivetrainConstants.DIRECTION_SLEW_RATE / m_currentTranslationMag);
+                directionSlewRate = Math.abs(DriveSubsystemConstants.DIRECTION_SLEW_RATE / m_currentTranslationMag);
             } else {
                 directionSlewRate = 500.0; // some high number that means the slew rate is effectively instantaneous
             }
@@ -340,9 +328,9 @@ public class DriveSubsystem extends SubsystemBase {
         // }
 
         // Convert the commanded speeds into the correct units for the drivetrain
-        double xSpeedDelivered = xSpeedCommanded * DrivetrainConstants.MAX_SPEED_METERS_PER_SECOND;
-        double ySpeedDelivered = ySpeedCommanded * DrivetrainConstants.MAX_SPEED_METERS_PER_SECOND;
-        double rotDelivered = m_currentRotation * DrivetrainConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND;
+        double xSpeedDelivered = xSpeedCommanded * DriveSubsystemConstants.MAX_SPEED_METERS_PER_SECOND;
+        double ySpeedDelivered = ySpeedCommanded * DriveSubsystemConstants.MAX_SPEED_METERS_PER_SECOND;
+        double rotDelivered = m_currentRotation * DriveSubsystemConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND;
 
         ChassisSpeeds speeds;
         // if (antiTipping.isTipping() && antiTippingEnabled) {
@@ -356,13 +344,13 @@ public class DriveSubsystem extends SubsystemBase {
 
         Rotation2d rotation = gyroIO.getGyroYawRotation2d();
 
-        var swerveModuleStates = DrivetrainConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
+        var swerveModuleStates = DriveSubsystemConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
                 fieldRelative
                         ? ChassisSpeeds.fromFieldRelativeSpeeds(speeds, rotation)
                         : speeds);
 
         SwerveDriveKinematics.desaturateWheelSpeeds(
-                swerveModuleStates, DrivetrainConstants.MAX_SPEED_METERS_PER_SECOND);
+                swerveModuleStates, DriveSubsystemConstants.MAX_SPEED_METERS_PER_SECOND);
 
         moduleIO[0].setDesiredState(swerveModuleStates[0]);
         moduleIO[1].setDesiredState(swerveModuleStates[1]);
@@ -377,13 +365,13 @@ public class DriveSubsystem extends SubsystemBase {
     public void runChassisSpeeds(ChassisSpeeds speeds, Boolean fieldRelative) {
         Rotation2d rotation = Rotation2d.fromDegrees(gyroIO.getGyroYawAngle());
 
-        var swerveModuleStates = DrivetrainConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
+        var swerveModuleStates = DriveSubsystemConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
                 fieldRelative
                         ? ChassisSpeeds.fromFieldRelativeSpeeds(speeds, rotation)
                         : speeds);
 
         SwerveDriveKinematics.desaturateWheelSpeeds(
-                swerveModuleStates, DrivetrainConstants.MAX_SPEED_METERS_PER_SECOND);
+                swerveModuleStates, DriveSubsystemConstants.MAX_SPEED_METERS_PER_SECOND);
 
         moduleIO[0].setDesiredState(swerveModuleStates[0]);
         moduleIO[1].setDesiredState(swerveModuleStates[1]);
@@ -407,7 +395,7 @@ public class DriveSubsystem extends SubsystemBase {
             double directionSlewRate;
 
             if (m_currentTranslationMag != 0.0) {
-                directionSlewRate = Math.abs(DrivetrainConstants.DIRECTION_SLEW_RATE / m_currentTranslationMag);
+                directionSlewRate = Math.abs(DriveSubsystemConstants.DIRECTION_SLEW_RATE / m_currentTranslationMag);
             } else {
                 directionSlewRate = 500.0; // some high number that means the slew rate is effectively instantaneous
             }
@@ -448,9 +436,9 @@ public class DriveSubsystem extends SubsystemBase {
         }
 
         // Convert the commanded speeds into the correct units for the drivetrain
-        double xSpeedDelivered = xSpeedCommanded * DrivetrainConstants.MAX_SPEED_METERS_PER_SECOND;
-        double ySpeedDelivered = ySpeedCommanded * DrivetrainConstants.MAX_SPEED_METERS_PER_SECOND;
-        double rotDelivered = m_currentRotation * DrivetrainConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND;
+        double xSpeedDelivered = xSpeedCommanded * DriveSubsystemConstants.MAX_SPEED_METERS_PER_SECOND;
+        double ySpeedDelivered = ySpeedCommanded * DriveSubsystemConstants.MAX_SPEED_METERS_PER_SECOND;
+        double rotDelivered = m_currentRotation * DriveSubsystemConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND;
 
         Rotation2d rotation = gyroIO.getGyroYawRotation2d();
 
@@ -482,7 +470,7 @@ public class DriveSubsystem extends SubsystemBase {
     public void setModuleStates(SwerveModuleState[] desiredStates) {
 
         SwerveDriveKinematics.desaturateWheelSpeeds(
-                desiredStates, DrivetrainConstants.MAX_SPEED_METERS_PER_SECOND);
+                desiredStates, DriveSubsystemConstants.MAX_SPEED_METERS_PER_SECOND);
         moduleIO[0].setDesiredState(desiredStates[0]);
         moduleIO[1].setDesiredState(desiredStates[1]);
         moduleIO[2].setDesiredState(desiredStates[2]);
@@ -527,7 +515,7 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public ChassisSpeeds getChassisSpeeds() {
         SwerveModuleState[] states = getModuleStates();
-        return ChassisSpeeds.fromFieldRelativeSpeeds(DrivetrainConstants.DRIVE_KINEMATICS.toChassisSpeeds(states),
+        return ChassisSpeeds.fromFieldRelativeSpeeds(DriveSubsystemConstants.DRIVE_KINEMATICS.toChassisSpeeds(states),
                 gyroIO.getGyroYawRotation2d());
     }
 

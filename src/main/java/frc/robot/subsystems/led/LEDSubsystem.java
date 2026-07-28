@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
-import frc.robot.RobotConstants.LEDConstants.AnimationTypes;
-import frc.robot.RobotConstants.LEDConstants.LEDStatus;
+import frc.robot.subsystems.led.LEDSubsystemConstants.AnimationTypes;
+import frc.robot.subsystems.led.LEDSubsystemConstants.LEDStatus;
 
 public class LEDSubsystem extends SubsystemBase {
     public LEDSubsystemIO io;

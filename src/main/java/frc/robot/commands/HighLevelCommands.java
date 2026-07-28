@@ -1,16 +1,13 @@
-package frc.robot.commands.automation;
+package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
 import frc.robot.RobotConstants.FeederConstants;
-import frc.robot.RobotConstants.LEDConstants.LEDStatus;
 import frc.robot.RobotConstants.ScoringConstants.FieldZones;
 import frc.robot.commands.automation.interpolation.shootOnMoveInterpolationCommand;
 import frc.robot.commands.automation.interpolation.shootSimpleInterpolationCommand;
@@ -18,31 +15,34 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.feeder.FeederSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.led.LEDSubsystem;
+import frc.robot.subsystems.led.LEDSubsystemConstants.LEDStatus;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.utils.CowboyUtils;
 
 import java.util.function.Supplier;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
 
 /**
  * This class is used to automate the 'superstructure' of our robot - this is
  * where any automation
  * should go where commands are built up and abstracted away into a single
  * command.
+ * 
+ * To a degree, each of these commands is a "state" activated and cordinates the
+ * superstructure (and drivesubsystem) accordingly.
  */
-public class AutomatedCommands {
+public class HighLevelCommands {
 
         public static Command exampleCommandDynamicAuton(Integer exampleParam) {
                 return Commands.print("EA Sports: It's in the game! Example Param: " + exampleParam);
         }
 
-        public static Command idleAgitateCommand(FeederSubsystem feederSubsystem, LEDSubsystem ledSubsystem){
-                return Commands.parallel(feederSubsystem.setFeederSpeedCommand(-.2, -.2),ledSubsystem.setLEDStatusCommand(LEDStatus.IDLE));
+        public static Command idleAgitateCommand(FeederSubsystem feederSubsystem, LEDSubsystem ledSubsystem) {
+                return Commands.parallel(feederSubsystem.setFeederSpeedCommand(-.2, -.2),
+                                ledSubsystem.setLEDStatusCommand(LEDStatus.IDLE));
         }
 
-        public static Command intakeCommand(IntakeSubsystem intakeSubsystem, FeederSubsystem feederSubsystem, LEDSubsystem ledSubsystem) {
+        public static Command intakeCommand(IntakeSubsystem intakeSubsystem, FeederSubsystem feederSubsystem,
+                        LEDSubsystem ledSubsystem) {
                 return Commands.parallel(
                                 feederSubsystem.setFeederSpeedCommand(.3, -.6),
                                 new SequentialCommandGroup(
@@ -64,7 +64,8 @@ public class AutomatedCommands {
                 return Commands.parallel(
                                 intakeSubsystem.setIntakeSpeedCommand(-.6),
                                 feederSubsystem.setFeederSpeedCommand(FeederConstants.FLOOR_ROLLERS_REVERSE_SPEED,
-                                                FeederConstants.VERTICAL_ROLLERS_REVERSE_SPEED), shooterSubsystem.setPercentSpeedCommand(-.4),
+                                                FeederConstants.VERTICAL_ROLLERS_REVERSE_SPEED),
+                                shooterSubsystem.setPercentSpeedCommand(-.4),
                                 ledSubsystem.setLEDStatusCommand(LEDStatus.REVERSING));
         }
 
@@ -134,7 +135,9 @@ public class AutomatedCommands {
                                                 Commands.sequence(
                                                                 new WaitCommand(.5),
                                                                 Commands.parallel(
-                                                                                AutomatedCommands.runIntakeAgitationContinousCommand(intakeSubsystem),
+                                                                                HighLevelCommands
+                                                                                                .runIntakeAgitationContinousCommand(
+                                                                                                                intakeSubsystem),
                                                                                 feederSubsystem.setFeederSpeedCommand(
                                                                                                 FeederConstants.FLOOR_ROLLERS_FEEDING_SPEED,
                                                                                                 FeederConstants.VERTICAL_ROLLERS_FEEDING_SPEED))),
@@ -147,7 +150,9 @@ public class AutomatedCommands {
                                                 Commands.sequence(
                                                                 new WaitCommand(.5),
                                                                 Commands.parallel(
-                                                                                AutomatedCommands.runIntakeAgitationContinousCommand(intakeSubsystem),
+                                                                                HighLevelCommands
+                                                                                                .runIntakeAgitationContinousCommand(
+                                                                                                                intakeSubsystem),
                                                                                 feederSubsystem.setFeederSpeedCommand(
                                                                                                 FeederConstants.FLOOR_ROLLERS_FEEDING_SPEED,
                                                                                                 FeederConstants.VERTICAL_ROLLERS_FEEDING_SPEED))),

@@ -5,36 +5,24 @@
 package frc.robot;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import org.littletonrobotics.junction.Logger;
-
-import com.pathplanner.lib.auto.NamedCommands;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.HighLevelCommands;
 import frc.robot.commands.RobotSystemsCheckCommand;
-import frc.robot.commands.automation.AutomatedCommands;
-import frc.robot.commands.automation.interpolation.shootOnMoveInterpolationCommand;
 import frc.robot.commands.drive.TeleopDriveCommand;
 
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -56,8 +44,8 @@ import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.led.LEDSubsystemIO;
 import frc.robot.subsystems.led.LEDSubsystemIOCandle;
 import frc.robot.subsystems.led.LEDSubsystemIOSim;
-import frc.robot.subsystems.questnav.QuestNavIO;
-import frc.robot.subsystems.questnav.QuestNavIOReal;
+import frc.robot.subsystems.questnav.QuestNavSubsystemIO;
+import frc.robot.subsystems.questnav.QuestNavSubsystemIOReal;
 import frc.robot.subsystems.questnav.QuestNavSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystemIO;
@@ -69,9 +57,7 @@ import frc.robot.utils.CowboyUtils.RobotModes;
 import frc.robot.utils.FuelSim;
 import frc.robot.RobotConstants.PortConstants.CAN;
 import frc.robot.autonomous.AutomomousManager;
-import frc.robot.autonomous.AutomomousManager.AutoMode;
 
-//@Logged(name = "RobotContainer")
 public class RobotContainer {
         public final VisionSubsystem visionSubsystem = new VisionSubsystem();
         public final QuestNavSubsystem questNavSubsystem;
@@ -84,9 +70,10 @@ public class RobotContainer {
         public static Set<Subsystem> allSubsystemsSet = new HashSet<>();
         public static Set<Subsystem> superStructureSet = new HashSet<>();
 
-        private final Joystick driveJoystick = new Joystick(RobotConstants.PortConstants.Controller.DRIVE_JOYSTICK);
-        private final Joystick operatorJoystick = new Joystick(
-                        RobotConstants.PortConstants.Controller.OPERATOR_JOYSTICK);
+        private final Joystick driveController = new Joystick(RobotConstants.PortConstants.Controller.DRIVE_CONTROLLER);
+
+        private final Joystick operatorController = new Joystick(
+                        RobotConstants.PortConstants.Controller.OPERATOR_CONTROLLER);
 
         ModuleIO[] moduleIOs;
 
@@ -123,11 +110,9 @@ public class RobotContainer {
                                 };
                                 driveSubsystem = new DriveSubsystem(moduleIOs, new GyroIONAVX());
 
-                                questNavSubsystem = new QuestNavSubsystem(new QuestNavIOReal());
+                                questNavSubsystem = new QuestNavSubsystem(new QuestNavSubsystemIOReal());
 
                                 intakeSubsystem = new IntakeSubsystem(new IntakeSubsystemIOSparkMax());
-
-                               
 
                                 feederSubsystem = new FeederSubsystem(new FeederSubsystemIOSparkMax());
 
@@ -147,11 +132,9 @@ public class RobotContainer {
 
                                 driveSubsystem = new DriveSubsystem(moduleIOs, new GyroIOSim());
 
-                                questNavSubsystem = new QuestNavSubsystem(new QuestNavIOReal());
+                                questNavSubsystem = new QuestNavSubsystem(new QuestNavSubsystemIOReal());
 
                                 intakeSubsystem = new IntakeSubsystem(new IntakeSubsystemIOSim());
-
-                              
 
                                 feederSubsystem = new FeederSubsystem(new FeederSubsystemIOSim());
 
@@ -176,14 +159,12 @@ public class RobotContainer {
                                 driveSubsystem = new DriveSubsystem(moduleIOs, new GyroIO() {
                                 });
 
-                                questNavSubsystem = new QuestNavSubsystem(new QuestNavIO() {
+                                questNavSubsystem = new QuestNavSubsystem(new QuestNavSubsystemIO() {
                                 });
 
                                 intakeSubsystem = new IntakeSubsystem(new IntakeSubsystemIO() {
 
                                 });
-
-                           
 
                                 feederSubsystem = new FeederSubsystem(new FeederSubsystemIO() {
                                 });
@@ -207,7 +188,8 @@ public class RobotContainer {
                 superStructureSet.add(feederSubsystem);
                 superStructureSet.add(shooterSubsystem);
 
-                automomousManager = new AutomomousManager(driveSubsystem, intakeSubsystem, feederSubsystem, shooterSubsystem,ledSubsystem);
+                automomousManager = new AutomomousManager(driveSubsystem, intakeSubsystem, feederSubsystem,
+                                shooterSubsystem, ledSubsystem);
 
                 configureButtonBindings();
 
@@ -224,90 +206,90 @@ public class RobotContainer {
 
         private void configureButtonBindings() {
 
-                driveSubsystem.setDefaultCommand(new TeleopDriveCommand(driveSubsystem, driveJoystick)); // Same for
-                                                                                                         // both sim and
-                                                                                                         // real. The
-                                                                                                         // joystick
-                                                                                                         // axis
-                                                                                                         // constants
-                                                                                                         // change
-                                                                                                         // depending on
-                                                                                                         // mode.
+                driveSubsystem.setDefaultCommand(new TeleopDriveCommand(driveSubsystem, driveController)); // Same for
+                                                                                                           // both sim
+                                                                                                           // and
+                                                                                                           // real. The
+                                                                                                           // joystick
+                                                                                                           // axis
+                                                                                                           // constants
+                                                                                                           // change
+                                                                                                           // depending
+                                                                                                           // on
+                                                                                                           // mode.
                 feederSubsystem.setDefaultCommand(feederSubsystem.setFeederSpeedCommand(-.2, -.2));
 
                 if (!CowboyUtils.isSim()) { // Real robot
 
-                        // new JoystickButton(operatorJoystick, 0).onTrue(shooterSubsystem.increaseRPMModificationSpeed());
-                        // new JoystickButton(driveJoystick, 0).onTrue(shooterSubsystem.decreaseRPMModificationSpeed());
-
-                        // Manual feeding button
-                        new POVButton(operatorJoystick, 0).whileTrue(AutomatedCommands.shootFromHopperContinousCommand(
-                                        intakeSubsystem, feederSubsystem, shooterSubsystem, 6000)).onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem, feederSubsystem, shooterSubsystem, ledSubsystem));
-
-                        //Manual scoring button, used ONLY if vision goes down mid-match.
-                        new POVButton(operatorJoystick, 180)
-                                        .whileTrue(AutomatedCommands.shootFromHopperContinousCommand(
-                                                        intakeSubsystem, feederSubsystem,
-                                                        shooterSubsystem, 4000)).onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem, feederSubsystem, shooterSubsystem, ledSubsystem));
+                        // Manual scoring button, used ONLY if vision goes down mid-match.
+                        new POVButton(operatorController, 0)
+                                        .whileTrue(HighLevelCommands.shootFromHopperContinousCommand(
+                                                        intakeSubsystem, feederSubsystem, shooterSubsystem, 6000))
+                                        .onFalse(HighLevelCommands.stopAllSuperStructure(intakeSubsystem,
+                                                        feederSubsystem, shooterSubsystem, ledSubsystem));
 
                         // Right operator trigger, enables SOTM and turrets the robot. Used for both
                         // automated feeding and scoring.
-                        new Trigger(() -> operatorJoystick.getRawAxis(3) > .3)
-                                        .whileTrue(AutomatedCommands.teleopShootOnMoveAutomationCommand(
-                                                        driveSubsystem, driveJoystick, intakeSubsystem,
+                        new Trigger(() -> operatorController.getRawAxis(3) > .3)
+                                        .whileTrue(HighLevelCommands.teleopShootOnMoveAutomationCommand(
+                                                        driveSubsystem, driveController, intakeSubsystem,
                                                         feederSubsystem, shooterSubsystem,
                                                         ledSubsystem))
-                                        .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
+                                        .onFalse(HighLevelCommands.stopAllSuperStructure(intakeSubsystem,
                                                         feederSubsystem, shooterSubsystem,
                                                         ledSubsystem));
 
-                        // Left operator trigger, runs intake while held.
-                        new Trigger(() -> operatorJoystick.getRawAxis(2) > .3)
-                                        .whileTrue(AutomatedCommands.intakeCommand(intakeSubsystem, feederSubsystem,ledSubsystem))
-                                        .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
+                        // Left operator trigger, runs intake and performs the 'ball wave' agitation
+                        // while held.
+                        new Trigger(() -> operatorController.getRawAxis(2) > .3)
+                                        .whileTrue(HighLevelCommands.intakeCommand(intakeSubsystem, feederSubsystem,
+                                                        ledSubsystem))
+                                        .onFalse(HighLevelCommands.stopAllSuperStructure(intakeSubsystem,
                                                         feederSubsystem, shooterSubsystem,
                                                         ledSubsystem));
 
                         // Operator X button, reverses indexer if needed to clear jams
-                        new JoystickButton(operatorJoystick, 3)
-                                        .whileTrue(AutomatedCommands.reverseSuperstructure(intakeSubsystem,
+                        new JoystickButton(operatorController, 3)
+                                        .whileTrue(HighLevelCommands.reverseSuperstructure(intakeSubsystem,
                                                         feederSubsystem, shooterSubsystem, ledSubsystem))
-                                        .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
+                                        .onFalse(HighLevelCommands.stopAllSuperStructure(intakeSubsystem,
                                                         feederSubsystem, shooterSubsystem,
                                                         ledSubsystem));
 
-                        new JoystickButton(driveJoystick, 1).onTrue(RobotState.setCanRotate(true))
+                        new JoystickButton(driveController, 1).onTrue(RobotState.setCanRotate(true))
                                         .onFalse(RobotState.setCanRotate(false));
 
-                        new JoystickButton(driveJoystick, 6)
+                        new JoystickButton(driveController, 6)
                                         .whileTrue(new SequentialCommandGroup(
                                                         Commands.deferredProxy(
                                                                         () -> questNavSubsystem.resetPoseYaw(
                                                                                         new Rotation2d())),
                                                         driveSubsystem.gyroReset()));
 
-                        //Manually re-seed the encoders in the Neo motors. Used if there is any mid match misalignment, ONLY used if needed. Reset on robot boot is ALWAYS ran.
-                        new JoystickButton(driveJoystick, 7).onTrue(driveSubsystem.resetEncodersCommand());
+                        // Manually re-seed the encoders in the Neo motors. Used if there is any mid
+                        // match misalignment, ONLY used if needed. Reset on robot boot is ALWAYS ran.
+                        new JoystickButton(driveController, 7).onTrue(driveSubsystem.resetEncodersCommand());
                 }
 
                 else { // Sim, just the one Logitech F310 controller for testing
 
-                        new Trigger(() -> driveJoystick.getRawAxis(3) > .4)
-                                        .whileTrue(AutomatedCommands.teleopShootOnMoveAutomationCommand(
-                                                        driveSubsystem, driveJoystick, intakeSubsystem,
+                        new Trigger(() -> driveController.getRawAxis(3) > .4)
+                                        .whileTrue(HighLevelCommands.teleopShootOnMoveAutomationCommand(
+                                                        driveSubsystem, driveController, intakeSubsystem,
                                                         feederSubsystem, shooterSubsystem,
                                                         ledSubsystem))
-                                        .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
+                                        .onFalse(HighLevelCommands.stopAllSuperStructure(intakeSubsystem,
                                                         feederSubsystem, shooterSubsystem,
                                                         ledSubsystem));
 
-                        new Trigger(() -> driveJoystick.getRawAxis(2) > .4)
-                                        .whileTrue(AutomatedCommands.intakeCommand(intakeSubsystem, feederSubsystem, ledSubsystem))
-                                        .onFalse(AutomatedCommands.stopAllSuperStructure(intakeSubsystem,
+                        new Trigger(() -> driveController.getRawAxis(2) > .4)
+                                        .whileTrue(HighLevelCommands.intakeCommand(intakeSubsystem, feederSubsystem,
+                                                        ledSubsystem))
+                                        .onFalse(HighLevelCommands.stopAllSuperStructure(intakeSubsystem,
                                                         feederSubsystem, shooterSubsystem,
                                                         ledSubsystem));
 
-                        new JoystickButton(driveJoystick, 8)
+                        new JoystickButton(driveController, 8)
                                         .whileTrue(new SequentialCommandGroup(
                                                         Commands.deferredProxy(
                                                                         () -> questNavSubsystem.resetPoseYaw(

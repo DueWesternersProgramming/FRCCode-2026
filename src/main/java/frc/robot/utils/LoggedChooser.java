@@ -1,4 +1,4 @@
-package frc.robot.autonomous;
+package frc.robot.utils;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -6,19 +6,12 @@ import java.util.function.Supplier;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
-/**
- * Class designed to help make dynamic autonomous clear to the technician when they're setting up
- * before the match.
- *
- * <p>You have to provide a default option, ideally `Boolean.FALSE` if it's a if/else. Then provide
- * a List<T> of what options you should include as additional options.
- */
-public class AutonomousQuestionaire<T> {
+public class LoggedChooser<T> {
   public record Option<T>(String label, T value) {}
 
   private final LoggedDashboardChooser<T> chooser;
 
-  public AutonomousQuestionaire(String key, Option<T> defaultOption, List<Option<T>> options) {
+  public LoggedChooser(String key, Option<T> defaultOption, List<Option<T>> options) {
     SendableChooser<T> sendableChooser = new SendableChooser<>();
 
     sendableChooser.setDefaultOption(defaultOption.label(), defaultOption.value());

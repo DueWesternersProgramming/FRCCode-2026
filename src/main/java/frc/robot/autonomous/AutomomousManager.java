@@ -14,8 +14,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.autonomous.AutonomousQuestionaire.Option;
-import frc.robot.commands.automation.AutomatedCommands;
+import frc.robot.commands.HighLevelCommands;
 import frc.robot.commands.automation.interpolation.shootSimpleInterpolationCommand;
 import frc.robot.commands.automation.misc.BLine;
 import frc.robot.lib.BLine.FlippingUtil;
@@ -27,7 +26,9 @@ import frc.robot.subsystems.feeder.FeederSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.utils.LoggedChooser;
 import frc.robot.utils.CowboyUtils;
+import frc.robot.utils.LoggedChooser.Option;
 
 public class AutomomousManager {
 
@@ -50,10 +51,10 @@ public class AutomomousManager {
                 SHALLOW_CENTER_SWEEP
         }
 
-        private final AutonomousQuestionaire<Supplier<Command>> predefinedAutoChooser;
-        private final AutonomousQuestionaire<AutoMode> autoMode;
+        private final LoggedChooser<Supplier<Command>> predefinedAutoChooser;
+        private final LoggedChooser<AutoMode> autoMode;
 
-        private List<AutonomousQuestionaire<Supplier<Object>>> dynamicAutoChoosers;
+        private List<LoggedChooser<Supplier<Object>>> dynamicAutoChoosers;
 
         DriveSubsystem driveSubsystem;
         IntakeSubsystem intakeSubsystem;
@@ -74,13 +75,13 @@ public class AutomomousManager {
                 this.shooterSubsystem = shooterSubsystem;
                 this.ledSubsystem = ledSubsystem;
 
-                this.autoMode = new AutonomousQuestionaire<>(
+                this.autoMode = new LoggedChooser<>(
                                 "Autonomous/Autoselector/AutoMode",
                                 new Option<>("Dynamic Auto", AutoMode.DYNAMIC_AUTO),
                                 List.of(
                                                 new Option<>("Predefined Auto", AutoMode.PREDEFINED_AUTO)));
 
-                this.predefinedAutoChooser = new AutonomousQuestionaire<>(
+                this.predefinedAutoChooser = new LoggedChooser<>(
                                 "Autonomous/Autoselector/PredefinedAutoChooser",
                                 new Option<>("DEFAULT", () -> Commands.print("Default Do Nothing Auto")),
                                 List.of());
@@ -105,7 +106,7 @@ public class AutomomousManager {
                 dynamicAutoChoosers = new ArrayList<>();
 
                 dynamicAutoChoosers.add(
-                                new AutonomousQuestionaire<>(
+                                new LoggedChooser<>(
                                                 "Autonomous/DynamicAuto/ExitZoneAction",
                                                 new Option<>("No Exit",
                                                                 () -> new BLinePathSource("NothingPath", false)),
@@ -119,7 +120,7 @@ public class AutomomousManager {
                                                                                                 true)))));
 
                 dynamicAutoChoosers.add(
-                                new AutonomousQuestionaire<>(
+                                new LoggedChooser<>(
                                                 "Autonomous/DynamicAuto/IntakeAction",
                                                 new Option<>("No Intake",
                                                                 () -> new BLinePathSource("NothingPath", false)),
@@ -332,7 +333,7 @@ public class AutomomousManager {
                         List<BLinePathSource> tempCombinedPaths = new ArrayList<>();
 
                         List<Object> selections = dynamicAutoChoosers.stream()
-                                        .map(AutonomousQuestionaire::get)
+                                        .map(LoggedChooser::get)
                                         .map(Supplier::get)
                                         .toList();
 
@@ -375,7 +376,7 @@ public class AutomomousManager {
                                                 () -> CowboyUtils.getAllianceHubPose()));
 
                 FollowPath.registerEventTrigger("RunIntake",
-                                AutomatedCommands.intakeCommand(
+                                HighLevelCommands.intakeCommand(
                                                 intakeSubsystem,
                                                 feederSubsystem,
                                                 ledSubsystem));
@@ -394,6 +395,12 @@ public class AutomomousManager {
                                                 () -> BLine.BLineTrajectory(
                                                                 driveSubsystem,
                                                                 "LeftSideOneSweep",
+                                                                true)));
+                this.predefinedAutoChooser.addOption(
+                                new Option<>("5ft Test",
+                                                () -> BLine.BLineTrajectory(
+                                                                driveSubsystem,
+                                                                "5ft-Test",
                                                                 true)));
         }
 }

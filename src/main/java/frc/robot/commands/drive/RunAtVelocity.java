@@ -1,8 +1,8 @@
 package frc.robot.commands.drive;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotConstants.DrivetrainConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystemConstants;
 import frc.robot.RobotState;
 
 public class RunAtVelocity extends Command {
@@ -21,12 +21,12 @@ public class RunAtVelocity extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        drive.drive(0, 0, 0, DrivetrainConstants.FIELD_RELATIVE, true, RobotState.isAntiTippingEnabled);
+        drive.drive(0, 0, 0, DriveSubsystemConstants.FIELD_RELATIVE, true, RobotState.isAntiTippingEnabled);
     }
 
     @Override
     public void execute() {
-        drive.drive(-x, -y, -rot, DrivetrainConstants.FIELD_RELATIVE, true, RobotState.isAntiTippingEnabled);
+        drive.drive(-x, -y, -rot, DriveSubsystemConstants.FIELD_RELATIVE, true, RobotState.isAntiTippingEnabled);
 
     }
 
