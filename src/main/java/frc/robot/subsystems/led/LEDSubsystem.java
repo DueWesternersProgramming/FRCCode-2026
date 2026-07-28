@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
 import frc.robot.RobotConstants.LEDConstants.AnimationTypes;
-import frc.robot.RobotConstants.LEDConstants.LEDModes;
+import frc.robot.RobotConstants.LEDConstants.LEDStatus;
 
 public class LEDSubsystem extends SubsystemBase {
     public LEDSubsystemIO io;
@@ -19,14 +19,14 @@ public class LEDSubsystem extends SubsystemBase {
         this.io = io;
     }
 
-    public Command setLEDModeCommand(LEDModes mode){
-        return new InstantCommand(()->setLEDMode(mode), this);
+    public Command setLEDStatusCommand(LEDStatus mode){
+        return new InstantCommand(()->setLEDStatus(mode), this);
     }
 
 
-    public void setLEDMode(LEDModes mode){
+    private void setLEDStatus(LEDStatus status){
 
-        switch (mode) {
+        switch (status) {
             case IDLE:
                 io.setAnimation(AnimationTypes.SetAll, new RGBWColor(255,0,0));
                 break;

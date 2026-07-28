@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
 import frc.robot.RobotConstants.FeederConstants;
-import frc.robot.RobotConstants.LEDConstants.LEDModes;
+import frc.robot.RobotConstants.LEDConstants.LEDStatus;
 import frc.robot.RobotConstants.ScoringConstants.FieldZones;
 import frc.robot.commands.automation.interpolation.shootOnMoveInterpolationCommand;
 import frc.robot.commands.automation.interpolation.shootSimpleInterpolationCommand;
@@ -38,13 +38,17 @@ public class AutomatedCommands {
                 return Commands.print("EA Sports: It's in the game! Example Param: " + exampleParam);
         }
 
+        public static Command idleAgitateCommand(FeederSubsystem feederSubsystem, LEDSubsystem ledSubsystem){
+                return Commands.parallel(feederSubsystem.setFeederSpeedCommand(-.2, -.2),ledSubsystem.setLEDStatusCommand(LEDStatus.IDLE));
+        }
+
         public static Command intakeCommand(IntakeSubsystem intakeSubsystem, FeederSubsystem feederSubsystem, LEDSubsystem ledSubsystem) {
                 return Commands.parallel(
                                 feederSubsystem.setFeederSpeedCommand(.3, -.6),
                                 new SequentialCommandGroup(
                                                 intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1),
                                                 intakeSubsystem.setIntakeSpeedCommand(1)),
-                                ledSubsystem.setLEDModeCommand(LEDModes.INTAKING));
+                                ledSubsystem.setLEDStatusCommand(LEDStatus.INTAKING));
         }
 
         public static Command runIntakeAgitationContinousCommand(IntakeSubsystem intakeSubsystem) {
@@ -61,7 +65,7 @@ public class AutomatedCommands {
                                 intakeSubsystem.setIntakeSpeedCommand(-.6),
                                 feederSubsystem.setFeederSpeedCommand(FeederConstants.FLOOR_ROLLERS_REVERSE_SPEED,
                                                 FeederConstants.VERTICAL_ROLLERS_REVERSE_SPEED), shooterSubsystem.setPercentSpeedCommand(-.4),
-                                ledSubsystem.setLEDModeCommand(LEDModes.REVERSING));
+                                ledSubsystem.setLEDStatusCommand(LEDStatus.REVERSING));
         }
 
         /**
@@ -134,7 +138,7 @@ public class AutomatedCommands {
                                                                                 feederSubsystem.setFeederSpeedCommand(
                                                                                                 FeederConstants.FLOOR_ROLLERS_FEEDING_SPEED,
                                                                                                 FeederConstants.VERTICAL_ROLLERS_FEEDING_SPEED))),
-                                                ledSubsystem.setLEDModeCommand(LEDModes.SHOOTING));
+                                                ledSubsystem.setLEDStatusCommand(LEDStatus.SHOOTING));
                         } else { // Shooting spots
                                 return Commands.parallel(
                                                 new shootOnMoveInterpolationCommand(driveSubsystem, shooterSubsystem,
@@ -147,7 +151,7 @@ public class AutomatedCommands {
                                                                                 feederSubsystem.setFeederSpeedCommand(
                                                                                                 FeederConstants.FLOOR_ROLLERS_FEEDING_SPEED,
                                                                                                 FeederConstants.VERTICAL_ROLLERS_FEEDING_SPEED))),
-                                                ledSubsystem.setLEDModeCommand(LEDModes.SHOOTING));
+                                                ledSubsystem.setLEDStatusCommand(LEDStatus.SHOOTING));
                         }
                 }, RobotContainer.allSubsystemsSet);
         }
@@ -162,7 +166,7 @@ public class AutomatedCommands {
                                                 intakeSubsystem.stopIntakingCommand(),
                                                 feederSubsystem.setFeederSpeedCommand(0, 0),
                                                 shooterSubsystem.setPercentSpeedCommand(0),
-                                                ledSubsystem.setLEDModeCommand(LEDModes.IDLE))));
+                                                ledSubsystem.setLEDStatusCommand(LEDStatus.IDLE))));
 
         }
 }

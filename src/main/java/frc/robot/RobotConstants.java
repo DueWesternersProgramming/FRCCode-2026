@@ -428,7 +428,7 @@ public final class RobotConstants {
 
         public static final class LEDConstants {
 
-                public static enum LEDModes {
+                public static enum LEDStatus {
                         IDLE,
                         INTAKING,
                         SHOOTING,

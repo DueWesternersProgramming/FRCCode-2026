@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.RobotConstants.SimMode;
-import frc.robot.RobotConstants.LEDConstants.LEDModes;
+import frc.robot.RobotConstants.LEDConstants.LEDStatus;
 import frc.robot.commands.automation.AutomatedCommands;
 import frc.robot.utils.FuelSim;
 
@@ -61,7 +61,8 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotInit() {
-        robotContainer.ledSubsystem.setLEDMode(LEDModes.IDLE);
+        CommandScheduler.getInstance().schedule(robotContainer.ledSubsystem.setLEDStatusCommand(LEDStatus.IDLE));
+
     }
 
     /**
