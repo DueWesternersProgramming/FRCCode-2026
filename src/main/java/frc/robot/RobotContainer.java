@@ -306,31 +306,4 @@ public class RobotContainer {
                 return field;
         }
 
-        private void configureFuelSim() {
-                FuelSim instance = FuelSim.getInstance();
-                instance.spawnStartingFuel();
-
-                instance.registerRobot(
-                                Units.inchesToMeters(33),
-                                Units.inchesToMeters(33),
-                                Units.inchesToMeters(6),
-                                driveSubsystem::getPose,
-                                driveSubsystem::getChassisSpeeds);
-                // instance.registerIntake(
-                // -Dimensions.FULL_LENGTH.div(2).in(Meters),
-                // Dimensions.FULL_LENGTH.div(2).in(Meters),
-                // -Dimensions.FULL_WIDTH.div(2).plus(Inches.of(7)).in(Meters),
-                // -Dimensions.FULL_WIDTH.div(2).in(Meters),
-                // () -> intake.isRightDeployed() && turret.simAbleToIntake(),
-                // turret::simIntake);
-
-                instance.start();
-                SmartDashboard.putData(Commands.runOnce(() -> {
-                        FuelSim.getInstance().clearFuel();
-                        FuelSim.getInstance().spawnStartingFuel();
-                })
-                                .withName("Reset Fuel")
-                                .ignoringDisable(true));
-        }
-
 }

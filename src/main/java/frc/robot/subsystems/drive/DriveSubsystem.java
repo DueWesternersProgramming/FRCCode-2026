@@ -98,7 +98,7 @@ public class DriveSubsystem extends SubsystemBase {
         AutoBuilder.configure(
                 this::getPose, // Robot pose supplier
                 this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
-                this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                this::getRobotRelativeChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds) -> runChassisSpeeds(speeds, false), // Method that will drive the robot given ROBOT RELATIVE
                                                              // ChassisSpeeds. Also optionally outputs individual module
                                                              // feedforwards
@@ -128,7 +128,7 @@ public class DriveSubsystem extends SubsystemBase {
         bLinePathBuilder = new FollowPath.Builder(
                 this, // The drive subsystem to require
                 this::getPose, // Supplier for current robot pose
-                this::getChassisSpeeds, // Supplier for current speeds
+                this::getRobotRelativeChassisSpeeds, // Supplier for current speeds
                 this::runChassisSpeeds, // Consumer to drive the robot
                 new PIDController(10.0, 0.0, 0.0), // Translation PID
                 new PIDController(3.0, 0.0, 0.0), // Rotation PID
@@ -322,9 +322,9 @@ public class DriveSubsystem extends SubsystemBase {
         }
 
         // if (Robot.isSimulation() && CowboyUtils.isRedAlliance()) {
-        //     xSpeedCommanded = -xSpeedCommanded; // Away from the DS
-        //     ySpeedCommanded = -ySpeedCommanded; // Away from long wall
-        //     m_currentRotation = -m_currentRotation;
+        // xSpeedCommanded = -xSpeedCommanded; // Away from the DS
+        // ySpeedCommanded = -ySpeedCommanded; // Away from long wall
+        // m_currentRotation = -m_currentRotation;
         // }
 
         // Convert the commanded speeds into the correct units for the drivetrain
@@ -509,14 +509,15 @@ public class DriveSubsystem extends SubsystemBase {
         return gyroIO.getGyroYawAngle();
     }
 
-    /**
-     * 
-     * @return ROBOT RELATIVE chassis speeds
-     */
-    public ChassisSpeeds getChassisSpeeds() {
+    public ChassisSpeeds getRobotRelativeChassisSpeeds() {
         SwerveModuleState[] states = getModuleStates();
         return ChassisSpeeds.fromFieldRelativeSpeeds(DriveSubsystemConstants.DRIVE_KINEMATICS.toChassisSpeeds(states),
                 gyroIO.getGyroYawRotation2d());
+    }
+
+    public ChassisSpeeds getFieldRelativeChassisSpeeds() {
+        SwerveModuleState[] states = getModuleStates();
+        return DriveSubsystemConstants.DRIVE_KINEMATICS.toChassisSpeeds(states);
     }
 
     public Command gyroReset() {

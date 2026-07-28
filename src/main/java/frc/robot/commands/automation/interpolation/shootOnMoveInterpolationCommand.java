@@ -71,7 +71,7 @@ public class shootOnMoveInterpolationCommand extends Command {
 
                 double tof = shooterSubsystem.getTimeOfFlightFromDistance(currentDistanceToHub);
 
-                ChassisSpeeds currentChassisSpeeds = driveSubsystem.getChassisSpeeds();
+                ChassisSpeeds currentChassisSpeeds = driveSubsystem.getFieldRelativeChassisSpeeds();
 
                 Pose2d predictedRobotPose = new Pose2d(
                                 (currentRobotPose.getX() + (currentChassisSpeeds.vxMetersPerSecond * tof)),

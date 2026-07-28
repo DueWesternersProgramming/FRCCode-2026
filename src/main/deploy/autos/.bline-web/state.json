@@ -51,6 +51,22 @@
   ],
   "linked_targets": [],
   "paths": {
+    "LeftSideOneSweep.json": {
+      "display_name": "LeftSideOneSweep",
+      "editor_metadata": null
+    },
+    "NeutralZoneShallowLeftSweep.json": {
+      "display_name": "NeutralZoneShallowLeftSweep",
+      "editor_metadata": null
+    },
+    "neutralzonedeepleftsweepquarter.json": {
+      "display_name": "NeutralZoneDeepLeftSweepQuarter",
+      "editor_metadata": null
+    },
+    "nothingpath.json": {
+      "display_name": "NothingPath",
+      "editor_metadata": null
+    },
     "ExitLeftBump.json": {
       "display_name": "ExitLeftBump",
       "editor_metadata": {
@@ -71,28 +87,12 @@
         ]
       }
     },
-    "neutralzonedeepleftsweepquarter.json": {
-      "display_name": "NeutralZoneDeepLeftSweepQuarter",
-      "editor_metadata": null
-    },
-    "NeutralZoneDeepLeftSweepHalf.json": {
-      "display_name": "NeutralZoneDeepLeftSweepHalf",
-      "editor_metadata": null
-    },
-    "LeftSideOneSweep.json": {
-      "display_name": "LeftSideOneSweep",
-      "editor_metadata": null
-    },
-    "nothingpath.json": {
-      "display_name": "NothingPath",
-      "editor_metadata": null
-    },
     "5ft-test.json": {
       "display_name": "5ft Test",
       "editor_metadata": null
     },
-    "NeutralZoneShallowLeftSweep.json": {
-      "display_name": "NeutralZoneShallowLeftSweep",
+    "NeutralZoneDeepLeftSweepHalf.json": {
+      "display_name": "NeutralZoneDeepLeftSweepHalf",
       "editor_metadata": null
     }
   },
