@@ -15,7 +15,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 public class RobotState {
     public static boolean isAntiTippingEnabled = true;
     public static boolean isAutoAlignActive = false;
-    public static boolean canRotate = CowboyUtils.isSim();
+    public static boolean canRotate = true;
     public static boolean xLocked = false;
     public static Pose2d robotPose = new Pose2d();
     @AutoLogOutput

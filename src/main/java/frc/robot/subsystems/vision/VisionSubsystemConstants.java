@@ -16,10 +16,18 @@ public class VisionSubsystemConstants {
     public static final record AprilTagCameraConfig(VisionSource source, int servoPort,
             SimCameraConfig simConfig) {
     }
+    public static final record AprilTagCameraConfig(VisionSource source, int servoPort,
+            SimCameraConfig simConfig) {
+    }
 
     public record VisionSource(String name, Transform3d robotToCamera) {
     }
+    public record VisionSource(String name, Transform3d robotToCamera) {
+    }
 
+    public static final Optional<VisionSystemSim> aprilTagSim = RobotModes.currentMode == RobotModes.simMode
+            ? Optional.of(new VisionSystemSim("AprilTagSim"))
+            : Optional.empty();
     public static final Optional<VisionSystemSim> aprilTagSim = RobotModes.currentMode == RobotModes.simMode
             ? Optional.of(new VisionSystemSim("AprilTagSim"))
             : Optional.empty();

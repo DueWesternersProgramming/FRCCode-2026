@@ -44,7 +44,7 @@ public class HighLevelCommands {
         public static Command intakeCommand(IntakeSubsystem intakeSubsystem, FeederSubsystem feederSubsystem,
                         LEDSubsystem ledSubsystem) {
                 return Commands.parallel(
-                                feederSubsystem.setFeederSpeedCommand(.3, -.6),
+                                feederSubsystem.setFeederSpeedCommand(0, 0),
                                 new SequentialCommandGroup(
                                                 intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1),
                                                 intakeSubsystem.setIntakeSpeedCommand(1)),
