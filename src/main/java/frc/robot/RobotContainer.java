@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -217,7 +218,7 @@ public class RobotContainer {
                                                                                                            // depending
                                                                                                            // on
                                                                                                            // mode.
-                feederSubsystem.setDefaultCommand(feederSubsystem.setFeederSpeedCommand(-.2, -.2));
+                //feederSubsystem.setDefaultCommand(feederSubsystem.setFeederSpeedCommand(-.2, -.2));
 
                 if (!CowboyUtils.isSim()) { // Real robot
 
@@ -248,6 +249,7 @@ public class RobotContainer {
                                                         feederSubsystem, shooterSubsystem,
                                                         ledSubsystem));
 
+
                         // Operator X button, reverses indexer if needed to clear jams
                         new JoystickButton(operatorController, 3)
                                         .whileTrue(HighLevelCommands.reverseSuperstructure(intakeSubsystem,
@@ -259,7 +261,7 @@ public class RobotContainer {
                         new JoystickButton(driveController, 1).onTrue(RobotState.setCanRotate(true))
                                         .onFalse(RobotState.setCanRotate(false));
 
-                        new JoystickButton(driveController, 6)
+                        new JoystickButton(driveController, 7)
                                         .whileTrue(new SequentialCommandGroup(
                                                         Commands.deferredProxy(
                                                                         () -> questNavSubsystem.resetPoseYaw(

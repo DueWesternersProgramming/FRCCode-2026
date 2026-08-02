@@ -1,30 +1,7 @@
 package frc.robot;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.photonvision.simulation.VisionSystemSim;
-
-import com.ctre.phoenix6.signals.RGBWColor;
-import com.pathplanner.lib.path.PathConstraints;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.vision.SimCameraConfig;
-import frc.robot.utils.CowboyUtils;
-import frc.robot.utils.CowboyUtils.RobotModes;
 
 public final class RobotConstants {
 

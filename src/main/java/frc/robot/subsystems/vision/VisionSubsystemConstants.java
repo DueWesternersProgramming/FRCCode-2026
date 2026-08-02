@@ -20,6 +20,7 @@ public class VisionSubsystemConstants {
     public record VisionSource(String name, Transform3d robotToCamera) {
     }
 
+
     public static final Optional<VisionSystemSim> aprilTagSim = RobotModes.currentMode == RobotModes.simMode
             ? Optional.of(new VisionSystemSim("AprilTagSim"))
             : Optional.empty();
