@@ -1,8 +1,10 @@
 package frc.robot.commands.drive;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
 import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.TeleopConstants;
 import frc.robot.RobotConstants.PortConstants.Controller;
@@ -13,10 +15,17 @@ import frc.robot.subsystems.drive.DriveSubsystemConstants;
 public class TeleopDriveCommand extends Command {
     private final DriveSubsystem drive;
     private final Joystick joystick;
+    private double lastIntentionalRotation;
+    private final PIDController rotationController = new PIDController(
+            2,
+            0,
+            0);
 
     public TeleopDriveCommand(DriveSubsystem drive, Joystick joystick) {
         this.drive = drive;
         this.joystick = joystick;
+        rotationController.enableContinuousInput(-180, 180);
+        this.lastIntentionalRotation = drive.getHeading();
         addRequirements(drive);
     }
 
@@ -51,18 +60,33 @@ public class TeleopDriveCommand extends Command {
             return;
         }
 
+        RobotState.canRotate = Math.abs(rotSquared) > .05;
+
+        boolean translating = Math.abs(xSquared) > 0.02 ||
+                Math.abs(ySquared) > 0.02;
+
         if (RobotState.canRotate) {
             drive.drive(ySquared, xSquared, rotSquared, fieldRelative, true, RobotState.isAntiTippingEnabled);
+            
+            lastIntentionalRotation = drive.getHeading();
+            
         } else {
-            drive.drive(ySquared, xSquared, 0, fieldRelative, true, RobotState.isAntiTippingEnabled);
+            double correction = translating ?MathUtil.clamp(
+                    rotationController.calculate(
+                            drive.getHeading(),
+                            lastIntentionalRotation),
+                    -1.0,
+                    1.0) : 0;
+
+            drive.drive(ySquared, xSquared, correction,
+                    fieldRelative, true, RobotState.isAntiTippingEnabled);
         }
 
     }
 
     @Override
     public void initialize() {
-        // drive.drive(0, 0, 0, DrivetrainConstants.FIELD_RELATIVE, true,
-        // RobotState.isAntiTippingEnabled);
+
     }
 
     @Override
