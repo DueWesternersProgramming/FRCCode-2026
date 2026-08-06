@@ -85,7 +85,7 @@ public class HighLevelCommands {
                                 new WaitCommand(.5),
                                 new shootSimpleInterpolationCommand(shooterSubsystem, targetSupplier),
                                 Commands.sequence(
-                                                new WaitCommand(.5),
+                                                new WaitCommand(1.5),
                                                 Commands.parallel(
                                                                 runIntakeAgitationContinousCommand(intakeSubsystem),
                                                                 feederSubsystem.setFeederSpeedCommand(
@@ -104,7 +104,7 @@ public class HighLevelCommands {
                         double rpm) {
                 return (Commands.sequence(
                                 shooterSubsystem.setRPMCommand(rpm),
-                                new WaitCommand(.5),
+                                new WaitCommand(1.5),
                                 Commands.parallel(
                                                 runIntakeAgitationContinousCommand(intakeSubsystem),
                                                 feederSubsystem.setFeederSpeedCommand(
@@ -133,7 +133,7 @@ public class HighLevelCommands {
                                                                 driveJoystick,
                                                                 () -> CowboyUtils.getAppropriateFeedingPose(), false),
                                                 Commands.sequence(
-                                                                new WaitCommand(.5),
+                                                                new WaitCommand(.25),
                                                                 Commands.parallel(
                                                                                 HighLevelCommands
                                                                                                 .runIntakeAgitationContinousCommand(
@@ -148,7 +148,7 @@ public class HighLevelCommands {
                                                                 driveJoystick, () -> CowboyUtils.getAllianceHubPose(),
                                                                 true),
                                                 Commands.sequence(
-                                                                new WaitCommand(.5),
+                                                                new WaitCommand(.25),
                                                                 Commands.parallel(
                                                                                 HighLevelCommands
                                                                                                 .runIntakeAgitationContinousCommand(

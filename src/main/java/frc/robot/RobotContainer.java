@@ -89,6 +89,7 @@ public class RobotContainer {
 
                 switch (RobotModes.currentMode) {
                         case REAL:
+                                new Tuning();
                                 // Real robot, instantiate hardware IO implementations
 
                                 moduleIOs = new ModuleIO[] {
@@ -231,6 +232,9 @@ public class RobotContainer {
 
                         // Right operator trigger, enables SOTM and turrets the robot. Used for both
                         // automated feeding and scoring.
+
+                        Trigger spinup = new Trigger(()->operatorController.getRawButton(6)).whileTrue(shooterSubsystem.setRPMCommand(6000));
+                        
                         new Trigger(() -> operatorController.getRawAxis(3) > .3)
                                         .whileTrue(HighLevelCommands.teleopShootOnMoveAutomationCommand(
                                                         driveSubsystem, driveController, intakeSubsystem,

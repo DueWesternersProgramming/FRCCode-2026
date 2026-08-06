@@ -54,7 +54,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     
     public double getRPMFromDistance(double distanceMeters){
-        return (488.96555*distanceMeters) + 1821.2949 + rpmModification;
+        return 98* Math.pow(distanceMeters, 1.772) + 4708.98;
     }
 
     public double getTimeOfFlightFromDistance(double distanceMeters){

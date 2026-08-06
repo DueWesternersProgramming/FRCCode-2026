@@ -53,7 +53,7 @@ public class VisionSubsystemConstants {
             // Front Right
             new AprilTagCameraConfig(
                     new VisionSource(
-                            "right_camera",
+                            "left_camera",
                             new Transform3d(
                                     new Translation3d(
                                             Units.inchesToMeters(
@@ -73,7 +73,7 @@ public class VisionSubsystemConstants {
                     SimCameraConfig.ARDUCAM_OV9281_45),
             new AprilTagCameraConfig(
                     new VisionSource(
-                            "left_camera",
+                            "right_camera",
                             new Transform3d(
                                     new Translation3d(
                                             Units.inchesToMeters(

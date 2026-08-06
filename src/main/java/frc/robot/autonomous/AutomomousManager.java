@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.HighLevelCommands;
 import frc.robot.commands.automation.interpolation.shootSimpleInterpolationCommand;
-import frc.robot.commands.automation.misc.BLine;
 import frc.robot.lib.BLine.FlippingUtil;
 import frc.robot.lib.BLine.FollowPath;
 import frc.robot.lib.BLine.JsonUtils;

@@ -25,9 +25,9 @@ public class DriveSubsystemConstants {
         public static final double MAX_SPEED_METERS_PER_SECOND = 6.0;
         public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 2 * Math.PI; // radians per second
 
-        public static final double DIRECTION_SLEW_RATE = 10;
-        public static final double MAGNITUDE_SLEW_RATE = 10; // Responsiveness, or the "jerk" of the drivebase
-        public static final double ROTATIONAL_SLEW_RATE = 5;
+        public static final double DIRECTION_SLEW_RATE = 8;
+        public static final double MAGNITUDE_SLEW_RATE = 8; // Responsiveness, or the "jerk" of the drivebase
+        public static final double ROTATIONAL_SLEW_RATE = 6;
 
         // Chassis configuration
 

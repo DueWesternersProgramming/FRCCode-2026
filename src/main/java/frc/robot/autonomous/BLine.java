@@ -1,4 +1,4 @@
-package frc.robot.commands.automation.misc;
+package frc.robot.autonomous;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.commands.automation.misc.DriveToPoseCommand;
 import frc.robot.lib.BLine.FlippingUtil;
 import frc.robot.lib.BLine.Path;
 import frc.robot.subsystems.drive.DriveSubsystem;
