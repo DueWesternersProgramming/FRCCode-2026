@@ -73,7 +73,7 @@ public class Robot extends LoggedRobot {
     public void robotPeriodic() {
 
         CommandScheduler.getInstance().run();
-        DashboardData.periodic();
+        Dashboard.periodic();
 
     }
 

@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * This class is used ONLY for miscellaneous values that should be added to the
  * Elastic driver dashboard.
  */
-public class DashboardData {
+public class Dashboard {
     private static void controllerStatus() {
         String port0Name = DriverStation.getJoystickName(0);
         String port1Name = DriverStation.getJoystickName(1);
