@@ -94,8 +94,18 @@ public class AutomomousManager {
                 AutoMode selectedAutoMode = autoMode.get();
 
                 if (selectedAutoMode == AutoMode.PREDEFINED_AUTO) {
-                        return predefinedAutoChooser.get().get();
+                        try {
+                                return predefinedAutoChooser.get().get();
+                        } catch (Exception e) {
+                                DriverStation.reportError("Predefined Auto Error: " + e, true);
+                                return Commands.none();
+                        }
                 } else {
+                        try {
+                        } catch (Exception e) {
+                                DriverStation.reportError("Dynamic Auto Error: " + e, true);
+                                return Commands.none();
+                        }
                         return getDynamicAutoCommand();
                 }
         }
@@ -151,7 +161,8 @@ public class AutomomousManager {
                                                                                                 "NeutralZoneShallowLeftSweep",
                                                                                                 true)),
                                                                 new Option<>("Custom Ball Seeking Command",
-                                                                                () -> Commands.print("I AM LOOKING FOR BALLS!!")))));
+                                                                                () -> Commands.print(
+                                                                                                "I AM LOOKING FOR BALLS!!")))));
         }
 
         private Path combinePaths(List<BLinePathSource> paths) {
@@ -326,45 +337,39 @@ public class AutomomousManager {
 
         private Command getDynamicAutoCommand() {
 
-                try {
-                        List<Command> finalCommands = new ArrayList<>();
+                List<Command> finalCommands = new ArrayList<>();
 
-                        List<BLinePathSource> tempCombinedPaths = new ArrayList<>();
+                List<BLinePathSource> tempCombinedPaths = new ArrayList<>();
 
-                        List<Object> selections = dynamicAutoChoosers.stream()
-                                        .map(LoggedChooser::get)
-                                        .map(Supplier::get)
-                                        .toList();
+                List<Object> selections = dynamicAutoChoosers.stream()
+                                .map(LoggedChooser::get)
+                                .map(Supplier::get)
+                                .toList();
 
-                        for (Object item : selections) {
-                                if (item instanceof Command command) {
-                                        finalCommands.add(BLine.BLineTrajectory(
-                                                        driveSubsystem,
-                                                        combinePaths(tempCombinedPaths),
-                                                        false));
-
-                                        tempCombinedPaths.clear();
-
-                                        finalCommands.add(command);
-
-                                } else if (item instanceof BLinePathSource path) {
-                                        tempCombinedPaths.add(path);
-                                }
-                        }
-
-                        if (tempCombinedPaths.size() > 0) {
+                for (Object item : selections) {
+                        if (item instanceof Command command) {
                                 finalCommands.add(BLine.BLineTrajectory(
                                                 driveSubsystem,
                                                 combinePaths(tempCombinedPaths),
                                                 false));
+
+                                tempCombinedPaths.clear();
+
+                                finalCommands.add(command);
+
+                        } else if (item instanceof BLinePathSource path) {
+                                tempCombinedPaths.add(path);
                         }
-
-                        return Commands.sequence(finalCommands.stream().toArray(Command[]::new));
-
-                } catch (Exception e) {
-                        DriverStation.reportError("Dynamic Auto Error: " + e, true);
-                        return Commands.none();
                 }
+
+                if (tempCombinedPaths.size() > 0) {
+                        finalCommands.add(BLine.BLineTrajectory(
+                                        driveSubsystem,
+                                        combinePaths(tempCombinedPaths),
+                                        false));
+                }
+
+                return Commands.sequence(finalCommands.stream().toArray(Command[]::new));
 
         }
 

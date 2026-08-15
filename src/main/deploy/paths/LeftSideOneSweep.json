@@ -25,6 +25,11 @@
       "intermediate_handoff_radius_meters": 0.5
     },
     {
+      "type": "event_trigger",
+      "t_ratio": 0.25,
+      "lib_key": "RunIntake"
+    },
+    {
       "type": "waypoint",
       "translation_target": {
         "x_meters": 6.83837,

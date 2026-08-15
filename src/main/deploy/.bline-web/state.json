@@ -25,7 +25,7 @@
       "default_auto_velocity_merge_tolerance_meters_per_sec": 0.3
     }
   },
-  "active_path_file_name": "5ft-test.json",
+  "active_path_file_name": "neutralzonedeepleftsweepquarter.json",
   "active_path_group_id": null,
   "path_groups": [
     {
@@ -51,12 +51,12 @@
   ],
   "linked_targets": [],
   "paths": {
-    "NeutralZoneShallowLeftSweep.json": {
-      "display_name": "NeutralZoneShallowLeftSweep",
+    "5ft-test.json": {
+      "display_name": "5ft Test",
       "editor_metadata": null
     },
-    "LeftSideOneSweep.json": {
-      "display_name": "LeftSideOneSweep",
+    "nothingpath.json": {
+      "display_name": "NothingPath",
       "editor_metadata": null
     },
     "NeutralZoneDeepLeftSweepHalf.json": {
@@ -67,8 +67,8 @@
       "display_name": "NeutralZoneDeepLeftSweepQuarter",
       "editor_metadata": null
     },
-    "nothingpath.json": {
-      "display_name": "NothingPath",
+    "LeftSideOneSweep.json": {
+      "display_name": "LeftSideOneSweep",
       "editor_metadata": null
     },
     "ExitLeftBump.json": {
@@ -91,8 +91,8 @@
         ]
       }
     },
-    "5ft-test.json": {
-      "display_name": "5ft Test",
+    "NeutralZoneShallowLeftSweep.json": {
+      "display_name": "NeutralZoneShallowLeftSweep",
       "editor_metadata": null
     }
   },

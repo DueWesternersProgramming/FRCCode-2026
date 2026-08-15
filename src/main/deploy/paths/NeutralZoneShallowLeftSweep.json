@@ -13,6 +13,11 @@
       }
     },
     {
+      "type": "event_trigger",
+      "t_ratio": 0.5,
+      "lib_key": "RunIntake"
+    },
+    {
       "type": "waypoint",
       "translation_target": {
         "x_meters": 5.96458,
