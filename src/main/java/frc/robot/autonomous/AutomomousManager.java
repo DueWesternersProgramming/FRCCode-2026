@@ -1,5 +1,6 @@
 package frc.robot.autonomous;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -174,7 +175,13 @@ public class AutomomousManager {
 
                 for (BLinePathSource pathSource : paths) {
 
-                        String jsonText = BLine.getPathJson(pathSource.name());
+                        String jsonText = "";
+                        try {
+                                jsonText = BLine.getPathJson(pathSource.name());
+                        } catch (IOException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
 
                         JsonObject json = JsonParser.parseString(jsonText)
                                         .getAsJsonObject();
@@ -375,9 +382,7 @@ public class AutomomousManager {
 
         private void registerTriggerCommands() {
                 FollowPath.registerEventTrigger("SimpleShoot",
-                                new shootSimpleInterpolationCommand(
-                                                shooterSubsystem,
-                                                () -> CowboyUtils.getAllianceHubPose()));
+                                HighLevelCommands.shootFromHopperContinousCommand(intakeSubsystem, feederSubsystem, shooterSubsystem, ()->CowboyUtils.getAllianceHubPose()));
 
                 FollowPath.registerEventTrigger("RunIntake",
                                 HighLevelCommands.intakeCommand(
@@ -388,23 +393,23 @@ public class AutomomousManager {
 
         private void addPredefinedAutoOptions() {
                 this.predefinedAutoChooser.addOption(
-                                new Option<>("LeftSideOneSweep",
+                                new Option<>("leftsideonesweep",
                                                 () -> BLine.BLineTrajectory(
                                                                 driveSubsystem,
-                                                                "LeftSideOneSweep",
+                                                                "leftsideonesweep",
                                                                 false)));
 
                 this.predefinedAutoChooser.addOption(
-                                new Option<>("RightSideOneSweep",
+                                new Option<>("rightsideonesweep",
                                                 () -> BLine.BLineTrajectory(
                                                                 driveSubsystem,
-                                                                "LeftSideOneSweep",
+                                                                "leftsideonesweep",
                                                                 true)));
                 this.predefinedAutoChooser.addOption(
                                 new Option<>("5ft Test",
                                                 () -> BLine.BLineTrajectory(
                                                                 driveSubsystem,
-                                                                "5ft-Test",
+                                                                "5ft-test",
                                                                 true)));
         }
 }

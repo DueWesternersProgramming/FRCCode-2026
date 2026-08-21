@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -79,7 +80,7 @@ public class BLine {
         return path;
     }
 
-    public static String getPathJson(String name) {
+    public static String getPathJson(String name) throws IOException {
         try {
             java.nio.file.Path file = java.nio.file.Paths.get(
                     Filesystem.getDeployDirectory().getAbsolutePath(),
@@ -90,9 +91,16 @@ public class BLine {
             return java.nio.file.Files.readString(file);
 
         } catch (IOException e) {
-            throw new RuntimeException(
-                    "Failed to load B-Line path JSON: " + name,
-                    e);
+                DriverStation.reportError("Failed to load B-Line path JSON: " + e, true);
+
+                java.nio.file.Path file = java.nio.file.Paths.get(
+                    Filesystem.getDeployDirectory().getAbsolutePath(),
+                    "autos",
+                    "paths",
+                    "nothingpath" + ".json");
+
+            return java.nio.file.Files.readString(file);
+        
         }
     }
 }

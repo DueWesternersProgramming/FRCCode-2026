@@ -14,9 +14,9 @@ public class DriveToPoseCommand extends Command {
     private final DriveSubsystem drive;
     private final Supplier<Pose2d> targetSupplier;
 
-    private final PIDController xController = new PIDController(4.0, 0.0, 0.0);
-    private final PIDController yController = new PIDController(4.0, 0.0, 0.0);
-    private final PIDController thetaController = new PIDController(6.0, 0.0, 0.0);
+    private final PIDController xController = new PIDController(2.0, 0.0, 0.0);
+    private final PIDController yController = new PIDController(2.0, 0.0, 0.0);
+    private final PIDController thetaController = new PIDController(4.0, 0.0, 0.0);
 
     private static final double POSITION_TOLERANCE = 0.05; // meters
     private static final double ANGLE_TOLERANCE = 3.0; // degrees
@@ -70,8 +70,8 @@ public class DriveToPoseCommand extends Command {
                 current.getRotation().getRadians(),
                 target.getRotation().getRadians());
 
-        vx = MathUtil.clamp(vx, -4.0, 4.0);
-        vy = MathUtil.clamp(vy, -4.0, 4.0);
+        vx = MathUtil.clamp(vx, -2.0, 2.0);
+        vy = MathUtil.clamp(vy, -2.0, 2.0);
         omega = MathUtil.clamp(omega, -2.0 * Math.PI, 2.0 * Math.PI);
 
         ChassisSpeeds speeds = new ChassisSpeeds(vx, vy, omega);

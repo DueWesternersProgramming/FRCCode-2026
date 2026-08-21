@@ -26,8 +26,8 @@ public class FeederSubsystem extends SubsystemBase {
 
     public Command pullBallsBackCommand() {
         return Commands.sequence(
-                setFeederSpeedCommand(-.5, -.5),
-                new WaitCommand(.25),
+                setFeederSpeedCommand(-.7, -.7),
+                new WaitCommand(.75),
                 setFeederSpeedCommand(0,0));
     }
 

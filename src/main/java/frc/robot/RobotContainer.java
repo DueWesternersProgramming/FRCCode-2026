@@ -235,14 +235,14 @@ public class RobotContainer {
 
                         Trigger spinup = new Trigger(()->operatorController.getRawButton(6)).whileTrue(shooterSubsystem.setRPMCommand(6000));
                         
-                        new Trigger(() -> operatorController.getRawAxis(3) > .3)
-                                        .whileTrue(HighLevelCommands.teleopShootOnMoveAutomationCommand(
-                                                        driveSubsystem, driveController, intakeSubsystem,
-                                                        feederSubsystem, shooterSubsystem,
-                                                        ledSubsystem))
-                                        .onFalse(HighLevelCommands.stopAllSuperStructure(intakeSubsystem,
-                                                        feederSubsystem, shooterSubsystem,
-                                                        ledSubsystem));
+                        // new Trigger(() -> operatorController.getRawAxis(3) > .3)
+                        //                 .whileTrue(HighLevelCommands.teleopShootOnMoveAutomationCommand(
+                        //                                 driveSubsystem, driveController, intakeSubsystem,
+                        //                                 feederSubsystem, shooterSubsystem,
+                        //                                 ledSubsystem))
+                        //                 .onFalse(HighLevelCommands.stopAllSuperStructure(intakeSubsystem,
+                        //                                 feederSubsystem, shooterSubsystem,
+                        //                                 ledSubsystem));
 
                         // Left operator trigger, runs intake and performs the 'ball wave' agitation
                         // while held.
@@ -253,6 +253,8 @@ public class RobotContainer {
                                                         feederSubsystem, shooterSubsystem,
                                                         ledSubsystem));
 
+                        
+                        new JoystickButton(operatorController, 2).onTrue(feederSubsystem.pullBallsBackCommand()).onFalse(feederSubsystem.setFeederSpeedCommand(0, 0));
 
                         // Operator X button, reverses indexer if needed to clear jams
                         new JoystickButton(operatorController, 3)
@@ -261,9 +263,6 @@ public class RobotContainer {
                                         .onFalse(HighLevelCommands.stopAllSuperStructure(intakeSubsystem,
                                                         feederSubsystem, shooterSubsystem,
                                                         ledSubsystem));
-
-                        new JoystickButton(driveController, 1).onTrue(RobotState.setCanRotate(true))
-                                        .onFalse(RobotState.setCanRotate(false));
 
                         new JoystickButton(driveController, 7)
                                         .whileTrue(new SequentialCommandGroup(

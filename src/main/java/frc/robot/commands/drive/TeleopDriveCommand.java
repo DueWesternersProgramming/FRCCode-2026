@@ -1,5 +1,7 @@
 package frc.robot.commands.drive;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Joystick;
@@ -17,7 +19,7 @@ public class TeleopDriveCommand extends Command {
     private final Joystick joystick;
     private double lastIntentionalRotation;
     private final PIDController rotationController = new PIDController(
-            2,
+            .4,
             0,
             0);
 
@@ -60,6 +62,8 @@ public class TeleopDriveCommand extends Command {
             return;
         }
 
+        if (Math.abs(lastIntentionalRotation - drive.getHeading()) > 10) lastIntentionalRotation = drive.getHeading();
+
         RobotState.canRotate = Math.abs(rotSquared) > .05;
 
         boolean translating = Math.abs(xSquared) > 0.02 ||
@@ -69,14 +73,15 @@ public class TeleopDriveCommand extends Command {
             drive.drive(ySquared, xSquared, rotSquared, fieldRelative, true, RobotState.isAntiTippingEnabled);
             
             lastIntentionalRotation = drive.getHeading();
+            Logger.recordOutput("DriveSubsystem/lastIntentionalRot", lastIntentionalRotation);
             
         } else {
             double correction = translating ?MathUtil.clamp(
                     rotationController.calculate(
                             drive.getHeading(),
                             lastIntentionalRotation),
-                    -1.0,
-                    1.0) : 0;
+                    -.03,
+                    .03) : 0;
 
             drive.drive(ySquared, xSquared, correction,
                     fieldRelative, true, RobotState.isAntiTippingEnabled);
