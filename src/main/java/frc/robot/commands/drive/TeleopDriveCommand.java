@@ -19,7 +19,7 @@ public class TeleopDriveCommand extends Command {
     private final Joystick joystick;
     private double lastIntentionalRotation;
     private final PIDController rotationController = new PIDController(
-            .4,
+            .1,
             0,
             0);
 

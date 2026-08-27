@@ -46,7 +46,8 @@ public class HighLevelCommands {
                 return Commands.parallel(
                                 feederSubsystem.setFeederSpeedCommand(0, 0),
                                 new SequentialCommandGroup(
-                                                intakeSubsystem.setIntakeSpeedCommand(-.3), new WaitCommand(.1),
+                                                intakeSubsystem.setIntakeSpeedCommand(-.3), 
+                                                new WaitCommand(.1),
                                                 intakeSubsystem.setIntakeSpeedCommand(1)),
                                 ledSubsystem.setLEDStatusCommand(LEDStatus.INTAKING));
         }
