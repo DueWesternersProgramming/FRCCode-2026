@@ -4,8 +4,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
 import frc.robot.RobotConstants.FeederConstants;
 import frc.robot.RobotConstants.ScoringConstants.FieldZones;
@@ -46,9 +49,15 @@ public class HighLevelCommands {
                 return Commands.parallel(
                                 feederSubsystem.setFeederSpeedCommand(0, 0),
                                 new SequentialCommandGroup(
-                                                intakeSubsystem.setIntakeSpeedCommand(-.3), 
+                                                intakeSubsystem.setIntakeSpeedCommand(-.3),
                                                 new WaitCommand(.1),
-                                                intakeSubsystem.setIntakeSpeedCommand(1)),
+                                                new RepeatCommand(new SequentialCommandGroup(
+                                                                intakeSubsystem.setIntakeSpeedCommand(1),
+                                                                new WaitUntilCommand(intakeSubsystem::isIntakeStalled),
+                                                                new WaitCommand(1)
+                                                                                .deadlineWith(intakeSubsystem
+                                                                                                .setIntakeSpeedCommand(
+                                                                                                                1))))),
                                 ledSubsystem.setLEDStatusCommand(LEDStatus.INTAKING));
         }
 

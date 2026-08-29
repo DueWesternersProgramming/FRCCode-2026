@@ -7,6 +7,7 @@ public class LEDSubsystemConstants {
                 public static enum LEDStatus {
                         IDLE,
                         INTAKING,
+                        INTAKE_STALLED,
                         SHOOTING,
                         REVERSING
                 }

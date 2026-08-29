@@ -11,7 +11,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotConstants;
-import frc.robot.RobotConstants.TeleopConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystemConstants;
 import frc.robot.utils.CowboyUtils;
@@ -66,8 +65,8 @@ public class AlignPerpendicularToPoseCommand extends Command {
         angularSpeed = !angleController.atSetpoint() ? angularSpeed : 0;
 
         double perpendicularConstrained = MathUtil.applyDeadband(
-                MathUtil.clamp(perpendicularInput.get(), -TeleopConstants.MAX_SPEED_PERCENT,
-                        TeleopConstants.MAX_SPEED_PERCENT),
+                MathUtil.clamp(perpendicularInput.get(), -DriveSubsystemConstants.maxSpeedPercent(),
+                        DriveSubsystemConstants.maxSpeedPercent()),
                 RobotConstants.PortConstants.Controller.JOYSTICK_AXIS_THRESHOLD);
         double perpendicularSquared = Math.copySign(perpendicularConstrained * perpendicularConstrained,
                 perpendicularConstrained);

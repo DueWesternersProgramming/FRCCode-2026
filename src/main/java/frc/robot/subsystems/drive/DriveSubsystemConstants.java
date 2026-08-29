@@ -6,6 +6,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Tuning;
 
 public class DriveSubsystemConstants {
         public static final double FRONT_LEFT_VIRTUAL_OFFSET_RADIANS = 0;
@@ -25,10 +26,21 @@ public class DriveSubsystemConstants {
         public static final double MAX_SPEED_METERS_PER_SECOND = 6.0;
         public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 2 * Math.PI; // radians per second
 
-        public static final double DIRECTION_SLEW_RATE = 8;
-        public static final double MAGNITUDE_SLEW_RATE = 8; // Responsiveness, or the "jerk" of the drivebase
-        public static final double ROTATIONAL_SLEW_RATE = 6;
+        public static double directionSlewRate() {
+                return Tuning.harrisonSpeedsActivated.get() ? 10 : 3;
+        }
 
+        public static double magnitudeSlewRate() {
+                return Tuning.harrisonSpeedsActivated.get() ? 10 : 3;
+        }
+
+        public static double rotationalSlewRate() {
+                return Tuning.harrisonSpeedsActivated.get() ? 6 : 4;
+        }
+
+        public static double maxSpeedPercent() {
+                return Tuning.harrisonSpeedsActivated.get() ? 1 : .8;
+        }
         // Chassis configuration
 
         public static final double DRIVE_BASE_RADIUS_METERS = Units.inchesToMeters(15.38); // measurement from

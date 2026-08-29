@@ -19,6 +19,9 @@ public class IntakeSubsystem extends SubsystemBase {
         this.io = io;
     }
 
+    public void setIntakeSpeed(double speed) {
+        io.setPercentSpeed(speed);
+    }
 
     public Command setIntakeSpeedCommand(double speed) {
         return new InstantCommand(() -> io.setPercentSpeed(speed), this);
@@ -26,6 +29,18 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public Command stopIntakingCommand() {
         return new InstantCommand(() -> io.setPercentSpeed(0), this);
+    }
+
+    public double getIntakeRPM() {
+        return io.getIntakeRPM();
+    }
+
+    public double getIntakeCurrentDraw() {
+        return io.getIntakeCurrent();
+    }
+
+    public boolean isIntakeStalled() {
+        return io.isIntakeStalled();
     }
 
     @Override

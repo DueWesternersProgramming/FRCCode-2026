@@ -92,10 +92,9 @@ public final class RobotConstants {
 
                         public static final int INTAKE_MOTOR = 15;
 
-
                         public static final int LEFT_SHOOTER_MOTOR = 16;
                         public static final int RIGHT_SHOOTER_MOTOR = 17;
-                        
+
                         public static final int FLOOR_ROLLERS_MOTOR = 18;
                         public static final int VERTICAL_ROLLERS_MOTOR = 19;
 
@@ -114,11 +113,6 @@ public final class RobotConstants {
                 }
         }
 
-        public static final class TeleopConstants {
-                public static final double MAX_SPEED_PERCENT = 1; // ex: 0.4 -> 40%
-        }
-
-
         public static final class FeederConstants {
                 public static final double FLOOR_ROLLERS_FEEDING_SPEED = .8;
                 public static final double VERTICAL_ROLLERS_FEEDING_SPEED = 1;
@@ -128,10 +122,8 @@ public final class RobotConstants {
         }
 
         public static final class IntakeContants {
-                
-        }
 
-        
+        }
 
         public static final class SubsystemEnabledConstants {
                 public static final boolean VISION_SUBSYSTEM_ENABLED = true;

@@ -410,6 +410,6 @@ public class AutomomousManager {
                                                 () -> BLine.BLineTrajectory(
                                                                 driveSubsystem,
                                                                 "5ft-test",
-                                                                true)));
+                                                                false)));
         }
 }

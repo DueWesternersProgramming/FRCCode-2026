@@ -31,8 +31,26 @@ public class IntakeSubsystemIOSparkMax implements IntakeSubsystemIO {
     }
 
     @Override
+    public double getIntakeCurrent() {
+        return intakeMotor.getOutputCurrent();
+    }
+
+    @Override
+    public double getIntakeRPM() {
+        return intakeMotor.getEncoder().getVelocity();
+    }
+
+    @Override
+    public boolean isIntakeStalled() {
+        return intakeMotor.getOutputCurrent() > IntakeSubsystemConstants.INTAKE_MOTOR_STALL_CURRENT || intakeMotor.getEncoder().getVelocity() < IntakeSubsystemConstants.INTAKE_MOTOR_STALL_RPM;
+    }
+
+    @Override
     public void updateInputs(IntakeSubsystemIOInputs inputs) {
         inputs.intakePercent = intakeMotor.getAppliedOutput();
         inputs.intakeTempC = intakeMotor.getMotorTemperature();
+        inputs.intakeRPM = intakeMotor.getEncoder().getVelocity();
+        inputs.intakeCurrent = intakeMotor.getOutputCurrent();
+        inputs.intakeStalled = isIntakeStalled();
     }
 }

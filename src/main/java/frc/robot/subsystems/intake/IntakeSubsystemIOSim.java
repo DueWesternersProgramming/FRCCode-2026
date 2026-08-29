@@ -14,9 +14,28 @@ public class IntakeSubsystemIOSim implements IntakeSubsystemIO {
     }
 
     @Override
+    public double getIntakeRPM() {
+        return percent * 5676;
+    }
+
+    @Override
+    public double getIntakeCurrent() {
+        return percent * 30;
+    }
+
+    @Override
+    public boolean isIntakeStalled() {
+        return false;
+    }
+
+    @Override
     public void updateInputs(IntakeSubsystemIOInputs inputs) {
         inputs.intakePercent = percent;
         inputs.intakeTempC = 0;
-        //inputs.deployMotorEncoderPosition = 0;
+        inputs.intakeRPM = getIntakeRPM();
+        inputs.intakeCurrent = getIntakeCurrent();
+        inputs.intakeStalled = isIntakeStalled();
     }
+
+    
 }

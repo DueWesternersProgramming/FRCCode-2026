@@ -28,11 +28,7 @@ import frc.robot.subsystems.drive.gyro.GyroIOInputsAutoLogged;
 import frc.robot.subsystems.questnav.QuestNavSubsystemConstants;
 import frc.robot.utils.SwerveUtils;
 import frc.robot.utils.TimestampedPose;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathfindingCommand;
-import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -47,8 +43,8 @@ public class DriveSubsystem extends SubsystemBase {
     private double m_currentTranslationDir = 0.0;
     private double m_currentTranslationMag = 0.0;
 
-    private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveSubsystemConstants.MAGNITUDE_SLEW_RATE);
-    private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveSubsystemConstants.ROTATIONAL_SLEW_RATE);
+    private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveSubsystemConstants.magnitudeSlewRate());
+    private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveSubsystemConstants.rotationalSlewRate());
     private double m_prevTime = WPIUtilJNI.now() * 1e-6;
     private Rotation2d m_trackedRotation = new Rotation2d();
 
@@ -281,7 +277,7 @@ public class DriveSubsystem extends SubsystemBase {
             double directionSlewRate;
 
             if (m_currentTranslationMag != 0.0) {
-                directionSlewRate = Math.abs(DriveSubsystemConstants.DIRECTION_SLEW_RATE / m_currentTranslationMag);
+                directionSlewRate = Math.abs(DriveSubsystemConstants.directionSlewRate() / m_currentTranslationMag);
             } else {
                 directionSlewRate = 500.0; // some high number that means the slew rate is effectively instantaneous
             }
@@ -395,7 +391,7 @@ public class DriveSubsystem extends SubsystemBase {
             double directionSlewRate;
 
             if (m_currentTranslationMag != 0.0) {
-                directionSlewRate = Math.abs(DriveSubsystemConstants.DIRECTION_SLEW_RATE / m_currentTranslationMag);
+                directionSlewRate = Math.abs(DriveSubsystemConstants.directionSlewRate() / m_currentTranslationMag);
             } else {
                 directionSlewRate = 500.0; // some high number that means the slew rate is effectively instantaneous
             }

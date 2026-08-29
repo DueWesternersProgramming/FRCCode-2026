@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotConstants;
 import frc.robot.Tuning;
 import frc.robot.RobotConstants.PortConstants.Controller;
-import frc.robot.RobotConstants.TeleopConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystemConstants;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class shootOnMoveInterpolationCommand extends Command {
@@ -54,12 +54,12 @@ public class shootOnMoveInterpolationCommand extends Command {
                 double yRaw = -(joystick.getRawAxis(Controller.DRIVE_COMMAND_Y_AXIS));
 
                 double xConstrained = MathUtil.applyDeadband(
-                                MathUtil.clamp(xRaw, -TeleopConstants.MAX_SPEED_PERCENT,
-                                                TeleopConstants.MAX_SPEED_PERCENT),
+                                MathUtil.clamp(xRaw, -DriveSubsystemConstants.maxSpeedPercent(),
+                                                DriveSubsystemConstants.maxSpeedPercent()),
                                 RobotConstants.PortConstants.Controller.JOYSTICK_AXIS_THRESHOLD);
                 double yConstrained = MathUtil.applyDeadband(
-                                MathUtil.clamp(yRaw, -TeleopConstants.MAX_SPEED_PERCENT,
-                                                TeleopConstants.MAX_SPEED_PERCENT),
+                                MathUtil.clamp(yRaw, -DriveSubsystemConstants.maxSpeedPercent(),
+                                                DriveSubsystemConstants.maxSpeedPercent()),
                                 RobotConstants.PortConstants.Controller.JOYSTICK_AXIS_THRESHOLD);
 
                 double xSquared = Math.copySign(xConstrained * xConstrained, xConstrained);
