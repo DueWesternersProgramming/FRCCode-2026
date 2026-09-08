@@ -358,8 +358,8 @@ public class DriveSubsystem extends SubsystemBase {
         runChassisSpeeds(speeds, false);
     }
 
-    public void runChassisSpeeds(ChassisSpeeds speeds, Boolean fieldRelative) {
-        Rotation2d rotation = Rotation2d.fromDegrees(gyroIO.getGyroYawAngle());
+    public void runChassisSpeeds(ChassisSpeeds speeds, boolean fieldRelative) {
+        Rotation2d rotation = hybridOdometry.getEstimatedPosition().getRotation();///Rotation2d.fromDegrees(gyroIO.getGyroYawAngle());
 
         var swerveModuleStates = DriveSubsystemConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
                 fieldRelative
@@ -373,7 +373,6 @@ public class DriveSubsystem extends SubsystemBase {
         moduleIO[1].setDesiredState(swerveModuleStates[1]);
         moduleIO[2].setDesiredState(swerveModuleStates[2]);
         moduleIO[3].setDesiredState(swerveModuleStates[3]);
-
     }
 
     public ChassisSpeeds getTheoreticalSpeeds(double xSpeed, double ySpeed, double rot, boolean fieldRelative,

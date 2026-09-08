@@ -105,9 +105,9 @@ public class shootOnMoveInterpolationCommand extends Command {
 
                 double shooterSpeed = !Tuning.tuningEnabled.get() ? shooterSubsystem.getRPMFromDistance(predictedDistanceToHub) : Tuning.tuningRPM.get();
                 
+                
+
                 shooterSubsystem.setRPM(shooterSpeed);
-                
-                
                 Logger.recordOutput("Target RPM", shooterSpeed);
                 Logger.recordOutput("Interpolation/predictedDistanceToHub", predictedDistanceToHub);
         };

@@ -235,14 +235,14 @@ public class RobotContainer {
 
                         Trigger spinup = new Trigger(()->operatorController.getRawButton(6)).whileTrue(shooterSubsystem.setRPMCommand(6000));
                         
-                        // new Trigger(() -> operatorController.getRawAxis(3) > .3)
-                        //                 .whileTrue(HighLevelCommands.teleopShootOnMoveAutomationCommand(
-                        //                                 driveSubsystem, driveController, intakeSubsystem,
-                        //                                 feederSubsystem, shooterSubsystem,
-                        //                                 ledSubsystem))
-                        //                 .onFalse(HighLevelCommands.stopAllSuperStructure(intakeSubsystem,
-                        //                                 feederSubsystem, shooterSubsystem,
-                        //                                 ledSubsystem));
+                        new Trigger(() -> operatorController.getRawAxis(3) > .3)
+                                        .whileTrue(HighLevelCommands.teleopShootOnMoveAutomationCommand(
+                                                        driveSubsystem, driveController, intakeSubsystem,
+                                                        feederSubsystem, shooterSubsystem,
+                                                        ledSubsystem))
+                                        .onFalse(HighLevelCommands.stopAllSuperStructure(intakeSubsystem,
+                                                        feederSubsystem, shooterSubsystem,
+                                                        ledSubsystem));
 
                         // Left operator trigger, runs intake and performs the 'ball wave' agitation
                         // while held.
