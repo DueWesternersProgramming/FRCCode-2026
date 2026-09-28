@@ -6,15 +6,21 @@ public interface ShooterSubsystemIO {
 
     @AutoLog
     public static class ShooterSubsystemIOInputs {
-        public double leftMotorRPM = 0.0;
-        public double leftMotorTempC = 0.0;
-        public double leftMotorCurrentDraw = 0.0;
+        public double leftMotor1RPM = 0.0;
+        public double leftMotor1TempC = 0.0;
+        public double leftMotor1CurrentDraw = 0.0;
 
-        public double rightMotorRPM = 0.0;
-        public double rightMotorTempC = 0.0;
-        public double rightMotorCurrentDraw = 0.0;
+        public double leftMotor2RPM = 0.0;
+        public double leftMotor2TempC = 0.0;
+        public double leftMotor2CurrentDraw = 0.0;
 
-        public boolean reachedTargetVelocity = false;
+        public double rightMotor1RPM = 0.0;
+        public double rightMotor1TempC = 0.0;
+        public double rightMotor1CurrentDraw = 0.0;
+
+        public double rightMotor2RPM = 0.0;
+        public double rightMotor2TempC = 0.0;
+        public double rightMotor2CurrentDraw = 0.0;
     }
 
     default void updateInputs(ShooterSubsystemIOInputs inputs) {
