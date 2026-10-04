@@ -25,29 +25,21 @@
       "default_auto_velocity_merge_tolerance_meters_per_sec": 0.3
     }
   },
-  "active_path_file_name": "nothingpath.json",
+  "active_path_file_name": "leftsideonesweeppath1.json",
   "active_path_group_id": null,
   "path_groups": [],
   "linked_targets": [],
   "paths": {
+    "leftsideonesweeppath1.json": {
+      "display_name": "leftsideonesweeppath1",
+      "editor_metadata": null
+    },
+    "leftsideonesweeppath2.json": {
+      "display_name": "leftsideonesweeppath2",
+      "editor_metadata": null
+    },
     "neutralzonedeepleftsweephalf.json": {
       "display_name": "neutralzonedeepleftsweephalf",
-      "editor_metadata": null
-    },
-    "5ft-test.json": {
-      "display_name": "5ft test",
-      "editor_metadata": null
-    },
-    "exitleftbump.json": {
-      "display_name": "exitleftbump",
-      "editor_metadata": null
-    },
-    "leftsideonesweep.json": {
-      "display_name": "leftsideonesweep",
-      "editor_metadata": null
-    },
-    "neutralzonedeepleftsweepquarter.json": {
-      "display_name": "neutralzonedeepleftsweepquarter",
       "editor_metadata": null
     },
     "neutralzoneshallowleftsweep.json": {
@@ -56,6 +48,18 @@
     },
     "nothingpath.json": {
       "display_name": "nothingpath",
+      "editor_metadata": null
+    },
+    "exitleftbump.json": {
+      "display_name": "exitleftbump",
+      "editor_metadata": null
+    },
+    "5ft-test.json": {
+      "display_name": "5ft test",
+      "editor_metadata": null
+    },
+    "neutralzonedeepleftsweepquarter.json": {
+      "display_name": "neutralzonedeepleftsweepquarter",
       "editor_metadata": null
     }
   },

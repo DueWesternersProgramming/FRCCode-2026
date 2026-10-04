@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.HighLevelCommands;
 import frc.robot.commands.automation.interpolation.shootSimpleInterpolationCommand;
 import frc.robot.lib.BLine.FlippingUtil;
@@ -98,13 +99,13 @@ public class AutomomousManager {
                         try {
                                 return predefinedAutoChooser.get().get();
                         } catch (Exception e) {
-                                DriverStation.reportError("Predefined Auto Error: " + e, true);
+                                DriverStation.reportWarning("Predefined Auto Error: " + e, true);
                                 return Commands.none();
                         }
                 } else {
                         try {
                         } catch (Exception e) {
-                                DriverStation.reportError("Dynamic Auto Error: " + e, true);
+                                DriverStation.reportWarning("Dynamic Auto Error: " + e, true);
                                 return Commands.none();
                         }
                         return getDynamicAutoCommand();
@@ -393,18 +394,24 @@ public class AutomomousManager {
 
         private void addPredefinedAutoOptions() {
                 this.predefinedAutoChooser.addOption(
-                                new Option<>("leftsideonesweep",
-                                                () -> BLine.BLineTrajectory(
+                                new Option<>("Left Side Single Sweep",
+                                                () -> Commands.sequence(BLine.BLineTrajectory(
                                                                 driveSubsystem,
-                                                                "leftsideonesweep",
-                                                                false)));
+                                                                "leftsideonesweeppath1",
+                                                                false),new WaitCommand(5), BLine.BLineTrajectory(
+                                                                driveSubsystem,
+                                                                "leftsideonesweeppath2",
+                                                                false))));
 
                 this.predefinedAutoChooser.addOption(
-                                new Option<>("rightsideonesweep",
-                                                () -> BLine.BLineTrajectory(
+                                new Option<>("Right Side Single Sweep",
+                                                () -> Commands.sequence(BLine.BLineTrajectory(
                                                                 driveSubsystem,
-                                                                "leftsideonesweep",
-                                                                true)));
+                                                                "leftsideonesweeppath1",
+                                                                true), new WaitCommand(5), BLine.BLineTrajectory(
+                                                                driveSubsystem,
+                                                                "leftsideonesweeppath2",
+                                                                true))));
                 this.predefinedAutoChooser.addOption(
                                 new Option<>("5ft Test",
                                                 () -> BLine.BLineTrajectory(

@@ -76,22 +76,6 @@ public class DriveToPoseCommand extends Command {
 
         ChassisSpeeds speeds = new ChassisSpeeds(vx, vy, omega);
 
-        System.out.println("Current Pose : " + current);
-        System.out.println("Target Pose  : " + target);
-        System.out.printf(
-                "Errors: x=%.3f y=%.3f theta=%.1f°%n",
-                target.getX() - current.getX(),
-                target.getY() - current.getY(),
-                target.getRotation()
-                        .minus(current.getRotation())
-                        .getDegrees());
-
-        System.out.printf(
-                "PID Outputs: vx=%.2f vy=%.2f omega=%.2f%n",
-                vx,
-                vy,
-                omega);
-
         drive.runChassisSpeeds(speeds, true);
     }
 
@@ -105,7 +89,6 @@ public class DriveToPoseCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         drive.runChassisSpeeds(new ChassisSpeeds());
-
         xController.reset();
         yController.reset();
         thetaController.reset();
