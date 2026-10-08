@@ -390,6 +390,13 @@ public class AutomomousManager {
                                                 intakeSubsystem,
                                                 feederSubsystem,
                                                 ledSubsystem));
+                
+                FollowPath.registerEventTrigger("StopAllSuperStructure",
+                                HighLevelCommands.stopAllSuperStructure(
+                                                intakeSubsystem,
+                                                feederSubsystem,
+                                                shooterSubsystem,
+                                                ledSubsystem));
         }
 
         private void addPredefinedAutoOptions() {
